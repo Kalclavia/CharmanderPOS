@@ -59,9 +59,9 @@ app.get("/employees", (req, res) => {
 // Inventory backend
 
 /**
- * Get inventory item endpoint.
+ * Get inventory item endpoint
  * @method GET /inventory
- * @returns {object} List inventory item.
+ * @returns {object} List inventory item
  */
 app.get("/inventory", (req, res) => {
   pool
@@ -71,9 +71,9 @@ app.get("/inventory", (req, res) => {
 });
 
 /**
- * Add new inventory item endpoint.
+ * Add new inventory item endpoint
  * @method POST /inventory/add
- * @returns {object} Newly added inventory item.
+ * @returns {object} Newly added inventory item
  */
 app.post("/inventory/add", (req, res) => {
   const { ingredientid, name, stock, maxstock, units } = req.body;
@@ -87,7 +87,7 @@ app.post("/inventory/add", (req, res) => {
 });
 
 /**
- * Delete an inventory item endpoint.
+ * Delete an inventory item endpoint
  * @method DELETE /inventory/delete
  * @returns {object} The item to be deleted
  */
@@ -112,7 +112,7 @@ app.delete("/inventory/delete", (req, res) => {
 });
 
 /**
- * Update the stock of an inventory item endpoint.
+ * Update the stock of an inventory item endpoint
  * @method PATCH /inventory/updateStock
  * @returns {object} The item to be updated
  */
@@ -127,7 +127,7 @@ app.patch("/inventory/updateStock", (req, res) => {
     .catch((error) => res.status(500).json({ error: error.message }));
 });
 /**
- * Update the name of an inventory item endpoint.
+ * Update the name of an inventory item endpoint
  * @method PATCH /inventory/updateName
  * @returns {object} The item to be updated
  */
@@ -141,14 +141,22 @@ app.patch("/inventory/updateName", (req, res) => {
     .then((query_res) => res.json(query_res.rows[0]))
     .catch((error) => res.status(500).json({ error: error.message }));
 });
-
+/**
+ * Get the id of the last item endpoint
+ * @method GET /inventory/id
+ * @returns {object} The item to be updated
+ */
 app.get("/inventory/id", (req, res) => {
   pool
     .query("SELECT COUNT(*) FROM ingredients")
     .then((query_res) => res.json(query_res.rows[0]))
     .catch((error) => res.status(500).json({ error: error.message }));
 });
-
+/**
+ * Get the id of the last item endpoint
+ * @method GET /inventory/itemStock
+ * @returns {object} The items stock
+ */
 app.get("/inventory/itemStock", (req, res) => {
   const { ingredientid } = req.body;
   pool
