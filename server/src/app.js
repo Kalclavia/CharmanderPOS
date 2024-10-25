@@ -40,7 +40,7 @@ app.use((req, res, next) => {
 
 app.get("/", (req, res) => {
   res.send({
-    message: "Hello world!",
+    message: "Monty python and the holy grail!",
   });
 });
 
