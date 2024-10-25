@@ -44,8 +44,6 @@ app.get("/", (req, res) => {
   });
 });
 
-
-
 /**
  * Employees endpoint.
  * @method GET /employees
@@ -168,14 +166,22 @@ app.get("/inventory/itemStock", (req, res) => {
     .then((query_res) => res.json(query_res.rows[0]))
     .catch((error) => res.status(500).json({ error: error.message }));
 });
-
+/**
+ * Get the 10 lowest stocked items
+ * @method GET /inventory/itemStock
+ * @returns {object} The 10 items in JSON format
+ */
 app.get("/inventory/lowestStockedItems", (req, res) => {
   pool
     .query("SELECT * FROM ingredients i ORDER BY i.stock ASC LIMIT 10")
     .then((query_res) => res.json(query_res.rows))
     .catch((error) => res.status(500).json({ error: error.message }));
 });
-
+/**
+ * Get the ingredient ID given a name
+ * @method GET /inventory/getIngredientID
+ * @returns {object} The ingredient ID
+ */
 app.get("/inventory/getIngredientID", (req, res) => {
   const { name } = req.body;
   pool
@@ -183,7 +189,11 @@ app.get("/inventory/getIngredientID", (req, res) => {
     .then((query_res) => res.json(query_res.rows[0]))
     .catch((error) => res.status(500).json({ error: error.message }));
 });
-
+/**
+ * Get the ingredient name given a ID
+ * @method GET /inventory/getIngredientName
+ * @returns {object} The ingredients name
+ */
 app.get("/inventory/getIngredientName", (req, res) => {
   const { ingredientid } = req.body;
   pool
@@ -193,7 +203,11 @@ app.get("/inventory/getIngredientName", (req, res) => {
     .then((query_res) => res.json(query_res.rows[0]))
     .catch((error) => res.status(500).json({ error: error.message }));
 });
-
+/**
+ * Update the inventory from a transaction
+ * @method PATCH /inventory/updateStockFromTransaction
+ * @returns {object} The ingredients that were updated
+ */
 app.patch("/inventory/updateStockFromTransaction", (req, res) => {
   const { usedIngredients, ingredientid } = req.body;
   pool
