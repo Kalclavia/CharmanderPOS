@@ -1,32 +1,68 @@
 <template>
-    <div class="menu-page">
+  <div class="appetizer">
       <h2>Appetizers</h2>
-      <div class="menu-items">
-        <div v-for="item in appetizers" :key="item.name" class="menu-item">
-          <p>{{ item.name }}</p>
-          <p>\${{ item.price.toFixed(2) }}</p>
-          <button @click="addToCart(item)">Add to Cart</button>
-        </div>
-      </div>
-    </div>
-  </template>
-  
-  <script>
-  export default {
-    data() {
+      <div class="grid">
+          <button v-for="appetizer in appetizers" :key="appetizer" @click="selectItem(appetizer)">
+              {{ appetizer }}
+          </button>
+      </div>  
+  </div>
+</template>
+
+<script>
+import axios from 'axios'; // Make sure to install axios if you haven't already
+
+export default {
+  name: 'Appetizer',
+  data() {
       return {
-        appetizers: [
-          { name: 'Spring Roll', price: 1.50 },
-          { name: 'Chicken Egg Roll', price: 1.75 },
-          // Add other items as needed
-        ],
+          appetizers: []
       };
-    },
-    methods: {
-      addToCart(item) {
-        this.$emit('addToCart', item);
+  },
+  methods: {
+      async fetchMenuItems() {
+          try {
+              const appetizerResponse = await axios.get('/menu/Appetizers');
+              this.appetizers = appetizerResponse.data;
+          } catch (error) {
+              console.error('Error fetching menu items:', error);
+          }
       },
-    },
-  };
-  </script>
-  
+      selectItem(item) {
+          this.$emit('selectItem', item); // Emit selected item to the parent
+      }
+  },
+  mounted() {
+      this.fetchMenuItems(); // Fetch menu items when the component mounts
+  },
+};
+</script>
+
+<style scoped>
+.appetizer {
+  padding: 20px;
+  /* Padding around the content */
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+button {
+  border: 2px solid black;
+  border-radius: 10px;
+  background-color: #007bff;
+  color: white;
+  padding: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+button:hover {
+  background-color: #0056b3;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+</style>
