@@ -218,9 +218,6 @@ app.patch("/inventory/updateStockFromTransaction", (req, res) => {
     .then((query_res) => res.json(query_res.rows[0]))
     .catch((error) => res.status(500).json({ error: error.message }));
 });
-var port = 3000;
-console.log(`Server is listening on localhost:${port}`);
-app.listen(3000);
 /**
  * Get specific menu items by type.
  * @method GET /menu/:type
@@ -238,4 +235,7 @@ app.get('/menu/:type', async (req, res) => {
       res.json(menuItems);
     })
     .catch((error) => res.status(500).json({ error: error.message }));
-})
+});
+var port = 3000;
+console.log(`Server is listening on localhost:${port}`);
+app.listen(3000);
