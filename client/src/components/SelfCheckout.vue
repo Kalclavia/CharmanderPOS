@@ -19,7 +19,7 @@
 export default {
     data() {
         return {
-            mealTypes: ['Bowl', 'Plate', 'Bigger Plate', 'Appetizers', 'A La Carte', 'Desserts'],
+            mealTypes: ['Appetizers', 'Sides', 'Entrees', 'Drinks'],
             selectedMealType: '',
             menuItems: []
         };
