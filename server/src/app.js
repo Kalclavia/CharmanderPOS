@@ -221,3 +221,21 @@ app.patch("/inventory/updateStockFromTransaction", (req, res) => {
 var port = 3000;
 console.log(`Server is listening on localhost:${port}`);
 app.listen(3000);
+/**
+ * Get specific menu items by type.
+ * @method GET /menu/:type
+ * @param {string} type The type of menu items to retrieve.
+ * @returns {objects[]} Array of menu items with their names.
+ */
+app.get('/menu/:type', async (req, res) => {
+  const type = req.params.type;
+  const sql = "SELECT name FROM foods WHERE type = $1";
+
+  pool
+    .query(sql, [type])
+    .then((query_res) => {
+      const menuItems = query_res.rows.map((row) => row.name);
+      res.json(menuItems);
+    })
+    .catch((error) => res.status(500).json({ error: error.message }));
+})
