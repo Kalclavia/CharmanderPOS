@@ -5,8 +5,8 @@
 
     <!-- Show main app interface once "Tap to Order" is tapped -->
     <div v-else>
-      <MenuBar @selectItem="showItemPage" />
-      <MainContent v-if="selectedItem" :item="selectedItem" />
+      <MenuBar @selectItem="selectItem" />
+      <MainContent :item="selectedItem" />
       <Cart v-if="isCartVisible" :items="cartItems" @checkout="handleCheckout" />
       <OrderCompletePopup v-if="isOrderComplete" @close="resetOrder" />
     </div>
@@ -42,7 +42,7 @@ export default {
     handleStartOrder() {
       this.isOnLaunchPage = false;
     },
-    showItemPage(item) {
+    selectItem(item) {
       this.selectedItem = item;
     },
     handleCheckout() {
@@ -58,5 +58,5 @@ export default {
 </script>
 
 <style scoped>
-/* Add any relevant styles here */
+
 </style>
