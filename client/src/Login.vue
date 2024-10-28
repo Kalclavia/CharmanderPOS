@@ -1,5 +1,3 @@
-<!-- <script setup> -->
-<!-- </script> -->
 <!-- v-model: holds the variable, v-on: what to do when enter key is pressed -->
 
 <template>
@@ -23,7 +21,7 @@ export default {
   name: 'Login',
   data() {
     return {
-      employeeIds: [],
+      employeeData: [],
       inputID: '',
     }
   },
@@ -32,13 +30,16 @@ export default {
       axios
         .get('http://localhost:3000/employees')
         .then(res => {
-          this.employeeIds = res.data.map(employee => employee.employeeid)
+          this.employeeData = res.data
         })
         .catch(error => console.log(error))
     },
     onEnter() {
-      for (var i = 0; i < this.employeeIds.length; i++) {
-        if (this.inputID == this.employeeIds[i]) {
+      for (var i = 0; i < this.employeeData.length; i++) {
+        if (this.inputID == this.employeeData[i].employeeid) {
+          console.log(this.employeeData[i].employeeid)
+          console.log(this.employeeData[i].role)
+          console.log(this.employeeData[i].name)
         }
       }
     },
