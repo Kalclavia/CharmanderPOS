@@ -7,18 +7,22 @@
     <div v-else>
       <MenuBar @selectItem="selectItem" />
       <MainContent :item="selectedItem" />
-      <Cart v-if="isCartVisible" :items="cartItems" @checkout="handleCheckout" />
+      <Cart
+        v-if="isCartVisible"
+        :items="cartItems"
+        @checkout="handleCheckout"
+      />
       <OrderCompletePopup v-if="isOrderComplete" @close="resetOrder" />
     </div>
   </div>
 </template>
 
 <script>
-import LaunchPage from './components/LaunchPage.vue';
-import MenuBar from './components/MenuBar.vue';
-import MainContent from './components/MainContent.vue';
-import Cart from './components/Cart.vue';
-import OrderComplete from './components/OrderComplete.vue';
+import LaunchPage from './components/LaunchPage.vue'
+import MenuBar from './components/MenuBar.vue'
+import MainContent from './components/MainContent.vue'
+import Cart from './components/Cart.vue'
+import OrderComplete from './components/OrderComplete.vue'
 
 export default {
   name: 'App',
@@ -36,27 +40,25 @@ export default {
       isOrderComplete: false,
       cartItems: [],
       selectedItem: null,
-    };
+    }
   },
   methods: {
     handleStartOrder() {
-      this.isOnLaunchPage = false;
+      this.isOnLaunchPage = false
     },
     selectItem(item) {
-      this.selectedItem = item;
+      this.selectedItem = item
     },
     handleCheckout() {
-      this.isOrderComplete = true;
+      this.isOrderComplete = true
     },
     resetOrder() {
-      this.isOrderComplete = false;
-      this.cartItems = [];
-      this.isOnLaunchPage = true; // Go back to LaunchPage after completing order
-    }
-  }
-};
+      this.isOrderComplete = false
+      this.cartItems = []
+      this.isOnLaunchPage = true // Go back to LaunchPage after completing order
+    },
+  },
+}
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

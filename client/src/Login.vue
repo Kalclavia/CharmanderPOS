@@ -37,9 +37,11 @@ export default {
     onEnter() {
       for (var i = 0; i < this.employeeData.length; i++) {
         if (this.inputID == this.employeeData[i].employeeid) {
-          console.log(this.employeeData[i].employeeid)
-          console.log(this.employeeData[i].role)
-          console.log(this.employeeData[i].name)
+          if (this.employeeData[i].role == 'manager') {
+            console.log('manager')
+          } else {
+            console.log('cashier')
+          }
         }
       }
     },
