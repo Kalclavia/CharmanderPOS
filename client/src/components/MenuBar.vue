@@ -1,6 +1,10 @@
 <template>
     <div class="menu-bar">
+<<<<<<< HEAD
         <h2 class="menu-title">Menu</h2>
+=======
+        <h2 class="menu-title">MENU</h2>
+>>>>>>> 3584424474f76dbe7d50b5c08c49668258dfbf92
         <button @click="$emit('selectItem', 'Appetizers')">APPETIZERS</button>
         <button @click="$emit('selectItem', 'Bowl')">BOWL</button>
         <button @click="$emit('selectItem', 'Plate')">PLATE</button>
