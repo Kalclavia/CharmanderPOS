@@ -49,7 +49,6 @@ export default {
 <style scoped>
 .appetizer {
   padding: 20px;
-  /* Padding around the content */
 }
 
 .grid {

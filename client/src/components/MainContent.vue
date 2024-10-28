@@ -12,11 +12,11 @@
 
 <script>
 import Appetizer from './menu/Appetizers.vue'
-// import Bowl from './menu/Bowl.vue'
-// import Plate from './menu/Plate.vue'
-// import BiggerPlate from './menu/BiggerPlate.vue'
-// import Drinks from './menu/Drinks.vue'
-// import ALaCarte from './menu/ALaCarte.vue';
+import Bowl from './menu/Bowl.vue'
+import Plate from './menu/Plate.vue'
+import BiggerPlate from './menu/BiggerPlate.vue'
+import Drink from './menu/Drinks.vue'
+import ALaCarte from './menu/ALaCarte.vue';
 
 export default {
     name: 'MainContent',
@@ -31,11 +31,11 @@ export default {
     },
     components: {
         Appetizer,
-        // Bowl,
-        // Plate,
-        // BiggerPlate,
-        // Drinks,
-        // ALaCarte,
+        Bowl,
+        Plate,
+        BiggerPlate,
+        Drink,
+        ALaCarte,
     },
 };
 </script>
