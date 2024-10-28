@@ -224,14 +224,14 @@ app.patch("/inventory/updateStockFromTransaction", (req, res) => {
  * @param {string} type The type of menu items to retrieve.
  * @returns {objects[]} Array of menu items with their names.
  */
-app.get('/menu/:type', async (req, res) => {
+app.get("/menu/:type", (req, res) => {
   const type = req.params.type;
   const sql = "SELECT name FROM foods WHERE type = $1";
-
   pool
     .query(sql, [type])
     .then((query_res) => {
       const menuItems = query_res.rows.map((row) => row.name);
+      console.log(menuItems);
       res.json(menuItems);
     })
     .catch((error) => res.status(500).json({ error: error.message }));

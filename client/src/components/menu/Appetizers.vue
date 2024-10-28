@@ -1,41 +1,47 @@
 <template>
   <div class="appetizer">
-      <h2>Appetizers</h2>
-      <div class="grid">
-          <button v-for="appetizer in appetizers" :key="appetizer" @click="selectItem(appetizer)">
-              {{ appetizer }}
-          </button>
-      </div>  
+    <h2>Appetizers</h2>
+    <div class="grid">
+      <button
+        v-for="appetizer in appetizers"
+        :key="appetizer"
+        @click="selectItem(appetizer)"
+      >
+        {{ appetizer }}
+      </button>
+    </div>
   </div>
 </template>
 
 <script>
-import axios from 'axios'; // Make sure to install axios if you haven't already
+import axios from 'axios' // Make sure to install axios if you haven't already
 
 export default {
   name: 'Appetizer',
   data() {
-      return {
-          appetizers: []
-      };
+    return {
+      appetizers: [],
+    }
   },
   methods: {
-      async fetchMenuItems() {
-          try {
-              const appetizerResponse = await axios.get('/menu/Appetizers');
-              this.appetizers = appetizerResponse.data;
-          } catch (error) {
-              console.error('Error fetching menu items:', error);
-          }
-      },
-      selectItem(item) {
-          this.$emit('selectItem', item); // Emit selected item to the parent
+    async fetchMenuItems() {
+      try {
+        const appetizerResponse = await axios.get('/menu/Appetizer')
+        this.appetizers = appetizerResponse.data
+        console.log(this.appetizers)
+      } catch (error) {
+        console.error('Error fetching menu items:', error)
       }
+    },
+    selectItem(item) {
+      console.log(item)
+      this.$emit('selectItem', item) // Emit selected item to the parent
+    },
   },
   mounted() {
-      this.fetchMenuItems(); // Fetch menu items when the component mounts
+    this.fetchMenuItems() // Fetch menu items when the component mounts
   },
-};
+}
 </script>
 
 <style scoped>
@@ -58,7 +64,9 @@ button {
   color: black;
   padding: 10px;
   cursor: pointer;
-  transition: background-color 0.3s, box-shadow 0.3s;
+  transition:
+    background-color 0.3s,
+    box-shadow 0.3s;
 }
 
 button:hover {
