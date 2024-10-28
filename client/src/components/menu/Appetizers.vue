@@ -26,7 +26,9 @@ export default {
   methods: {
     async fetchMenuItems() {
       try {
-        const appetizerResponse = await axios.get('/menu/Appetizer')
+        const appetizerResponse = await axios.get(
+          'http://localhost:3000/menu/Appetizer',
+        )
         this.appetizers = appetizerResponse.data
         console.log(this.appetizers)
       } catch (error) {
