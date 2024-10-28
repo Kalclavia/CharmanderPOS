@@ -1,12 +1,12 @@
 <template>
     <div class="bowl">
-        <h2>Sides</h2>
+        <h2>Pick 1 Side</h2>
         <div class="grid">
             <button v-for="side in sides" :key="side" @click="selectItem(side)">
                 {{ side }}
             </button>
         </div>
-        <h2>Entrees</h2>
+        <h2>Pick 1 Entree</h2>
         <div class="grid">
             <button v-for="entree in entrees" :key="entree" @click="selectItem(entree)">
                 {{ entree }}
