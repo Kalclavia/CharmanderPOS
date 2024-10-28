@@ -1,7 +1,7 @@
 <template>
     <div class="launch-page">
         <img src="@/assets/panda-logo.png" alt="Panda Express Logo" class="logo" />
-        <button @click="$emit('startOrder')" class="tap-to-order">Tap to Order</button>
+        <button @click="$emit('startOrder')" class="tap-to-order">TAP TO ORDER</button>
     </div>
 </template>
 
@@ -17,18 +17,21 @@ export default {
 
 <style scoped>
 .launch-page {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 100vh;
-    width: 100vw;
     background-color: #9b150b;
     color: white;
 }
 
 .logo {
-    width: 50vw;
+    width: 80vw;
     height: auto;
     max-width: 300px;
     margin-bottom: 20px;
@@ -36,13 +39,20 @@ export default {
 
 .tap-to-order {
     margin-top: 20px;
-    padding: 12px 24px;
+    padding: 15px;
+    width: 320px;
+    height: 60px;
     font-size: 18px;
     background-color: #e7e4d7;
     color: #080808;
-    border: 4px #080808;
-    border-radius: 20px;
+    border: 2px solid #080808;
+    border-radius: 30px;
     box-shadow: 0 4px 8px #080808;
+    transition: background-color 0.3s, box-shadow 0.3s;
     cursor: pointer;
+}
+
+button:hover {
+    background-color: #d2ceb8; /* Darker background on hover */
 }
 </style>

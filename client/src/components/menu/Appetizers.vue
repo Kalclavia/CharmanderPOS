@@ -54,15 +54,15 @@ export default {
 button {
   border: 2px solid black;
   border-radius: 10px;
-  background-color: #007bff;
-  color: white;
+  background-color: #e7e4d7;
+  color: black;
   padding: 10px;
   cursor: pointer;
   transition: background-color 0.3s, box-shadow 0.3s;
 }
 
 button:hover {
-  background-color: #0056b3;
+  background-color: #d2ceb8;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 </style>

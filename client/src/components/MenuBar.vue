@@ -1,6 +1,6 @@
 <template>
     <div class="menu-bar">
-        <h2 class="menu-title">MENU</h2>
+        <h2 class="menu-title">Menu</h2>
         <button @click="$emit('selectItem', 'Appetizers')">APPETIZERS</button>
         <button @click="$emit('selectItem', 'Bowl')">BOWL</button>
         <button @click="$emit('selectItem', 'Plate')">PLATE</button>

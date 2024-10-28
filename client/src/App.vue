@@ -58,5 +58,9 @@ export default {
 </script>
 
 <style scoped>
-
+.app-container {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
 </style>
