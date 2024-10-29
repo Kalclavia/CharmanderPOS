@@ -50,5 +50,6 @@ export default {
     background-color: #9b150b;
     color: #e7e4d7;
     padding: 40px;
+    overflow-y: auto;
 }
 </style>
