@@ -239,3 +239,5 @@ app.get("/menu/:type", (req, res) => {
 var port = 3000;
 console.log(`Server is listening on localhost:${port}`);
 app.listen(3000);
+
+module.exports = app;
