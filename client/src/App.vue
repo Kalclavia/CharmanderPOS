@@ -1,54 +1,36 @@
 <template>
   <div id="app">
-    <MenuBar @selectItem="selectItem" />
-      <MainContent :item="selectedItem" />
+    <NavBar/>
   </div>
 </template>
 
 <script>
-import LaunchPage from './components/ManagerHome.vue';
-import MenuBar from './components/NavBar.vue';
-import MainContent from './components/ManagerContent.vue';
-import Cart from './components/Cart.vue';
-import OrderComplete from './components/OrderComplete.vue';
+import Home from './components/Home.vue';
+import Inventory from './components/Inventory.vue';
+import NavBar from './components/NavBar.vue';
+import Employees from './components/Employees.vue';
+import Reports from './components/Reports.vue';
 
 export default {
   name: 'App',
   components: {
-    LaunchPage,
-    MenuBar,
-    MainContent,
-    Cart,
-    OrderComplete,
+    Home,
+    Inventory,
+    Reports,
+    Employees,
+    NavBar,
   },
   data() {
     return {
-      isOnLaunchPage: true,
-      isCartVisible: false,
-      isOrderComplete: false,
-      cartItems: [],
-      selectedItem: null,
+
     };
   },
   methods: {
-    handleStartOrder() {
-      this.isOnLaunchPage = false;
-    },
-    selectItem(item) {
-      this.selectedItem = item;
-    },
-    handleCheckout() {
-      this.isOrderComplete = true;
-    },
-    resetOrder() {
-      this.isOrderComplete = false;
-      this.cartItems = [];
-      this.isOnLaunchPage = true; // Go back to LaunchPage after completing order
-    }
+
   }
 };
 </script>
 
 <style scoped>
-
 </style>
+
