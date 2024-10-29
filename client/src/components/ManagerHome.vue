@@ -1,7 +1,7 @@
 <template>
     <div class="launch-page">
         <img src="@/assets/panda-logo.png" alt="Panda Express Logo" class="logo" />
-        <button @click="$emit('startOrder')" class="tap-to-order">TAP TO ORDER</button>
+        <Text >MANAGER HOMEPAGE</Text>
     </div>
 </template>
 
