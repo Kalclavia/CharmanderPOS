@@ -64,9 +64,11 @@ export default {
         getSideName(side) {
             if (typeof side === 'string') {
                 return side
-            } else if (side && side.name) {
+            } 
+            else if (side && side.name) {
                 return side.name
             }
+            
             return 'Unknown Side'
         },
         getSideImage(side) {
@@ -78,12 +80,14 @@ export default {
             return imagePath
         },
         getEntreeName(entree) {
-        if (typeof entree === 'string') {
-            return entree
-        } else if (entree && entree.name) {
-            return entree.name
-        }
-        return 'Unknown Entree'
+            if (typeof entree === 'string') {
+                return entree
+            } 
+            else if (entree && entree.name) {
+                return entree.name
+            }
+            
+            return 'Unknown Entree'
         },
         getEntreeImage(entree) {
             let name = this.getEntreeName(entree)
@@ -92,11 +96,11 @@ export default {
             const imagePath = `/src/assets/${fileName}`
             console.log('Image path:', imagePath)
             return imagePath
-            },
+        },
         handleImageError(event) {
             console.error('Image failed to load:', event.target.src)
             event.target.style.display = 'none'
-            }
+        }
     
     },
     mounted() {
