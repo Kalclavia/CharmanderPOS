@@ -85,7 +85,7 @@ export default {
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   gap: 10px;
   margin-bottom: 20px;
 }
@@ -115,9 +115,9 @@ button:hover {
 }
 
 .appetizer-image {
-  width: 80px;
-  height: 80px;
-  object-fit: cover;
+  width: 150px;
+  height: 150px;
+  object-fit: contain;
   margin-bottom: 5px;
 }
 </style>
