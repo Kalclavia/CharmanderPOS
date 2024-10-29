@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <MenuBar @selectItem="selectItem" />
-      <MainContent :item="selectedItem" />
+    <MainContent :item="selectedItem" />
   </div>
 </template>
 
@@ -9,6 +9,7 @@
 import LaunchPage from './components/ManagerHome.vue';
 import MenuBar from './components/NavBar.vue';
 import MainContent from './components/ManagerContent.vue';
+import { collapsed } from './components/state.js';
 
 export default {
   name: 'App',
@@ -20,27 +21,19 @@ export default {
   data() {
     return {
       isOnLaunchPage: true,
-      isCartVisible: false,
-      isOrderComplete: false,
-      cartItems: [],
-      selectedItem: null,
+      selectedItem: "Home", 
     };
   },
+  created() {
+    // Set initial states
+    this.isOnLaunchPage = true;
+    collapsed.value = true; 
+  },
   methods: {
-    handleStartOrder() {
-      this.isOnLaunchPage = false;
-    },
     selectItem(item) {
       this.selectedItem = item;
+      this.isOnLaunchPage = false;
     },
-    handleCheckout() {
-      this.isOrderComplete = true;
-    },
-    resetOrder() {
-      this.isOrderComplete = false;
-      this.cartItems = [];
-      this.isOnLaunchPage = true; // Go back to LaunchPage after completing order
-    }
   }
 };
 </script>
