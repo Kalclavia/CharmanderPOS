@@ -1,3 +1,7 @@
+import './assets/main.css'
+
 import { createApp } from 'vue'
-import Login from './Login.vue'
-createApp(Login).mount('#App')
+import App from './App.vue'
+import router from './router'
+
+createApp(App).use(router).mount('#app')
