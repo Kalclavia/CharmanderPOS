@@ -61,15 +61,8 @@ export default {
     },
     deleteItem(ingredientid) {
       if (confirm('Are you sure you want to delete this item?')) {
-        const params = new URLSearchParams()
-        params.append('ingredientid', ingredientid)
-        const config = {
-         headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-          },
-        }
         axios
-        .post('http://localhost:3000/inventory/delete', params, config)
+          .delete('http://localhost:3000/inventory/delete/' + ingredientid)
           .then(() => this.fetchInventory())
           .catch(error => console.error('Error deleting item:', error))
       }

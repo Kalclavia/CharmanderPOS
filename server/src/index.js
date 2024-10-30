@@ -97,23 +97,14 @@ app.post("/inventory/add", (req, res) => {
  * @method DELETE /inventory/delete
  * @returns {object} The item to be deleted
  */
-app.delete("/inventory/delete", (req, res) => {
-  const { ingredientid } = req.body;
-
+app.delete("/inventory/delete/:ingredientid", (req, res) => {
+  const ingredientid = req.params.ingredientid;
+  console.log(ingredientid);
   if (!ingredientid) {
     return res.status(400).json({ error: "ingredientid is required" });
   }
-
   pool
-    .query("DELETE FROM ingredients WHERE ingredientid = $1 RETURNING *;", [
-      ingredientid,
-    ])
-    .then((query_res) => {
-      if (query_res.rows.length === 0) {
-        return res.status(404).json({ error: "Ingredient not found" });
-      }
-      res.json(query_res.rows[0]);
-    })
+    .query("DELETE FROM ingredients WHERE ingredientid = $1;", [ingredientid])
     .catch((error) => res.status(500).json({ error: error.message }));
 });
 
