@@ -36,9 +36,9 @@ export default {
       for (var i = 0; i < this.employeeData.length; i++) {
         if (this.inputID == this.employeeData[i].employeeid) {
           if (this.employeeData[i].role == 'manager') {
-            console.log('manager')
+            this.$router.push('/manager')
           } else {
-            console.log('cashier')
+            this.$router.push('/cashier')
           }
         }
       }
