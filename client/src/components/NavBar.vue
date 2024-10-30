@@ -9,7 +9,7 @@
         <span v-else>
             <h2 class="title">OPTIONS</h2>
             <button style="width: 200px;" @click="$emit('selectItem', 'Home')">Home Page</button>
-            <button style="width: 200px;" @click="$emit('selectItem', 'Inventory')">Menu Items</button>
+            <button style="width: 200px;" @click="$emit('selectItem', 'Inventory')">Inventory Items</button>
             <button style="width: 200px;" @click="$emit('selectItem', 'Menu Prices')">Menu Prices</button>
             <button style="width: 200px;" @click="$emit('selectItem', 'Manage Employees')">Manage Employees</button>
             <button style="width: 200px;" @click="$emit('selectItem', 'View Reports')">Reports</button>

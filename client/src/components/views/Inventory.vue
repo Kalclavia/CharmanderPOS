@@ -61,23 +61,20 @@ export default {
     },
     deleteItem(ingredientid) {
       if (confirm('Are you sure you want to delete this item?')) {
+        const params = new URLSearchParams()
+        params.append('ingredientid', ingredientid)
+        const config = {
+         headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+        }
         axios
-          .delete('http://localhost:3000/inventory/delete', {
-            data: { ingredientid },
-          })
+        .post('http://localhost:3000/inventory/delete', params, config)
           .then(() => this.fetchInventory())
           .catch(error => console.error('Error deleting item:', error))
       }
     },
     addNewItem() {
-      // const newItem = {
-      //   ingredientid: prompt('Enter ID:'),
-      //   name: prompt('Enter name:'),
-      //   stock: prompt('Enter stock:'),
-      //   maxstock: prompt('Enter max stock:'),
-      //   units: prompt('Enter units:'),
-      // }
-
       const params = new URLSearchParams()
       params.append('ingredientid', prompt('Enter ID:'))
       params.append('name', prompt('Enter name:'))
