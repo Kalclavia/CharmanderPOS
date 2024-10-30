@@ -40,6 +40,12 @@ app.use((req, res, next) => {
 
 app.get("/", (req, res) => {
   res.send({
+    message: "CharmanderPOS Backend API is Functioning.",
+  });
+});
+
+app.get("/python", (req, res) => {
+  res.send({
     message: "Monty python and the holy grail!",
   });
 });
