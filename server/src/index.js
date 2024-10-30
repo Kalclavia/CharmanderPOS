@@ -40,7 +40,13 @@ app.use((req, res, next) => {
 
 app.get("/", (req, res) => {
   res.send({
-    message: "Hello world!",
+    message: "CharmanderPOS Backend API is Functioning.",
+  });
+});
+
+app.get("/python", (req, res) => {
+  res.send({
+    message: "Monty python and the holy grail!",
   });
 });
 
@@ -166,14 +172,22 @@ app.get("/inventory/itemStock", (req, res) => {
     .then((query_res) => res.json(query_res.rows[0]))
     .catch((error) => res.status(500).json({ error: error.message }));
 });
-
+/**
+ * Get the 10 lowest stocked items
+ * @method GET /inventory/itemStock
+ * @returns {object} The 10 items in JSON format
+ */
 app.get("/inventory/lowestStockedItems", (req, res) => {
   pool
     .query("SELECT * FROM ingredients i ORDER BY i.stock ASC LIMIT 10")
     .then((query_res) => res.json(query_res.rows))
     .catch((error) => res.status(500).json({ error: error.message }));
 });
-
+/**
+ * Get the ingredient ID given a name
+ * @method GET /inventory/getIngredientID
+ * @returns {object} The ingredient ID
+ */
 app.get("/inventory/getIngredientID", (req, res) => {
   const { name } = req.body;
   pool
@@ -181,7 +195,11 @@ app.get("/inventory/getIngredientID", (req, res) => {
     .then((query_res) => res.json(query_res.rows[0]))
     .catch((error) => res.status(500).json({ error: error.message }));
 });
-
+/**
+ * Get the ingredient name given a ID
+ * @method GET /inventory/getIngredientName
+ * @returns {object} The ingredients name
+ */
 app.get("/inventory/getIngredientName", (req, res) => {
   const { ingredientid } = req.body;
   pool
@@ -191,7 +209,11 @@ app.get("/inventory/getIngredientName", (req, res) => {
     .then((query_res) => res.json(query_res.rows[0]))
     .catch((error) => res.status(500).json({ error: error.message }));
 });
-
+/**
+ * Update the inventory from a transaction
+ * @method PATCH /inventory/updateStockFromTransaction
+ * @returns {object} The ingredients that were updated
+ */
 app.patch("/inventory/updateStockFromTransaction", (req, res) => {
   const { usedIngredients, ingredientid } = req.body;
   pool
@@ -202,6 +224,26 @@ app.patch("/inventory/updateStockFromTransaction", (req, res) => {
     .then((query_res) => res.json(query_res.rows[0]))
     .catch((error) => res.status(500).json({ error: error.message }));
 });
+/**
+ * Get specific menu items by type.
+ * @method GET /menu/:type
+ * @param {string} type The type of menu items to retrieve.
+ * @returns {objects[]} Array of menu items with their names.
+ */
+app.get("/menu/:type", (req, res) => {
+  const type = req.params.type;
+  const sql = "SELECT name FROM foods WHERE type = $1";
+  pool
+    .query(sql, [type])
+    .then((query_res) => {
+      const menuItems = query_res.rows.map((row) => row.name);
+      console.log(menuItems);
+      res.json(menuItems);
+    })
+    .catch((error) => res.status(500).json({ error: error.message }));
+});
 var port = 3000;
 console.log(`Server is listening on localhost:${port}`);
 app.listen(3000);
+
+module.exports = app;
