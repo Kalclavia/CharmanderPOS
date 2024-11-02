@@ -45,19 +45,23 @@ export default {
       }
     },
     updateStock(item) {
-      const newStock = prompt(
-        `Enter new stock level for ${item.name}:`,
-        item.stock,
+      const params = new URLSearchParams()
+      params.append('ingredientid', item.ingredientid)
+      params.append(
+        'stock',
+        prompt(`Enter new stock level for ${item.name}:`, item.stock),
       )
-      if (newStock !== null) {
-        axios
-          .patch('http://localhost:3000/inventory/updateStock', {
-            ingredientid: item.ingredientid,
-            stock: newStock,
-          })
-          .then(() => this.fetchInventory())
-          .catch(error => console.error('Error updating stock:', error))
+
+      const config = {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
       }
+
+      axios
+        .patch('http://localhost:3000/inventory/updateStock', params, config)
+        .then(() => this.fetchInventory())
+        .catch(error => console.error('Error updating stock:', error))
     },
     deleteItem(ingredientid) {
       if (confirm('Are you sure you want to delete this item?')) {

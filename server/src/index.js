@@ -51,13 +51,58 @@ app.get("/python", (req, res) => {
 });
 
 /**
- * Employees endpoint.
+ * Get all the employees endpoint
  * @method GET /employees
- * @returns {object} List of employees.
+ * @returns {object} List of employees
  */
 app.get("/employees", (req, res) => {
   pool
     .query("SELECT * FROM Employees;")
+    .then((query_res) => res.json(query_res.rows))
+    .catch((error) => res.status(500).json({ error: error.message }));
+});
+/**
+ * Add a new employee endpoint
+ * @method POST /employees/add
+ * @returns {object} The employee to be added
+ */
+app.post("/employees/add", (req, res) => {
+  const { employeeid, name, role } = req.body;
+  pool
+    .query(
+      "INSERT INTO employees (employeeid, name, role, isfired) VALUES ($1, $2, $3, false) RETURNING *;",
+      [employeeid, name, role]
+    )
+    .then((query_res) => res.json(query_res.rows))
+    .catch((error) => res.status(500).json({ error: error.message }));
+});
+/**
+ * Update the name of an existing employee endpoint
+ * @method PATCH /employees/updateName
+ * @returns {object} The updated employee
+ */
+app.patch("/employees/updateName", (req, res) => {
+  const { employeeid, name } = req.body;
+  pool
+    .query(
+      "UPDATE employees SET name = $1 WHERE EmployeeID = $2 RETURNING *;",
+      [name, employeeid]
+    )
+    .then((query_res) => res.json(query_res.rows))
+    .catch((error) => res.status(500).json({ error: error.message }));
+});
+/**
+ * Update the role of an existing employee ednpoint
+ * @method PATCH /employees/updateRole
+ * @returns {object} The updated employee
+ */
+app.patch("/employees/updateRole", (req, res) => {
+  const { employeeid, role } = req.body;
+  pool
+    .query(
+      "UPDATE employees SET role = $1 WHERE EmployeeID = $2 RETURNING *;",
+      [role, employeeid]
+    )
     .then((query_res) => res.json(query_res.rows))
     .catch((error) => res.status(500).json({ error: error.message }));
 });
@@ -115,10 +160,27 @@ app.delete("/inventory/delete/:ingredientid", (req, res) => {
  */
 app.patch("/inventory/updateStock", (req, res) => {
   const { ingredientid, stock } = req.body;
+  console.log(ingredientid);
+  console.log(stock);
   pool
     .query(
       "UPDATE ingredients SET stock = $1 WHERE ingredientid = $2 RETURNING *;",
       [stock, ingredientid]
+    )
+    .then((query_res) => res.json(query_res.rows[0]))
+    .catch((error) => res.status(500).json({ error: error.message }));
+});
+/**
+ * Update the max stock of an inventory item endpoint
+ * @method PATCH /inventory/updateMaxStock
+ * @returns {object} The item to be updated
+ */
+app.patch("/inventory/updateMaxStock", (req, res) => {
+  const { ingredientid, maxstock } = req.body;
+  pool
+    .query(
+      "UPDATE ingredients SET maxstock = $1 WHERE ingredientid = $2 RETURNING *;",
+      [maxstock, ingredientid]
     )
     .then((query_res) => res.json(query_res.rows[0]))
     .catch((error) => res.status(500).json({ error: error.message }));
