@@ -60,18 +60,23 @@ export default {
   width: 100%;
   margin-top: 20px;
   padding: 20px;
+  background-color: #e7e4d7;
+  border: 2px solid black;
+  /* border-radius: 10px; */
+  overflow: hidden;
+  /* border-spacing: 0px; */
 }
 
 td {
-  border: 2px solid #dddddd;
-  padding: 4px;
+  border: 2px solid black;
   text-align: center;
   font-size: 1.7vh;
+  color: #000000;
 }
 th {
-  border: 2px solid #dddddd;
-  padding: 4px;
+  border: 2px solid black;
   text-align: center;
   font-size: 2vh;
+  color: #000000;
 }
 </style>
