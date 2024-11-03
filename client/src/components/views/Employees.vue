@@ -7,6 +7,7 @@
           <th>ID</th>
           <th>Name</th>
           <th>Role</th>
+          <th>Fired</th>
         </tr>
       </thead>
       <tbody>
@@ -17,8 +18,21 @@
               {{ employee.employeeid }}
             </button>
           </td>
-          <td>{{ employee.name }}</td>
-          <td>{{ employee.role }}</td>
+          <td>
+            <button class="td-button" @click="updateEmployee(employee)">
+              {{ employee.name }}
+            </button>
+          </td>
+          <td>
+            <button class="td-button" @click="updateEmployee(employee)">
+              {{ employee.role }}
+            </button>
+          </td>
+          <td>
+            <button class="td-button" @click="updateEmployee(employee)">
+              {{ employee.isfired }}
+            </button>
+          </td>
         </tr>
       </tbody>
     </table>
@@ -78,6 +92,8 @@ export default {
       params.append('employeeid', form.employeeid)
       params.append('name', form.name)
       params.append('role', form.role)
+      params.append('isfired', form.isfired)
+      console.log(params.get('isfired'))
       const config = {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -89,12 +105,16 @@ export default {
       ) {
         axios
           .patch('http://localhost:3000/employees/updateName', params, config)
-          .then(res => this.fetchEmployees())
           .catch(error => console.error('Error updating employee name:', error))
         axios
           .patch('http://localhost:3000/employees/updateRole', params, config)
-          .then(res => this.fetchEmployees(), this.toggleEmployeeForm())
           .catch(error => console.error('Error updating employee role:', error))
+        axios
+          .patch('http://localhost:3000/employees/updateFired', params, config)
+          .then(res => this.fetchEmployees(), this.toggleEmployeeForm())
+          .catch(error =>
+            console.error('Error updating employee fired status:', error),
+          )
       }
     },
   },
@@ -105,6 +125,8 @@ export default {
 </script>
 <style scoped>
 .modal-overlay {
+  border: 1.5px solid black;
+
   position: fixed;
   top: 0;
   left: 0;
@@ -118,12 +140,14 @@ export default {
 }
 
 .modal {
+  border: 1.5px solid black;
+
   background: #e7e4d7;
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
   z-index: 1001;
-  height: 30%;
+  height: 40vh;
   color: black;
 }
 .modal-enter-active,

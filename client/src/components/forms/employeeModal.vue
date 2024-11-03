@@ -3,15 +3,22 @@
     <h2>{{ employee ? 'Edit Employee' : 'Add Employee' }}</h2>
     <form @submit.prevent="submitForm" class="form">
       <div class="form-items">
-        <div class="name">
+        <div class="field">
           <label for="name">Name:</label>
           <input type="text" v-model="form.name" />
         </div>
-        <div class="role">
+        <div class="field">
           <label for="role">Role:</label>
           <select v-model="form.role">
             <option value="cashier">cashier</option>
             <option value="manager">manager</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="isfired">Fired:</label>
+          <select v-model="form.isfired">
+            <option value="true">true</option>
+            <option value="false">false</option>
           </select>
         </div>
       </div>
@@ -42,38 +49,24 @@ export default {
         name: this.employee.name,
         role: this.employee.role,
         employeeid: this.employee.employeeid,
+        isfired: this.employee.isfired,
       },
     }
   },
   methods: {
     submitForm() {
-      console.log('Form data:', this.form)
       this.$emit('submit', this.form)
-    },
-  },
-  watch: {
-    employee: {
-      immediate: true,
-      handler(newVal) {
-        if (newVal) {
-          this.form.name = newVal.name
-          this.form.role = newVal.role
-        }
-      },
     },
   },
 }
 </script>
 
 <style scoped>
-.name {
+.field {
   width: 100%;
   margin-top: 20px;
 }
-.role {
-  width: 100%;
-  margin-top: 20px;
-}
+
 .form-items {
   display: flex;
   justify-content: space-around;

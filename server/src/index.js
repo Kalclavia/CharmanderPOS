@@ -106,6 +106,21 @@ app.patch("/employees/updateRole", (req, res) => {
     .then((query_res) => res.json(query_res.rows))
     .catch((error) => res.status(500).json({ error: error.message }));
 });
+/**
+ * Update if the employee is fired of an existing employee ednpoint
+ * @method PATCH /employees/updateFired
+ * @returns {object} The updated employee
+ */
+app.patch("/employees/updateFired", (req, res) => {
+  const { employeeid, isfired } = req.body;
+  pool
+    .query(
+      "UPDATE employees SET isfired = $1 WHERE EmployeeID = $2 RETURNING *;",
+      [isfired, employeeid]
+    )
+    .then((query_res) => res.json(query_res.rows))
+    .catch((error) => res.status(500).json({ error: error.message }));
+});
 
 // Inventory backend
 
