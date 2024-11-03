@@ -7,11 +7,44 @@
           <th>ID</th>
           <th>Name</th>
           <th>Role</th>
-          <th>Fired</th>
+          <!-- <th>Fired</th> -->
         </tr>
       </thead>
       <tbody>
         <tr v-for="employee in employees" :key="employee.id">
+          <td v-if="employee.isfired == false">
+            <button class="td-button" @click="updateEmployee(employee)">
+              {{ employee.employeeid }}
+            </button>
+          </td>
+          <td v-if="employee.isfired == false">
+            <!-- <button class="td-button" @click="updateEmployee(employee)"> -->
+            {{ employee.name }}
+            <!-- </button> -->
+          </td>
+          <td v-if="employee.isfired == false">
+            <!-- <button class="td-button" @click="updateEmployee(employee)"> -->
+            {{ employee.role }}
+            <!-- </button> -->
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="flex-button">
+      <button class="add-employee">Add Employee</button>
+    </div>
+    <h2 class="text">Fired Employees</h2>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Role</th>
+          <!-- <th>Fired</th> -->
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="employee in firedEmployees" :key="employee.id">
           <td>
             <button class="td-button" @click="updateEmployee(employee)">
               {{ employee.employeeid }}
@@ -25,11 +58,6 @@
           <td>
             <!-- <button class="td-button" @click="updateEmployee(employee)"> -->
             {{ employee.role }}
-            <!-- </button> -->
-          </td>
-          <td>
-            <!-- <button class="td-button" @click="updateEmployee(employee)"> -->
-            {{ employee.isfired }}
             <!-- </button> -->
           </td>
         </tr>
@@ -64,6 +92,7 @@ export default {
   data() {
     return {
       employees: [],
+      firedEmployees: [],
       loading: true,
       showEmployeeForm: false,
       selectedEmployee: null,
@@ -73,7 +102,11 @@ export default {
     fetchEmployees() {
       axios
         .get('http://localhost:3000/employees')
-        .then(res => ((this.employees = res.data), (this.loading = false)))
+        .then(res => (this.employees = res.data))
+        .catch(error => console.error('Error adding new item:', error))
+      axios
+        .get('http://localhost:3000/employees/getFired')
+        .then(res => ((this.firedEmployees = res.data), (this.loading = false)))
         .catch(error => console.error('Error adding new item:', error))
     },
     updateEmployee(employee) {
@@ -123,9 +156,37 @@ export default {
 }
 </script>
 <style scoped>
+.flex-button {
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-start;
+  margin-top: 20px;
+}
+.add-employee {
+  margin-top: 20px;
+  padding: 10px 20px;
+  font-weight: bold;
+  border: 1px solid black;
+  border-radius: 5px;
+  background-color: #f0f0f0;
+  color: black;
+  padding: 10px;
+  cursor: pointer;
+  margin: 5px 0;
+  transition:
+    background-color 0.3s,
+    box-shadow 0.3s;
+}
+.add-employee:hover {
+  background-color: #d2ceb8;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+.text {
+  margin-top: 20px;
+}
+
 .modal-overlay {
   border: 1.5px solid black;
-
   position: fixed;
   top: 0;
   left: 0;

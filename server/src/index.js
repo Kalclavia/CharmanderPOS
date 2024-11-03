@@ -122,6 +122,13 @@ app.patch("/employees/updateFired", (req, res) => {
     .catch((error) => res.status(500).json({ error: error.message }));
 });
 
+app.get("/employees/getFired", (req, res) => {
+  pool
+    .query("SELECT * FROM employees WHERE isfired = true;")
+    .then((query_res) => res.json(query_res.rows))
+    .catch((error) => res.status(500).json({ error: error.message }));
+});
+
 // Inventory backend
 
 /**
