@@ -7,6 +7,10 @@
           <label for="name">Name:</label>
           <input type="text" v-model="form.name" />
         </div>
+        <div class="field" v-if="employee == null">
+          <label for="name">ID:</label>
+          <input type="text" v-model="form.employeeid" />
+        </div>
         <div class="field">
           <label for="role">Role:</label>
           <select v-model="form.role">
@@ -43,19 +47,27 @@ export default {
       default: null,
     },
   },
+  computed: {
+    newemployee() {
+      if (this.employee == null) {
+        return true
+      }
+      return false
+    },
+  },
   data() {
     return {
       form: {
-        name: this.employee.name,
-        role: this.employee.role,
-        employeeid: this.employee.employeeid,
-        isfired: this.employee.isfired,
+        name: this.employee ? this.employee.name : '',
+        role: this.employee ? this.employee.role : '',
+        employeeid: this.employee ? this.employee.employeeid : '',
+        isfired: this.employee ? this.employee.isfired : 'false',
       },
     }
   },
   methods: {
     submitForm() {
-      this.$emit('submit', this.form)
+      this.$emit('submit', { ...this.form, newemployee: this.newemployee })
     },
   },
 }

@@ -31,7 +31,7 @@
       </tbody>
     </table>
     <div class="flex-button">
-      <button class="add-employee">Add Employee</button>
+      <button class="add-employee" @click="addEmployee()">Add Employee</button>
     </div>
     <h2 class="text">Fired Employees</h2>
     <table class="table">
@@ -114,18 +114,44 @@ export default {
       this.showEmployeeForm = !this.showEmployeeForm
     },
     addEmployee() {
-      console.log('helo')
+      this.selectedEmployee = null
+      this.showEmployeeForm = !this.showEmployeeForm
     },
     toggleEmployeeForm() {
       this.showEmployeeForm = !this.showEmployeeForm
     },
+    // addNewEmployee(form) {
+    //   console.log('hello')
+    //   const params = new URLSearchParams()
+    //   params.append('name', form.name)
+    //   params.append('role', form.role)
+    //   params.append('isfired', form.isfired)
+    //   const config = {
+    //     headers: {
+    //       'Content-Type': 'application/x-www-form-urlencoded',
+    //     },
+    //   }
+    //   if (
+    //     params.get('name') != 'undefined' &&
+    //     params.get('employeeid') != 'undefined'
+    //   ) {
+    //     axios
+    //       .post('http://localhost:3000/employees/add', params, config)
+    //       .then(res => {
+    //         this.fetchEmployees()
+    //         this.toggleEmployeeForm()
+    //       })
+    //       .catch(error => {
+    //         console.error('Error adding new employee:', error)
+    //       })
+    //   }
+    // },
     handleUpdateEmployee(form) {
       const params = new URLSearchParams()
       params.append('employeeid', form.employeeid)
       params.append('name', form.name)
       params.append('role', form.role)
       params.append('isfired', form.isfired)
-      console.log(params.get('isfired'))
       const config = {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -135,18 +161,34 @@ export default {
         params.get('name') != 'undefined' &&
         params.get('employeeid') != 'undefined'
       ) {
-        axios
-          .patch('http://localhost:3000/employees/updateName', params, config)
-          .catch(error => console.error('Error updating employee name:', error))
-        axios
-          .patch('http://localhost:3000/employees/updateRole', params, config)
-          .catch(error => console.error('Error updating employee role:', error))
-        axios
-          .patch('http://localhost:3000/employees/updateFired', params, config)
-          .then(res => this.fetchEmployees(), this.toggleEmployeeForm())
-          .catch(error =>
-            console.error('Error updating employee fired status:', error),
-          )
+        console.log(form.newemployee)
+        if (form.newemployee == true) {
+          axios
+            .post('http://localhost:3000/employees/add', params, config)
+            .then(res => this.fetchEmployees(), this.toggleEmployeeForm())
+            .catch(error => console.error('Error adding employee', error))
+        } else {
+          axios
+            .patch('http://localhost:3000/employees/updateName', params, config)
+            .catch(error =>
+              console.error('Error updating employee name:', error),
+            )
+          axios
+            .patch('http://localhost:3000/employees/updateRole', params, config)
+            .catch(error =>
+              console.error('Error updating employee role:', error),
+            )
+          axios
+            .patch(
+              'http://localhost:3000/employees/updateFired',
+              params,
+              config,
+            )
+            .then(res => this.fetchEmployees(), this.toggleEmployeeForm())
+            .catch(error =>
+              console.error('Error updating employee fired status:', error),
+            )
+        }
       }
     },
   },
