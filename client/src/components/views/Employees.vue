@@ -1,10 +1,7 @@
 <template>
   <div class="employees">
-    <!-- <div class="grid">
-      <div v-if="loading">Loading...</div>
-      <div v-for="employee in employees">{{ employee }}</div>
-    </div> -->
-    <table class="table">
+    <div class="loading" v-if="loading">Loading...</div>
+    <table v-else class="table">
       <thead>
         <tr>
           <th>ID</th>
@@ -57,6 +54,7 @@ export default {
 .table {
   font-family: arial, sans-serif;
   border-collapse: collapse;
+  table-layout: fixed;
   width: 100%;
   margin-top: 20px;
   padding: 20px;
@@ -65,6 +63,7 @@ export default {
   /* border-radius: 10px; */
   overflow: hidden;
   /* border-spacing: 0px; */
+  box-shadow: 0 12px 12px #080808;
 }
 
 td {
@@ -72,11 +71,22 @@ td {
   text-align: center;
   font-size: 1.7vh;
   color: #000000;
+  height: 50px;
 }
 th {
   border: 2px solid black;
   text-align: center;
-  font-size: 2vh;
+  font-size: 2.2vh;
   color: #000000;
+  font-weight: 900;
+  height: 50px;
+}
+
+.loading {
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
 }
 </style>
