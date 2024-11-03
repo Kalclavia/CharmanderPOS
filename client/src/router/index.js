@@ -10,7 +10,17 @@ const routes = [
   { path: '/menu1', name: 'Menu Board 1', component: Menu1 },
   { path: '/menu2', name: 'Menu Board 2', component: Menu2 },
   { path: '/login', name: 'Login', component: LoginPage },
-  { path: '/manager', name: 'manager', component: manager }
+  {
+    path: '/manager',
+    name: 'manager',
+    component: manager,
+    beforeEnter: () => {
+      if (localStorage.getItem('manager') == 'true') {
+        return true
+      }
+      return false
+    },
+  },
 ]
 
 const router = createRouter({

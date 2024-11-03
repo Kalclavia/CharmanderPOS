@@ -1,6 +1,6 @@
 <template>
   <div class="employees">
-    <div class="loading" v-if="loading">Loading...</div>
+    <div v-if="loading" class="loading">Loading...</div>
     <table v-else class="table">
       <thead>
         <tr>
@@ -11,26 +11,49 @@
       </thead>
       <tbody>
         <tr v-for="employee in employees" :key="employee.id">
-          <td>{{ employee.employeeid }}</td>
+          <!-- <td>{{ employee.employeeid }}</td> -->
+          <td>
+            <button class="td-button" @click="updateEmployee(employee)">
+              {{ employee.employeeid }}
+            </button>
+          </td>
           <td>{{ employee.name }}</td>
           <td>{{ employee.role }}</td>
         </tr>
       </tbody>
     </table>
   </div>
+  <transition name="modal">
+    <div
+      v-if="showEmployeeForm"
+      class="modal-overlay"
+      @click="toggleEmployeeForm"
+    >
+      <div class="modal" @click.stop>
+        <EmployeeForm
+          :employee="selectedEmployee"
+          @close="toggleEmployeeForm"
+          @submit="handleUpdateEmployee"
+        />
+      </div>
+    </div>
+  </transition>
 </template>
 
 <script>
 import axios from 'axios'
-import { defineAsyncComponent } from 'vue'
-
+import EmployeeForm from '../forms/employeeModal.vue'
 export default {
   name: 'Employees',
+  components: {
+    EmployeeForm,
+  },
   data() {
-    // for data properties
     return {
       employees: [],
       loading: true,
+      showEmployeeForm: false,
+      selectedEmployee: null,
     }
   },
   methods: {
@@ -40,6 +63,40 @@ export default {
         .then(res => ((this.employees = res.data), (this.loading = false)))
         .catch(error => console.error('Error adding new item:', error))
     },
+    updateEmployee(employee) {
+      this.selectedEmployee = employee
+      this.showEmployeeForm = !this.showEmployeeForm
+    },
+    addEmployee() {
+      console.log('helo')
+    },
+    toggleEmployeeForm() {
+      this.showEmployeeForm = !this.showEmployeeForm
+    },
+    handleUpdateEmployee(form) {
+      const params = new URLSearchParams()
+      params.append('employeeid', form.employeeid)
+      params.append('name', form.name)
+      params.append('role', form.role)
+      const config = {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      }
+      if (
+        params.get('name') != 'undefined' &&
+        params.get('employeeid') != 'undefined'
+      ) {
+        axios
+          .patch('http://localhost:3000/employees/updateName', params, config)
+          .then(res => this.fetchEmployees())
+          .catch(error => console.error('Error updating employee name:', error))
+        axios
+          .patch('http://localhost:3000/employees/updateRole', params, config)
+          .then(res => this.fetchEmployees(), this.toggleEmployeeForm())
+          .catch(error => console.error('Error updating employee role:', error))
+      }
+    },
   },
   mounted() {
     this.fetchEmployees()
@@ -47,39 +104,68 @@ export default {
 }
 </script>
 <style scoped>
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: #e7e4d7;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+  z-index: 1001;
+  height: 30%;
+  color: black;
+}
+.modal-enter-active,
+.modal-leave-active {
+  transition: opacity 0.5s;
+}
+.modal-enter,
+.modal-leave-to {
+  opacity: 0;
+}
 .employee {
   padding: 20px;
 }
 
 .table {
-  font-family: arial, sans-serif;
   border-collapse: collapse;
   table-layout: fixed;
   width: 100%;
   margin-top: 20px;
   padding: 20px;
   background-color: #e7e4d7;
-  border: 2px solid black;
-  /* border-radius: 10px; */
-  overflow: hidden;
-  /* border-spacing: 0px; */
+  border: 1.5px solid black;
+  border-spacing: 0px;
   box-shadow: 0 12px 12px #080808;
 }
 
 td {
-  border: 2px solid black;
+  border: 1.5px solid black;
   text-align: center;
-  font-size: 1.7vh;
+  /* font-size: 1.7vh; */
   color: #000000;
   height: 50px;
+  padding: 0;
 }
 th {
-  border: 2px solid black;
+  border: 1.5px solid black;
   text-align: center;
-  font-size: 2.2vh;
+  /* font-size: 2.2vh; */
   color: #000000;
   font-weight: 900;
   height: 50px;
+  padding: 0;
 }
 
 .loading {
@@ -88,5 +174,22 @@ th {
   justify-content: center;
   align-items: center;
   height: 100vh;
+}
+
+.td-button {
+  border: #000000;
+  background-color: #e7e4d7;
+  color: black;
+  cursor: pointer;
+  transition:
+    background-color 0.3s,
+    box-shadow 0.3s;
+  width: 100%;
+  height: 100%;
+}
+
+.td-button:hover {
+  background-color: #d2ceb8;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
 }
 </style>

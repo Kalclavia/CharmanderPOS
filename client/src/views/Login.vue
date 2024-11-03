@@ -36,8 +36,10 @@ export default {
       for (var i = 0; i < this.employeeData.length; i++) {
         if (this.inputID == this.employeeData[i].employeeid) {
           if (this.employeeData[i].role == 'manager') {
+            localStorage.setItem('manager', 'true')
             this.$router.push('/manager')
           } else {
+            localStorage.setItem('manager', 'false')
             this.$router.push('/cashier')
           }
         }
