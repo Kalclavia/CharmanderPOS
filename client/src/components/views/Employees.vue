@@ -12,26 +12,25 @@
       </thead>
       <tbody>
         <tr v-for="employee in employees" :key="employee.id">
-          <!-- <td>{{ employee.employeeid }}</td> -->
           <td>
             <button class="td-button" @click="updateEmployee(employee)">
               {{ employee.employeeid }}
             </button>
           </td>
           <td>
-            <button class="td-button" @click="updateEmployee(employee)">
-              {{ employee.name }}
-            </button>
+            <!-- <button class="td-button" @click="updateEmployee(employee)"> -->
+            {{ employee.name }}
+            <!-- </button> -->
           </td>
           <td>
-            <button class="td-button" @click="updateEmployee(employee)">
-              {{ employee.role }}
-            </button>
+            <!-- <button class="td-button" @click="updateEmployee(employee)"> -->
+            {{ employee.role }}
+            <!-- </button> -->
           </td>
           <td>
-            <button class="td-button" @click="updateEmployee(employee)">
-              {{ employee.isfired }}
-            </button>
+            <!-- <button class="td-button" @click="updateEmployee(employee)"> -->
+            {{ employee.isfired }}
+            <!-- </button> -->
           </td>
         </tr>
       </tbody>
