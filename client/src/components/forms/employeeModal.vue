@@ -20,10 +20,20 @@
         </div>
         <div class="field">
           <label for="isfired">Fired:</label>
-          <select v-model="form.isfired" class="custom-select">
+          <!-- <select v-model="form.isfired" class="custom-select">
             <option value="true">true</option>
             <option value="false">false</option>
-          </select>
+          </select> -->
+          <div class="radio-group">
+            <label>
+              <input type="radio" value="true" v-model="form.isfired" />
+              Yes
+            </label>
+            <label>
+              <input type="radio" value="false" v-model="form.isfired" />
+              No
+            </label>
+          </div>
         </div>
       </div>
       <div class="flex-button">
@@ -92,6 +102,17 @@ input:hover {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   background-color: #d2ceb8;
 }
+.radio-group {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+}
+
+.radio-group label {
+  display: flex;
+  align-items: center;
+}
+
 .custom-input {
   flex: 1 1 auto;
 }

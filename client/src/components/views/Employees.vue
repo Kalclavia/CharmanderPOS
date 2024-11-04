@@ -18,14 +18,14 @@
             </button>
           </td>
           <td v-if="employee.isfired == false">
-            <!-- <button class="td-button" @click="updateEmployee(employee)"> -->
-            {{ employee.name }}
-            <!-- </button> -->
+            <button class="td-button" @click="updateEmployee(employee)">
+              {{ employee.name }}
+            </button>
           </td>
           <td v-if="employee.isfired == false">
-            <!-- <button class="td-button" @click="updateEmployee(employee)"> -->
-            {{ employee.role }}
-            <!-- </button> -->
+            <button class="td-button" @click="updateEmployee(employee)">
+              {{ employee.role }}
+            </button>
           </td>
         </tr>
       </tbody>
@@ -51,14 +51,14 @@
             </button>
           </td>
           <td>
-            <!-- <button class="td-button" @click="updateEmployee(employee)"> -->
-            {{ employee.name }}
-            <!-- </button> -->
+            <button class="td-button" @click="updateEmployee(employee)">
+              {{ employee.name }}
+            </button>
           </td>
           <td>
-            <!-- <button class="td-button" @click="updateEmployee(employee)"> -->
-            {{ employee.role }}
-            <!-- </button> -->
+            <button class="td-button" @click="updateEmployee(employee)">
+              {{ employee.role }}
+            </button>
           </td>
         </tr>
       </tbody>
