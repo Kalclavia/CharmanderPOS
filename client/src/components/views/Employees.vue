@@ -273,7 +273,7 @@ export default {
   background-color: #e7e4d7;
   border: 1.5px solid black;
   border-spacing: 0px;
-  box-shadow: 0 12px 12px #080808;
+  box-shadow: 0 8px 8px #080808;
 }
 
 td {
@@ -307,15 +307,12 @@ th {
   background-color: #e7e4d7;
   color: black;
   cursor: pointer;
-  transition:
-    background-color 0.3s,
-    box-shadow 0.3s;
   width: 100%;
   height: 100%;
+  transition: background-color 0.3s;
 }
 
 .td-button:hover {
   background-color: #d2ceb8;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
 }
 </style>

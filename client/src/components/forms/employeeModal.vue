@@ -5,11 +5,11 @@
       <div class="form-items">
         <div class="field">
           <label for="name">Name:</label>
-          <input type="text" v-model="form.name" />
+          <input class="custom-input" type="text" v-model="form.name" />
         </div>
         <div class="field" v-if="employee == null">
           <label for="name">ID:</label>
-          <input type="text" v-model="form.employeeid" />
+          <input class="custom-input" type="text" v-model="form.employeeid" />
         </div>
         <div class="field">
           <label for="role">Role:</label>
@@ -74,10 +74,30 @@ export default {
 </script>
 
 <style scoped>
+input {
+  border: 0;
+  outline: 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #f0f0f0;
+  font-size: 14px;
+  color: #333;
+}
+input:focus {
+  outline: none !important;
+  background-color: #d2ceb8;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+input:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  background-color: #d2ceb8;
+}
+.custom-input {
+  flex: 1 1 auto;
+}
 .field {
   width: 100%;
   display: flex;
-
   margin-top: 20px;
 }
 
@@ -119,7 +139,7 @@ export default {
   border: 1px solid #ccc;
   border-radius: 4px;
   background-color: #f0f0f0;
-  font-size: 16px;
+  font-size: 14px;
   color: #333;
   flex: 1 1 auto;
 }
