@@ -124,7 +124,9 @@ app.patch("/employees/updateFired", (req, res) => {
 
 app.get("/employees/getFired", (req, res) => {
   pool
-    .query("SELECT * FROM employees WHERE isfired = true;")
+    .query(
+      "SELECT * FROM employees WHERE isfired = true ORDER BY employeeid ASC;"
+    )
     .then((query_res) => res.json(query_res.rows))
     .catch((error) => res.status(500).json({ error: error.message }));
 });
