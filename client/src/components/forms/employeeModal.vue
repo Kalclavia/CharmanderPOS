@@ -24,15 +24,14 @@
             <option value="true">true</option>
             <option value="false">false</option>
           </select> -->
-          <div class="radio-group">
+          <div>
             <label>
-              <input type="radio" value="true" v-model="form.isfired" />
-              Yes
+              <input type="checkbox" value="true" v-model="form.isfired" />
             </label>
-            <label>
+            <!-- <label>
               <input type="radio" value="false" v-model="form.isfired" />
               No
-            </label>
+            </label> -->
           </div>
         </div>
       </div>
