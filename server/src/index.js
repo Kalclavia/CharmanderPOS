@@ -67,11 +67,11 @@ app.get("/employees", (req, res) => {
  * @returns {object} The employee to be added
  */
 app.post("/employees/add", (req, res) => {
-  const { employeeid, name, role } = req.body;
+  const { employeeid, name, role, isfired } = req.body;
   pool
     .query(
-      "INSERT INTO employees (employeeid, name, role, isfired) VALUES ($1, $2, $3, false) RETURNING *;",
-      [employeeid, name, role]
+      "INSERT INTO employees (employeeid, name, role, isfired) VALUES ($1, $2, $3, $4) RETURNING *;",
+      [employeeid, name, role, isfired]
     )
     .then((query_res) => res.json(query_res.rows))
     .catch((error) => res.status(500).json({ error: error.message }));
