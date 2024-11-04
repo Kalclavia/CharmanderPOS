@@ -13,14 +13,14 @@
         </div>
         <div class="field">
           <label for="role">Role:</label>
-          <select v-model="form.role">
+          <select v-model="form.role" class="custom-select">
             <option value="cashier">cashier</option>
             <option value="manager">manager</option>
           </select>
         </div>
         <div class="field">
           <label for="isfired">Fired:</label>
-          <select v-model="form.isfired">
+          <select v-model="form.isfired" class="custom-select">
             <option value="true">true</option>
             <option value="false">false</option>
           </select>
@@ -76,6 +76,8 @@ export default {
 <style scoped>
 .field {
   width: 100%;
+  display: flex;
+
   margin-top: 20px;
 }
 
@@ -109,6 +111,23 @@ export default {
   font-weight: bold;
 }
 .button:hover {
+  background-color: #d2ceb8;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.custom-select {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #f0f0f0;
+  font-size: 16px;
+  color: #333;
+  flex: 1 1 auto;
+}
+
+/* .custom-select:focus {
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+} */
+.custom-select:hover {
   background-color: #d2ceb8;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }

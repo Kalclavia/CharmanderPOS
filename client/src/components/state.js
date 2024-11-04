@@ -6,7 +6,7 @@ export const toggleSideBar = () => (
   (collapsed.value = !collapsed.value),
   setTimeout(() => {
     showButtons.value = !showButtons.value
-  }, 120)
+  }, 160)
 )
 
 export const SIDEBAR_WIDTH = 250
