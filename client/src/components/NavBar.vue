@@ -1,7 +1,7 @@
 <template>
   <div class="menu-bar" :style="{ width: sideBarWidth }">
     <span class="collapsebar">
-      <button class="arrow" @click="toggleSideBar">&gt;&gt;</button>
+      <button @click="toggleSideBar" class="arrow">&gt;&gt;</button>
     </span>
     <span v-if="collapsed"> </span>
     <span v-else>
