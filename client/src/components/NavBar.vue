@@ -1,7 +1,7 @@
 <template>
   <div class="menu-bar" :style="{ width: sideBarWidth }">
     <span class="collapsebar">
-      <button @click="toggleSideBar" class="arrow">&gt;&gt;</button>
+      <button @click="toggleSideBar" class="arrow" :class="{'rotate':collapsed}">&gt;&gt;</button>
     </span>
     <span v-if="collapsed"> </span>
     <span v-else>
@@ -108,5 +108,11 @@ export default {
   color: #080808;
   background-color: transparent;
   border: none;
+  transition: 0.2s linear; 
+}
+
+.rotate{
+  transform: rotate(180deg);
+  transition: 0.2s linear;
 }
 </style>
