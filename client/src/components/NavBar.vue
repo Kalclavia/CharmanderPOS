@@ -26,6 +26,14 @@
         class="button"
         v-if="showButtons"
         style="width: 200px"
+        @click="$emit('selectItem', 'Menu Items')"
+      >
+        Menu Items
+      </button>
+      <button
+        class="button"
+        v-if="showButtons"
+        style="width: 200px"
         @click="$emit('selectItem', 'Menu Prices')"
       >
         Menu Prices

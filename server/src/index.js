@@ -319,6 +319,32 @@ app.get("/menu/:type", (req, res) => {
     })
     .catch((error) => res.status(500).json({ error: error.message }));
 });
+/**
+ * Get all menu items.
+ * @method GET /menu
+ * @param {string} type The type of menu items to retrieve.
+ * @returns {objects[]} Array of menu items with their names.
+ */
+app.get("/menu", (req, res) => {
+  pool
+    .query("SELECT * FROM foods;")
+    .then((query_res) => res.json(query_res.rows))
+    .catch((error) => res.status(500).json({ error: error.message }));
+});
+
+/**
+ * Get all menu prices.
+ * @method GET /prices
+ * @param {string} type The type of menu items to retrieve.
+ * @returns {objects[]} Array of menu items with their names.
+ */
+app.get("/prices", (req, res) => {
+  pool
+    .query("SELECT * FROM itemtypes;")
+    .then((query_res) => res.json(query_res.rows))
+    .catch((error) => res.status(500).json({ error: error.message }));
+});
+
 var port = 3000;
 console.log(`Server is listening on localhost:${port}`);
 app.listen(3000);

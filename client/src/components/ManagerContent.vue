@@ -16,6 +16,16 @@
       :is="'LaunchPage'"
       @selectItem="selectItem"
     />
+    <component
+      v-if="item === 'Menu Items'"
+      :is="'MenuItems'"
+      @selectItem="selectItem"
+    />
+    <component
+      v-if="item === 'Menu Prices'"
+      :is="'MenuPrices'"
+      @selectItem="selectItem"
+    />
   </div>
 </template>
 
@@ -23,6 +33,8 @@
 import LaunchPage from './ManagerHome.vue'
 import Inventory from './views/Inventory.vue'
 import Employees from './views/Employees.vue'
+import MenuItems from './views/MenuItems.vue';
+import MenuPrices from './views/MenuPrices.vue';
 
 export default {
   name: 'MainContent',
@@ -38,6 +50,8 @@ export default {
     Employees,
     Inventory,
     LaunchPage,
+    MenuItems,
+    MenuPrices
   },
 }
 </script>
