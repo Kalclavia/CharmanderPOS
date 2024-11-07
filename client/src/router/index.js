@@ -4,7 +4,6 @@ import Menu1 from '../views/menu1.vue'
 import Menu2 from '../views/menu2.vue'
 import LoginPage from '../views/Login.vue'
 import manager from '../views/manager.vue'
-
 const routes = [
   { path: '/', name: 'SCO', component: SelfCheckout },
   { path: '/menu1', name: 'Menu Board 1', component: Menu1 },
@@ -15,7 +14,9 @@ const routes = [
     name: 'manager',
     component: manager,
     beforeEnter: () => {
-      if (localStorage.getItem('manager') == 'true') {
+      console.log($cookies.keys())
+      console.log($cookies.get('manager'))
+      if ($cookies.get('manager') == 'true') {
         return true
       }
       return false

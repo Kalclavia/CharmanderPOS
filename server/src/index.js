@@ -57,7 +57,9 @@ app.get("/python", (req, res) => {
  */
 app.get("/employees", (req, res) => {
   pool
-    .query("SELECT * FROM Employees ORDER BY employeeid ASC;")
+    .query(
+      "SELECT * FROM Employees WHERE isfired = false ORDER BY employeeid ASC;"
+    )
     .then((query_res) => res.json(query_res.rows))
     .catch((error) => res.status(500).json({ error: error.message }));
 });
