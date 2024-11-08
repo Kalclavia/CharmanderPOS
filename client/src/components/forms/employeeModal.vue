@@ -20,19 +20,12 @@
         </div>
         <div class="field">
           <label for="isfired">Fired:</label>
-          <!-- <select v-model="form.isfired" class="custom-select">
-            <option value="true">true</option>
-            <option value="false">false</option>
-          </select> -->
-          <div>
-            <label>
-              <input type="checkbox" value="true" v-model="form.isfired" />
-            </label>
-            <!-- <label>
-              <input type="radio" value="false" v-model="form.isfired" />
-              No
-            </label> -->
-          </div>
+          <input
+            type="checkbox"
+            value="true"
+            v-model="form.isfired"
+            class="radio-group"
+          />
         </div>
       </div>
       <div class="flex-button">
@@ -83,7 +76,7 @@ export default {
 </script>
 
 <style scoped>
-input {
+.custom-input {
   border: 0;
   outline: 0;
   border: 1px solid #ccc;
@@ -91,34 +84,38 @@ input {
   background-color: #f0f0f0;
   font-size: 14px;
   color: #333;
+  width: 50%;
 }
-input:focus {
+.custom-input:focus {
   outline: none !important;
   background-color: #d2ceb8;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
-input:hover {
+.custom-input:hover {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   background-color: #d2ceb8;
 }
 .radio-group {
-  display: flex;
-  justify-content: space-around;
-  width: 100%;
+  width: 50%;
 }
 
-.radio-group label {
+/* .radio-group label {
   display: flex;
   align-items: center;
-}
+} */
 
-.custom-input {
-  flex: 1 1 auto;
-}
+/* .custom-input {
+  width: 50%;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+} */
+
 .field {
   width: 100%;
   display: flex;
-  margin-top: 20px;
+  margin-top: 10px;
+  justify-content: space-around;
 }
 
 .form-items {
@@ -161,7 +158,10 @@ input:hover {
   background-color: #f0f0f0;
   font-size: 14px;
   color: #333;
-  flex: 1 1 auto;
+  width: 50%;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 /* .custom-select:focus {
