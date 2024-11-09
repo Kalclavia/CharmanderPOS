@@ -1,12 +1,36 @@
 <template>
     <div class="main-content">
         <h2>{{ item }} Menu</h2>
-        <component v-if="item === 'Appetizers'" :is="'Appetizer'" @selectItem="addToCart" />
-        <component v-if="item === 'Bowl'" :is="'Bowl'" @selectItem="addToCart" />
-        <component v-if="item === 'Plate'" :is="'Plate'" @selectItem="addToCart" />
-        <component v-if="item === 'Bigger Plate'" :is="'BiggerPlate'" @selectItem="addToCart" />
-        <component v-if="item === 'Drinks'" :is="'Drink'" @selectItem="addToCart" />
-        <component v-if="item === 'A La Carte'" :is="'ALaCarte'" @selectItem="addToCart" />
+        <component 
+            v-if="item === 'Appetizers'" 
+            :is="'Appetizer'" 
+            @addToCart="addToCart" 
+        />
+        <component 
+            v-if="item === 'Bowl'" 
+            :is="'Bowl'" 
+            @addToCart="addToCart" 
+        />
+        <component 
+            v-if="item === 'Plate'" 
+            :is="'Plate'" 
+            @addToCart="addToCart" 
+        />
+        <component 
+            v-if="item === 'Bigger Plate'" 
+            :is="'BiggerPlate'" 
+            @addToCart="addToCart" 
+        />
+        <component 
+            v-if="item === 'Drinks'" 
+            :is="'Drink'" 
+            @addToCart="addToCart" 
+        />
+        <component 
+            v-if="item === 'A La Carte'" 
+            :is="'ALaCarte'" 
+            @addToCart="addToCart" 
+        />
 
         <button class="cart-button" @click="toggleCart">
             <img src="../assets/cart.png" alt="Cart Panel" class="cart-image" />

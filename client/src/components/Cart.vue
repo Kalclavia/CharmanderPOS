@@ -5,14 +5,16 @@
         </span>
         <span v-else>
             <h2 class="title">Shopping Cart</h2>
-            <ul>
-                <li v-for="(item, index) in cartItems" :key="index">
-                    <span>{{ item.name }} - ${{ item.price }}</span>
-                    <button @click="removeFromCart(index)">Remove</button>
-                </li>
-            </ul>
+            <div class="cart-items">
+                <ul>
+                    <li v-for="(item, index) in cartItems" :key="index">
+                        <span>{{ item.name }} - ${{ item.price.toFixed(2) }}</span>
+                        <button class="remove-btn" @click="removeFromCart(index)">×</button>
+                    </li>
+                </ul>
+            </div>
             <div class="total">
-                Total: ${{ total }}
+                Total: ${{ total.toFixed(2) }}
             </div>
         </span>
     </div>
@@ -84,6 +86,12 @@ export default {
     color: #080808;
 }
 
+.cart-items {
+    flex-grow: 1;
+    overflow-y: auto;
+    margin-bottom: 15px;
+}
+
 ul {
     list-style-type: none;
     padding: 0;
@@ -94,22 +102,26 @@ li {
     margin-bottom: 10px;
     display: flex;
     justify-content: space-between;
+    align-items: center;
 }
 
-button {
-    border: 2px solid #080808;
-    border-radius: 30px;
-    background-color: #e7e4d7;
-    color: #080808;
-    font-family: Arial, sans-serif;
-    padding: 10px;
+li:first-child {
+    margin-top: 15px;
+}
+
+.remove-btn {
+    background-color: #ff4136;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     cursor: pointer;
-    transition: background-color 0.3s, box-shadow 0.3s;
-    box-shadow: 0 4px 3px #080808;
-}
-
-button:hover {
-    background-color: #d2ceb8;
+    font-size: 16px;
+    line-height: 1;
 }
 
 .total {
