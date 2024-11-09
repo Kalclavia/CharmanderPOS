@@ -1,36 +1,12 @@
 <template>
     <div class="main-content">
         <h2>{{ item }} Menu</h2>
-        <component 
-            v-if="item === 'Appetizers'" 
-            :is="'Appetizer'" 
-            @addToCart="addToCart" 
-        />
-        <component 
-            v-if="item === 'Bowl'" 
-            :is="'Bowl'" 
-            @addToCart="addToCart" 
-        />
-        <component 
-            v-if="item === 'Plate'" 
-            :is="'Plate'" 
-            @addToCart="addToCart" 
-        />
-        <component 
-            v-if="item === 'Bigger Plate'" 
-            :is="'BiggerPlate'" 
-            @addToCart="addToCart" 
-        />
-        <component 
-            v-if="item === 'Drinks'" 
-            :is="'Drink'" 
-            @addToCart="addToCart" 
-        />
-        <component 
-            v-if="item === 'A La Carte'" 
-            :is="'ALaCarte'" 
-            @addToCart="addToCart" 
-        />
+        <component v-if="item === 'Appetizers'" :is="'Appetizer'" @addToCart="addToCart" />
+        <component v-if="item === 'Bowl'" :is="'Bowl'" @addToCart="addToCart" />
+        <component v-if="item === 'Plate'" :is="'Plate'" @addToCart="addToCart" />
+        <component v-if="item === 'Bigger Plate'" :is="'BiggerPlate'" @addToCart="addToCart" />
+        <component v-if="item === 'Drinks'" :is="'Drink'" @addToCart="addToCart" />
+        <component v-if="item === 'A La Carte'" :is="'ALaCarte'" @addToCart="addToCart" />
 
         <button class="cart-button" @click="toggleCart">
             <img src="../assets/cart.png" alt="Cart Panel" class="cart-image" />
@@ -64,7 +40,11 @@ export default {
     },
     methods: {
         addToCart(item) {
-            this.cartItems.push(item);
+            if (Array.isArray(item)) {
+                this.cartItems.push(...item); // If item is an array (sides/entrees), spread it into the cartItems array
+            } else {
+                this.cartItems.push(item); // If it's a bowl/plate/bigger plate, just push the item
+            }
         },
         removeFromCart(index) {
             this.cartItems.splice(index, 1);

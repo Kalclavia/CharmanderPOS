@@ -2,19 +2,10 @@
     <div class="plate">
         <h2>Pick 1 Side</h2>
         <div class="grid">
-            <button 
-                v-for="side in sides" 
-                :key="side" 
-                @click="selectSide(side)"
-                :class="{ selected: selectedSide === side }"
-            >
-                <img 
-                    v-if="getSideImage(side)"
-                    :src="getSideImage(side)"
-                    :alt="getSideName(side)"
-                    class="side-image"
-                    @error="handleImageError"
-                />
+            <button v-for="side in sides" :key="side" @click="selectSide(side)"
+                :class="{ selected: selectedSide === side }">
+                <img v-if="getSideImage(side)" :src="getSideImage(side)" :alt="getSideName(side)" class="side-image"
+                    @error="handleImageError" />
                 <span>{{ getSideName(side) }}</span>
                 <span v-if="selectedSide === side" class="checkmark">✓</span>
             </button>
@@ -22,30 +13,17 @@
 
         <h2>Pick 3 Entrees</h2>
         <div class="grid">
-            <button 
-                v-for="entree in entrees" 
-                :key="entree" 
-                @click="selectEntree(entree)"
-                :class="{ selected: selectedEntrees.includes(entree) }"
-            >
-                <img 
-                    v-if="getEntreeImage(entree)"
-                    :src="getEntreeImage(entree)"
-                    :alt="getEntreeName(entree)"
-                    class="entree-image"
-                    @error="handleImageError"
-                />
+            <button v-for="entree in entrees" :key="entree" @click="selectEntree(entree)"
+                :class="{ selected: selectedEntrees.includes(entree) }">
+                <img v-if="getEntreeImage(entree)" :src="getEntreeImage(entree)" :alt="getEntreeName(entree)"
+                    class="entree-image" @error="handleImageError" />
                 <span>{{ getEntreeName(entree) }}</span>
                 <span v-if="selectedEntrees.includes(entree)" class="checkmark">✓</span>
             </button>
         </div>
 
         <!-- Add to Cart Button -->
-        <button 
-            class="add-to-cart" 
-            @click="addToCart" 
-            :disabled="!canAddToCart"
-        >
+        <button class="add-to-cart" @click="addToCart" :disabled="!canAddToCart">
             Add to Cart
         </button>
     </div>
@@ -116,11 +94,11 @@ export default {
         getSideName(side) {
             if (typeof side === 'string') {
                 return side
-            } 
+            }
             else if (side && side.name) {
                 return side.name
             }
-            
+
             return 'Unknown Side'
         },
         getSideImage(side) {
@@ -134,11 +112,11 @@ export default {
         getEntreeName(entree) {
             if (typeof entree === 'string') {
                 return entree
-            } 
+            }
             else if (entree && entree.name) {
                 return entree.name
             }
-            
+
             return 'Unknown Entree'
         },
         getEntreeImage(entree) {
@@ -153,7 +131,7 @@ export default {
             console.error('Image failed to load:', event.target.src)
             event.target.style.display = 'none'
         }
-    
+
     },
     mounted() {
         this.fetchMenuItems() // Fetch menu items when the component mounts
@@ -199,7 +177,7 @@ button:hover {
 
 .selected {
     background-color: #d2ceb8;
-    box-shadow: 0 0 0 2px #080808;
+    box-shadow: 0 4px 3px #080808;
 }
 
 .checkmark {
@@ -211,7 +189,8 @@ button:hover {
     font-weight: bold;
 }
 
-.side-image, .entree-image {
+.side-image,
+.entree-image {
     width: 150px;
     height: 150px;
     object-fit: contain;
@@ -221,6 +200,7 @@ button:hover {
 .add-to-cart-container {
     max-height: min-content;
     position: fixed;
+    box-shadow: 0 4px 3px #080808;
 }
 
 
@@ -229,11 +209,11 @@ button:hover {
     font-size: 15px;
     background-color: #4CAF50;
     color: rgb(0, 0, 0);
-    border: 2px solid black;
+    border: none;
     border-radius: 10px;
     position: fixed;
-    bottom: 20px;
-    right: 40px;
+    top: 45px;
+    right: 145px;
     z-index: 1000;
     cursor: pointer;
     display: flex;
@@ -241,12 +221,12 @@ button:hover {
     justify-content: center;
     transition: background-color 0.3s, box-shadow 0.3s;
     height: 30px;
+    box-shadow: 0 4px 3px #080808;
 }
 
 .add-to-cart:disabled {
-    background-color: #cccccc;
+    background-color: #e7e4d7;
+    box-shadow: 0 4px 3px #080808;
     cursor: not-allowed;
 }
-
-
 </style>
