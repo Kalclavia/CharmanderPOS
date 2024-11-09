@@ -1,50 +1,49 @@
 <template>
     <div class="main-content">
         <h2>{{ item }} Menu</h2>
-        <component v-if="item === 'Appetizers'" :is="'Appetizer'" @selectItem="selectItem" />
-        <component v-if="item === 'Bowl'" :is="'Bowl'" @selectItem="selectItem" />
-        <component v-if="item === 'Plate'" :is="'Plate'" @selectItem="selectItem" />
-        <component v-if="item === 'Bigger Plate'" :is="'BiggerPlate'" @selectItem="selectItem" />
-        <component v-if="item === 'Drinks'" :is="'Drink'" @selectItem="selectItem" />
-        <component v-if="item === 'A La Carte'" :is="'ALaCarte'" @selectItem="selectItem" />
-        <!-- <button class="toggle-button" @click="togglePanel">Toggle Panel</button> -->
-       <!-- Image inside a button -->
-       <button class="cart-button" @click="toggleCart">
-            <img 
-                src="../assets/cart.png" 
-                alt="Cart Panel" 
-                class="cart-image"
-            />
+        <component v-if="item === 'Appetizers'" :is="'Appetizer'" @selectItem="addToCart" />
+        <component v-if="item === 'Bowl'" :is="'Bowl'" @selectItem="addToCart" />
+        <component v-if="item === 'Plate'" :is="'Plate'" @selectItem="addToCart" />
+        <component v-if="item === 'Bigger Plate'" :is="'BiggerPlate'" @selectItem="addToCart" />
+        <component v-if="item === 'Drinks'" :is="'Drink'" @selectItem="addToCart" />
+        <component v-if="item === 'A La Carte'" :is="'ALaCarte'" @selectItem="addToCart" />
+
+        <button class="cart-button" @click="toggleCart">
+            <img src="../assets/cart.png" alt="Cart Panel" class="cart-image" />
         </button>
+
         <div v-show="isCartVisible" class="panel">
-            <h3>Shopping Cart</h3>
-            <!-- Add your panel content here -->
+            <Cart :cartItems="cartItems" @removeItem="removeFromCart" />
         </div>
     </div>
 </template>
 
 <script>
-import Appetizer from './menu/Appetizers.vue'
-import Bowl from './menu/Bowl.vue'
-import Plate from './menu/Plate.vue'
-import BiggerPlate from './menu/BiggerPlate.vue'
-import Drink from './menu/Drinks.vue'
+import Appetizer from './menu/Appetizers.vue';
+import Bowl from './menu/Bowl.vue';
+import Plate from './menu/Plate.vue';
+import BiggerPlate from './menu/BiggerPlate.vue';
+import Drink from './menu/Drinks.vue';
 import ALaCarte from './menu/ALaCarte.vue';
+import Cart from './Cart.vue';
 
 export default {
     name: 'MainContent',
     props: {
-        item: String,
+        item: String
     },
     data() {
         return {
-            isCartVisible: false
-        }
+            isCartVisible: false,
+            cartItems: []
+        };
     },
     methods: {
-        selectItem(item) {
-            // Handle the selected item here
-            console.log('Selected item:', item);
+        addToCart(item) {
+            this.cartItems.push(item);
+        },
+        removeFromCart(index) {
+            this.cartItems.splice(index, 1);
         },
         toggleCart() {
             this.isCartVisible = !this.isCartVisible;
@@ -57,7 +56,8 @@ export default {
         BiggerPlate,
         Drink,
         ALaCarte,
-    },
+        Cart
+    }
 };
 </script>
 
@@ -76,16 +76,16 @@ export default {
 
 .cart-button {
     position: fixed;
-    top: 30px; /* Adjust as needed */
-    right: 45px; /* Adjust as needed */
-    background-color: #e7e4d7; 
-    border: none; /* Remove border */
-    cursor: pointer; /* Change cursor on hover */
-    transition: background-color 0.3s, box-shadow 0.3s; /* Transition effects */
+    top: 30px;
+    right: 45px;
+    background-color: #e7e4d7;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s, box-shadow 0.3s;
     box-shadow: 0 4px 3px #080808;
     border-radius: 75px;
     z-index: 1001;
-    
+
 }
 
 .cart-button:hover {
@@ -93,22 +93,7 @@ export default {
 }
 
 .cart-image {
-    width: 50px; /* Adjust size */
-    height: auto; /* Maintain aspect ratio */
-}
-
-
-.panel {
-    position: fixed;
-    top: 0;
-    right: 0;
-    width: 40%;
-    height: 100%;
-    background-color: #000000e3;
-    color: #e7e4d7;
-    box-shadow: -2px 0 5px rgba(0,0,0,0.1);
-    padding: 20px;
-    overflow-y: auto;
-    z-index: 999;
+    width: 50px;
+    height: auto;
 }
 </style>
