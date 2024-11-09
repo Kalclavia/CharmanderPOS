@@ -91,7 +91,7 @@ export default {
             if (this.canAddToCart) {
                 const item = {
                     name: `Bowl (${this.getSideName(this.selectedSide)} + ${this.getEntreeName(this.selectedEntree)})`,
-                    price: 8.99 // Assuming a fixed price for a bowl
+                    price: 8.30 // Assuming a fixed price for a bowl
                 };
                 this.$emit('addToCart', item);
                 this.selectedSide = null;

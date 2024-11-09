@@ -1,8 +1,13 @@
 <template>
-    <div class="biggerplate">
+    <div class="plate">
         <h2>Pick 1 Side</h2>
         <div class="grid">
-            <button v-for="side in sides" :key="side" @click="selectItem(side)">
+            <button 
+                v-for="side in sides" 
+                :key="side" 
+                @click="selectSide(side)"
+                :class="{ selected: selectedSide === side }"
+            >
                 <img 
                     v-if="getSideImage(side)"
                     :src="getSideImage(side)"
@@ -11,11 +16,18 @@
                     @error="handleImageError"
                 />
                 <span>{{ getSideName(side) }}</span>
+                <span v-if="selectedSide === side" class="checkmark">✓</span>
             </button>
         </div>
+
         <h2>Pick 3 Entrees</h2>
         <div class="grid">
-            <button v-for="entree in entrees" :key="entree" @click="selectItem(entree)">
+            <button 
+                v-for="entree in entrees" 
+                :key="entree" 
+                @click="selectEntree(entree)"
+                :class="{ selected: selectedEntrees.includes(entree) }"
+            >
                 <img 
                     v-if="getEntreeImage(entree)"
                     :src="getEntreeImage(entree)"
@@ -24,11 +36,20 @@
                     @error="handleImageError"
                 />
                 <span>{{ getEntreeName(entree) }}</span>
+                <span v-if="selectedEntrees.includes(entree)" class="checkmark">✓</span>
             </button>
         </div>
+
+        <!-- Add to Cart Button -->
+        <button 
+            class="add-to-cart" 
+            @click="addToCart" 
+            :disabled="!canAddToCart"
+        >
+            Add to Cart
+        </button>
     </div>
 </template>
-
 <script>
 import axios from 'axios' // Make sure to install axios if you haven't already
 
@@ -37,7 +58,15 @@ export default {
     data() {
         return {
             sides: [],
-            entrees: []
+            entrees: [],
+            selectedSide: null,
+            selectedEntrees: [] // Track selected entrees as an array
+        };
+    },
+    computed: {
+        canAddToCart() {
+            // Can only add to cart if 1 side and exactly 2 entrees are selected
+            return this.selectedSide && this.selectedEntrees.length === 3;
         }
     },
     methods: {
@@ -55,6 +84,29 @@ export default {
                 console.log(this.entrees)
             } catch (error) {
                 console.error('Error fetching menu items:', error)
+            }
+        },
+        selectSide(side) {
+            // Select one side and deselect the others
+            this.selectedSide = this.selectedSide === side ? null : side;
+        },
+        selectEntree(entree) {
+            // Add or remove entrees, ensuring only two can be selected
+            if (this.selectedEntrees.includes(entree)) {
+                this.selectedEntrees = this.selectedEntrees.filter(item => item !== entree);
+            } else if (this.selectedEntrees.length < 3) {
+                this.selectedEntrees.push(entree);
+            }
+        },
+        addToCart() {
+            if (this.canAddToCart) {
+                const item = {
+                    name: `Bigger Plate (${this.getSideName(this.selectedSide)} + ${this.selectedEntrees.map(entree => this.getEntreeName(entree)).join(', ')})`,
+                    price: 11.30 // Assuming a fixed price for a plate
+                };
+                this.$emit('addToCart', item);
+                this.selectedSide = null;
+                this.selectedEntrees = [];
             }
         },
         selectItem(item) {
@@ -112,6 +164,8 @@ export default {
 <style scoped>
 .biggerplate {
     padding: 20px;
+    position: relative;
+    min-height: 100vh;
 }
 
 .grid {
@@ -128,15 +182,14 @@ button {
     color: black;
     padding: 10px;
     cursor: pointer;
-    transition:
-        background-color 0.3s,
-        box-shadow 0.3s;
+    transition: background-color 0.3s, box-shadow 0.3s;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     height: auto;
-    min-height: 150px;
+    /* min-height: 150px; */
+    position: relative;
 }
 
 button:hover {
@@ -144,18 +197,56 @@ button:hover {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
-.side-image {
-  width: 150px;
-  height: 150px;
-  object-fit: contain;
-  margin-bottom: 5px;
+.selected {
+    background-color: #d2ceb8;
+    box-shadow: 0 0 0 2px #080808;
 }
 
-.entree-image {
-  width: 150px;
-  height: 150px;
-  object-fit: contain;
-  margin-bottom: 5px;
+.checkmark {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    color: green;
+    font-size: 20px;
+    font-weight: bold;
 }
+
+.side-image, .entree-image {
+    width: 150px;
+    height: 150px;
+    object-fit: contain;
+    margin-bottom: 5px;
+}
+
+.add-to-cart-container {
+    max-height: min-content;
+    position: fixed;
+}
+
+
+.add-to-cart {
+    padding: 15px 15px;
+    font-size: 15px;
+    background-color: #4CAF50;
+    color: rgb(0, 0, 0);
+    border: 2px solid black;
+    border-radius: 10px;
+    position: fixed;
+    bottom: 20px;
+    right: 40px;
+    z-index: 1000;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s, box-shadow 0.3s;
+    height: 30px;
+}
+
+.add-to-cart:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
 
 </style>
