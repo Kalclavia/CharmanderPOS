@@ -234,8 +234,8 @@ app.patch("/inventory/updateName", (req, res) => {
 app.get("/inventory/id", (req, res) => {
   pool
     .query("SELECT COUNT(*) FROM ingredients")
-    .then((query_res) => res.json(query_res.rows[0]))
-    .catch((error) => res.status(500).json({ error: error.message }));
+    .then((query_res) => {res.json(query_res.rows[0]), console.log(res)})
+    .catch((error) => res.status(500).json({error: error.message }));
 });
 /**
  * Get the id of the last item endpoint

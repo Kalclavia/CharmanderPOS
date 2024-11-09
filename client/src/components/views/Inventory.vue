@@ -1,6 +1,5 @@
 <template>
   <div class="inventory">
-    <h2>Inventory</h2>
     <div v-if="loading" class="loading">Loading...</div>
     <table v-else class="table">
       <thead>
@@ -22,7 +21,7 @@
           <td>{{ item.units }}</td>
           <td>
             <button @click="openModal('update', item)">Update</button>
-            <button @click="openModal('delete', item)">Delete</button>
+            <button @click="deleteItem(item.ingredientid)">Delete</button>
           </td>
         </tr>
       </tbody>
@@ -32,6 +31,7 @@
     <inventoryModal
       v-if="showModal"
       :mode="modalMode"
+      :current-items="items"
       :item="selectedItem"
       @close="closeModal"
       @submit="handleFormSubmit"
@@ -51,6 +51,7 @@ export default {
   data() {
     return {
       items: [],
+      total : -1,
       loading: true,
       showModal: false,
       modalMode: 'add',
@@ -58,6 +59,14 @@ export default {
     };
   },
   methods: {
+    fetchLastItem() {
+      axios.get('http://localhost:3000/inventory/id')
+        .then(res => {
+          this.total = ++res.data.count;
+          this.loading = false;
+        })
+        .catch(error => console.error('Error fetching inventory total:', error));
+    },
     fetchItems() {
       axios.get('http://localhost:3000/inventory')
         .then(res => {
@@ -75,13 +84,57 @@ export default {
       this.showModal = false;
       this.selectedItem = null;
     },
-    handleFormSubmit() {
-      this.fetchItems();
+    handleFormSubmit(form) {
+      const params = new URLSearchParams()
+      params.append('ingredientid', form.ingredientid)
+      params.append('name', form.name)
+      params.append('stock', form.stock)
+      params.append('maxstock', form.maxstock)
+      params.append('units', form.units)
+
+      const config = {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      }
+      console.log('lastid:', this.total)
+      if(form.ingredientid === this.total){
+        //adding new item
+        axios
+        .post('http://localhost:3000/inventory/add', params, config)
+        .then(() => this.fetchItems())
+        .catch(error => console.error('Error adding new item:', error))
+        console.log('Added new item')
+      }
+      else{
+        //updating item
+        axios
+        .patch('http://localhost:3000/inventory/updateStock', params, config)
+        //.then(() => this.fetchItems())
+        .catch(error => console.error('Error updating stock:', error))
+        axios
+        .patch('http://localhost:3000/inventory/updateMaxStock', params, config)
+        //.then(() => this.fetchItems())
+        .catch(error => console.error('Error updating max stock:', error))
+        axios
+        .patch('http://localhost:3000/inventory/updateName', params, config)
+        .then(() => this.fetchItems())
+        .catch(error => console.error('Error updating name:', error))
+
+        console.log('updated item:',form.ingredientid)
+      }
       this.closeModal();
     },
+    deleteItem(ingredientid){
+      axios
+          .delete('http://localhost:3000/inventory/delete/' + ingredientid)
+          .then(() => this.fetchItems())
+          .catch(error => console.error('Error deleting item:', error))
+    }
   },
   mounted() {
     this.fetchItems();
+    this.fetchLastItem();
   },
 };
 </script>
