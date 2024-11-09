@@ -8,9 +8,8 @@
         <component v-if="item === 'Drinks'" :is="'Drink'" @addToCart="addToCart" />
         <component v-if="item === 'A La Carte'" :is="'ALaCarte'" @addToCart="addToCart" />
 
-        <button class="cart-button" @click="toggleCart">
+        <button class="cart-button" @click="toggleCart" :class="{ 'cart-button-open': isCartVisible }">
             <img src="../assets/cart.png" alt="Cart Panel" class="cart-image" />
-            <!-- Display cart count if there are items in the cart -->
             <span v-if="cartItems.length > 0" class="cart-count">{{ cartItems.length }}</span>
         </button>
 
@@ -57,7 +56,6 @@ export default {
         clearOrder() {
             this.cartItems = []; // Clears the cart
         }
-
     },
     components: {
         Appetizer,
@@ -104,6 +102,11 @@ export default {
     background-color: #d2ceb8;
 }
 
+.cart-button-open {
+    background-color: #d2ceb8; /* Keep the hover color when the cart is open */
+    box-shadow: none; /* Remove shadow when the cart is open */
+}
+
 .cart-image {
     width: 50px;
     height: auto;
@@ -124,3 +127,4 @@ export default {
     justify-content: center;
 }
 </style>
+

@@ -4,21 +4,29 @@
         <span v-if="collapsed">
         </span>
         <span v-else>
+            <!-- Shopping Cart Title -->
             <h2 class="title">Shopping Cart</h2>
+
+            <!-- Cart Items -->
             <div class="cart-items">
                 <ul>
                     <li v-for="(item, index) in cartItems" :key="index">
-                        <span>{{ item.name }} - ${{ item.price.toFixed(2) }}</span>
+                        <!-- Remove Button on the Left -->
                         <button class="remove-btn" @click="removeFromCart(index)">×</button>
+                        <div class="item-name">{{ item.name }}</div>
+                        <div class="item-price">${{ item.price.toFixed(2) }}</div>
                     </li>
                 </ul>
             </div>
+
+            <!-- Total Amount -->
             <div class="total">
                 Total: ${{ total.toFixed(2) }}
             </div>
-            <!-- Clear Order Button -->
-            <button class="clear-order-btn" @click="clearOrder">Clear Order</button>
         </span>
+
+        <!-- Clear Order Button -->
+        <button class="clear-order-btn" @click="clearOrder">Clear Order</button>
     </div>
 </template>
 
@@ -82,6 +90,7 @@ export default {
     right: 0;
     z-index: 1000;
     transition: width 0.3s ease;
+    justify-content: flex-start; /* Keeps the content at the top */
 }
 
 .collapsebar {
@@ -114,14 +123,15 @@ ul {
 li {
     margin-bottom: 10px;
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: flex-start;
 }
 
 li:first-child {
     margin-top: 15px;
 }
 
+/* Remove Button */
 .remove-btn {
     background-color: #ff4136;
     color: white;
@@ -135,8 +145,22 @@ li:first-child {
     cursor: pointer;
     font-size: 16px;
     line-height: 1;
+    margin-right: 10px; /* Space between the button and the item */
 }
 
+/* Item Name Column */
+.item-name {
+    flex: 2; /* Allow item name to take more space */
+    text-align: left;
+}
+
+/* Item Price Column */
+.item-price {
+    flex: 1; /* Price column takes less space */
+    text-align: right; /* Align the price to the right */
+}
+
+/* Total */
 .total {
     font-weight: bold;
     margin-top: 20px;
@@ -147,13 +171,13 @@ li:first-child {
 .clear-order-btn {
     background-color: #d53f3f;
     color: rgb(22, 9, 9);
-    border: 2px solid #080808; /* Added border */
+    border: 2px solid #080808;
     border-radius: 10px;
     box-shadow: 0 2px 2px #080808;
     padding: 10px;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    position: absolute; /* Position the button at the bottom-right */
+    position: fixed; /* Position the button at the bottom-right */
     bottom: 20px;
     right: 20px;
     text-align: center;
