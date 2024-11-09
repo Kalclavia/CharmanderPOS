@@ -15,7 +15,7 @@
         </button>
 
         <div v-show="isCartVisible" class="panel">
-            <Cart :cartItems="cartItems" @removeItem="removeFromCart" />
+            <Cart :cartItems="cartItems" @removeItem="removeFromCart" @clearOrder="clearOrder" />
         </div>
     </div>
 </template>
@@ -53,7 +53,11 @@ export default {
         },
         toggleCart() {
             this.isCartVisible = !this.isCartVisible;
+        },
+        clearOrder() {
+            this.cartItems = []; // Clears the cart
         }
+
     },
     components: {
         Appetizer,

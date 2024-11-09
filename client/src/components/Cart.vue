@@ -16,6 +16,8 @@
             <div class="total">
                 Total: ${{ total.toFixed(2) }}
             </div>
+            <!-- Clear Order Button -->
+            <button class="clear-order-btn" @click="clearOrder">Clear Order</button>
         </span>
     </div>
 </template>
@@ -31,26 +33,37 @@ export default {
             default: () => []
         }
     },
-    data() {
-        return {
-            collapsed: ref(false)
+    setup(props, { emit }) {
+        const collapsed = ref(false);
+
+        const cartWidth = computed(() => {
+            return collapsed.value ? '265px' : '450px';
+        });
+
+        const total = computed(() => {
+            return props.cartItems.reduce((sum, item) => sum + item.price, 0);
+        });
+
+        const toggleCart = () => {
+            collapsed.value = !collapsed.value;
         };
-    },
-    computed: {
-        cartWidth() {
-            return this.collapsed ? '265px' : '450px';
-        },
-        total() {
-            return this.cartItems.reduce((sum, item) => sum + item.price, 0);
-        }
-    },
-    methods: {
-        toggleCart() {
-            this.collapsed = !this.collapsed;
-        },
-        removeFromCart(index) {
-            this.$emit('removeItem', index);
-        }
+
+        const removeFromCart = (index) => {
+            emit('removeItem', index);
+        };
+
+        const clearOrder = () => {
+            emit('clearOrder'); // Emits the clearOrder event to the parent component
+        };
+
+        return {
+            collapsed,
+            cartWidth,
+            total,
+            toggleCart,
+            removeFromCart,
+            clearOrder
+        };
     }
 };
 </script>
@@ -128,5 +141,26 @@ li:first-child {
     font-weight: bold;
     margin-top: 20px;
     color: #080808;
+}
+
+/* Clear Order Button */
+.clear-order-btn {
+    background-color: #d53f3f;
+    color: rgb(22, 9, 9);
+    border: 2px solid #080808; /* Added border */
+    border-radius: 10px;
+    box-shadow: 0 2px 2px #080808;
+    padding: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    position: absolute; /* Position the button at the bottom-right */
+    bottom: 20px;
+    right: 20px;
+    text-align: center;
+    font-size: medium;
+}
+
+.clear-order-btn:hover {
+    background-color: #9b150b;
 }
 </style>
