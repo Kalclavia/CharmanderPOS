@@ -10,6 +10,8 @@
 
         <button class="cart-button" @click="toggleCart">
             <img src="../assets/cart.png" alt="Cart Panel" class="cart-image" />
+            <!-- Display cart count if there are items in the cart -->
+            <span v-if="cartItems.length > 0" class="cart-count">{{ cartItems.length }}</span>
         </button>
 
         <div v-show="isCartVisible" class="panel">
@@ -89,7 +91,9 @@ export default {
     box-shadow: 0 4px 3px #080808;
     border-radius: 75px;
     z-index: 1001;
-
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .cart-button:hover {
@@ -99,5 +103,20 @@ export default {
 .cart-image {
     width: 50px;
     height: auto;
+}
+
+.cart-count {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background-color: red;
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 3px 7px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 </style>
