@@ -18,6 +18,7 @@ import LaunchPage from '../components/LaunchPage.vue';
 import MenuBar from '../components/MenuBar.vue';
 import MainContent from '../components/MainContent.vue';
 import Cart from '../components/Cart.vue';
+import CheckoutPage from '../components/CheckoutPage.vue';
 import OrderComplete from '../components/OrderComplete.vue';
 
 export default {
@@ -27,6 +28,7 @@ export default {
     MenuBar,
     MainContent,
     Cart,
+    CheckoutPage,
     OrderComplete,
   },
   data() {
@@ -34,6 +36,7 @@ export default {
       isOnLaunchPage: true,
       isCartVisible: false,
       isOrderComplete: false,
+      showCheckout: false,
       cartItems: [],
       selectedItem: null,
     };
@@ -45,8 +48,16 @@ export default {
     selectItem(item) {
       this.selectedItem = item;
     },
-    handleCheckout() {
-      this.isOrderComplete = true;
+    showCheckoutPage() {
+      this.showCheckout = true;
+    },
+    cancelCheckout() {
+      this.showCheckout = false;
+    },
+    handlePlaceOrder(paymentMethod) {
+      // Handle the order logic here and push to the database
+      this.showCheckout = false;
+      console.log('Order placed with payment method:', paymentMethod);
     },
     resetOrder() {
       this.isOrderComplete = false;

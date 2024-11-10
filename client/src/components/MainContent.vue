@@ -1,5 +1,10 @@
 <template>
-    <div class="main-content">
+    <div class="main-content" v-if="!isCheckoutVisible">
+        <!-- Replace MenuBar with Cart as an order summary during checkout -->
+        <MenuBar v-if="!isCheckoutVisible" @selectItem="selectItem" />
+        <Cart v-else :cartItems="cartItems" @removeItem="removeFromCart" @clearOrder="clearOrder"
+            @finalizeOrder="resetCart" class="order-summary" :isCheckout="isCheckoutVisible" />
+
         <h2>{{ item }} Menu</h2>
         <component v-if="item === 'Appetizers'" :is="'Appetizer'" @addToCart="addToCart" />
         <component v-if="item === 'Bowl'" :is="'Bowl'" @addToCart="addToCart" />
@@ -14,12 +19,20 @@
         </button>
 
         <div v-show="isCartVisible" class="panel">
-            <Cart :cartItems="cartItems" @removeItem="removeFromCart" @clearOrder="clearOrder" />
+            <Cart :cartItems="cartItems" @removeItem="removeFromCart" @clearOrder="clearOrder"
+                @finalizeOrder="resetCart" @hideMainContent="hideContent" :isCheckout="isCheckoutVisible" />
         </div>
+    </div>
+
+    <!-- Checkout page with order summary -->
+    <div v-if="isCheckoutVisible">
+        <CheckoutPage :cartItems="cartItems" @confirmOrder="finalizeOrder" @cancelOrder="resetContent" />
+        <Cart v-if="isCheckoutVisible" :cartItems="cartItems" class="order-summary" :isCheckout="isCheckoutVisible" />
     </div>
 </template>
 
 <script>
+import MenuBar from './MenuBar.vue';
 import Appetizer from './menu/Appetizers.vue';
 import Bowl from './menu/Bowl.vue';
 import Plate from './menu/Plate.vue';
@@ -27,25 +40,21 @@ import BiggerPlate from './menu/BiggerPlate.vue';
 import Drink from './menu/Drinks.vue';
 import ALaCarte from './menu/ALaCarte.vue';
 import Cart from './Cart.vue';
+import CheckoutPage from './CheckoutPage.vue';
 
 export default {
     name: 'MainContent',
-    props: {
-        item: String
-    },
+    props: { item: String },
     data() {
         return {
             isCartVisible: false,
-            cartItems: []
+            cartItems: [],
+            isCheckoutVisible: false, // State to manage Checkout visibility
         };
     },
     methods: {
         addToCart(item) {
-            if (Array.isArray(item)) {
-                this.cartItems.push(...item); // If item is an array (sides/entrees), spread it into the cartItems array
-            } else {
-                this.cartItems.push(item); // If it's a bowl/plate/bigger plate, just push the item
-            }
+            Array.isArray(item) ? this.cartItems.push(...item) : this.cartItems.push(item);
         },
         removeFromCart(index) {
             this.cartItems.splice(index, 1);
@@ -54,17 +63,32 @@ export default {
             this.isCartVisible = !this.isCartVisible;
         },
         clearOrder() {
-            this.cartItems = []; // Clears the cart
+            this.cartItems = [];
+        },
+        resetCart() {
+            this.clearOrder(); // Reset the cart after finalizing the order
+        },
+        hideContent() {
+            this.isCheckoutVisible = true; // Hide main content and cart, show checkout
+        },
+        resetContent() {
+            this.isCheckoutVisible = false; // Go back to main content view
+            this.isCartVisible = false; // Hide cart when returning from checkout
+        },
+        selectItem(item) {
+            this.item = item;
         }
     },
     components: {
+        MenuBar,
         Appetizer,
         Bowl,
         Plate,
         BiggerPlate,
         Drink,
         ALaCarte,
-        Cart
+        Cart,
+        CheckoutPage
     }
 };
 </script>
@@ -103,8 +127,10 @@ export default {
 }
 
 .cart-button-open {
-    background-color: #d2ceb8; /* Keep the hover color when the cart is open */
-    box-shadow: none; /* Remove shadow when the cart is open */
+    background-color: #d2ceb8;
+    /* Keep the hover color when the cart is open */
+    box-shadow: none;
+    /* Remove shadow when the cart is open */
 }
 
 .cart-image {
@@ -126,5 +152,19 @@ export default {
     align-items: center;
     justify-content: center;
 }
-</style>
 
+.order-summary {
+    background-color: #e7e4d7;
+    width: 450px;
+    height: 100vh;
+    padding: 20px;
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 0 4px 8px #080808;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+}
+</style>

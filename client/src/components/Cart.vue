@@ -1,76 +1,71 @@
 <template>
     <div class="cart-panel" :style="{ width: cartWidth }">
         <span class="collapsebar" @click="toggleCart"></span>
-        <span v-if="collapsed">
-        </span>
+        <span v-if="collapsed"></span>
         <span v-else>
-            <!-- Shopping Cart Title -->
-            <h2 class="title">Shopping Cart</h2>
+            <!-- Change header text to 'Order Summary' if isCheckout is true -->
+            <h2 class="title">{{ isCheckout ? 'Order Summary' : 'Shopping Cart' }}</h2> 
 
-            <!-- Cart Items -->
             <div class="cart-items">
                 <ul>
                     <li v-for="(item, index) in cartItems" :key="index">
-                        <!-- Remove Button on the Left -->
-                        <button class="remove-btn" @click="removeFromCart(index)">×</button>
+                        <!-- Conditionally hide remove button -->
+                        <button v-if="!isCheckout" class="remove-btn" @click="removeFromCart(index)">×</button>
                         <div class="item-name">{{ item.name }}</div>
                         <div class="item-price">${{ item.price.toFixed(2) }}</div>
                     </li>
                 </ul>
             </div>
 
-            <!-- Total Amount -->
-            <div class="total">
-                Total: ${{ total.toFixed(2) }}
-            </div>
+            <div class="total">Total: ${{ total.toFixed(2) }}</div>
         </span>
 
-        <!-- Clear Order Button -->
-        <button class="clear-order-btn" @click="clearOrder">Clear Order</button>
+        <!-- Hide these buttons during checkout -->
+        <button v-if="!isCheckout" class="clear-order-btn" @click="clearOrder">Clear Order</button>
+        <button v-if="!isCheckout" class="place-order-btn" @click="showCheckout">Place Order</button>
+
+        <!-- Conditional rendering for CheckoutPage -->
+        <CheckoutPage v-if="isCheckoutPageVisible" :cartItems="cartItems" @confirmOrder="finalizeOrder" @cancelOrder="isCheckoutPageVisible = false" />
     </div>
 </template>
 
 <script>
 import { ref, computed } from 'vue';
+import CheckoutPage from './CheckoutPage.vue';
 
 export default {
     name: 'Cart',
+    components: { CheckoutPage },
     props: {
-        cartItems: {
-            type: Array,
-            default: () => []
-        }
+        cartItems: { type: Array, default: () => [] },
+        isCheckout: { type: Boolean, default: false } // Receive isCheckout prop
     },
     setup(props, { emit }) {
         const collapsed = ref(false);
+        const isCheckoutPageVisible = ref(false);
 
-        const cartWidth = computed(() => {
-            return collapsed.value ? '265px' : '450px';
-        });
+        const cartWidth = computed(() => (collapsed.value ? '265px' : '450px'));
+        const total = computed(() => props.cartItems.reduce((sum, item) => sum + item.price, 0));
 
-        const total = computed(() => {
-            return props.cartItems.reduce((sum, item) => sum + item.price, 0);
-        });
-
-        const toggleCart = () => {
-            collapsed.value = !collapsed.value;
+        const toggleCart = () => { collapsed.value = !collapsed.value };
+        const removeFromCart = (index) => { emit('removeItem', index) };
+        const clearOrder = () => { emit('clearOrder') };
+        const showCheckout = () => {
+            isCheckoutPageVisible.value = true;
+            emit('hideMainContent'); // Notify the parent to hide MainContent and Cart
         };
-
-        const removeFromCart = (index) => {
-            emit('removeItem', index);
-        };
-
-        const clearOrder = () => {
-            emit('clearOrder'); // Emits the clearOrder event to the parent component
-        };
+        const finalizeOrder = () => { emit('finalizeOrder'); isCheckoutPageVisible.value = false };
 
         return {
-            collapsed,
-            cartWidth,
-            total,
-            toggleCart,
-            removeFromCart,
-            clearOrder
+            collapsed, 
+            cartWidth, 
+            total, 
+            toggleCart, 
+            removeFromCart, 
+            clearOrder, 
+            showCheckout, 
+            isCheckoutPageVisible, 
+            finalizeOrder
         };
     }
 };
@@ -90,7 +85,7 @@ export default {
     right: 0;
     z-index: 1000;
     transition: width 0.3s ease;
-    justify-content: flex-start; /* Keeps the content at the top */
+    justify-content: flex-start;
 }
 
 .collapsebar {
@@ -145,19 +140,23 @@ li:first-child {
     cursor: pointer;
     font-size: 16px;
     line-height: 1;
-    margin-right: 10px; /* Space between the button and the item */
+    margin-right: 10px;
+    /* Space between the button and the item */
 }
 
 /* Item Name Column */
 .item-name {
-    flex: 2; /* Allow item name to take more space */
+    flex: 2;
+    /* Allow item name to take more space */
     text-align: left;
 }
 
 /* Item Price Column */
 .item-price {
-    flex: 1; /* Price column takes less space */
-    text-align: right; /* Align the price to the right */
+    flex: 1;
+    /* Price column takes less space */
+    text-align: right;
+    /* Align the price to the right */
 }
 
 /* Total */
@@ -177,14 +176,34 @@ li:first-child {
     padding: 10px;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    position: fixed; /* Position the button at the bottom-right */
+    position: fixed;
     bottom: 20px;
-    right: 20px;
+    right: 320px;
     text-align: center;
     font-size: medium;
 }
 
 .clear-order-btn:hover {
     background-color: #9b150b;
+}
+
+.place-order-btn {
+    background-color: #4CAF50;
+    color: white;
+    border: 2px solid #080808;
+    border-radius: 10px;
+    box-shadow: 0 2px 2px #080808;
+    padding: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    text-align: center;
+    font-size: medium;
+}
+
+.place-order-btn:hover {
+    background-color: #45a049;
 }
 </style>
