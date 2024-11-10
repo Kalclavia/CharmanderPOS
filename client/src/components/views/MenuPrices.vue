@@ -4,24 +4,15 @@
         <div
           v-for="ingredient in ingredients"
           :key="ingredient.ingredientid"
-          class="ingredient-card"
         >
-          <!-- <p><strong>ID:</strong> {{ ingredient.ingredientid }}</p> -->
-          <p> {{ ingredient.type }}</p>
-          <p> {{ ingredient.price }}</p>
-          <!-- <p>
-            <strong>Stock:</strong> {{ ingredient.stock }} {{ ingredient.units }}
-          </p>
-          <p>
-            <strong>Max Stock:</strong> {{ ingredient.maxstock }}
-            {{ ingredient.units }}
-          </p> -->
-  
-          <!-- <button @click="updateStock(ingredient)">Update Stock</button>
-          <button @click="deleteItem(ingredient.ingredientid)">Delete</button> -->
+          <button class = "ingredient-card">
+            <p> {{ ingredient.type }}</p>
+            <p> {{ ingredient.price }}</p>
+          </button>
+
         </div>
       </div>
-      <button @click="updateItem" class="add-button">Update Prices</button>
+      <!-- <button @click="updateItem" class="add-button">Update Prices</button> -->
     </div>
   </template>
   
@@ -44,52 +35,7 @@
         } catch (error) {
           console.error('Error fetching inventory:', error)
         }
-      },
-    //   updateStock(item) {
-    //     const params = new URLSearchParams()
-    //     params.append('ingredientid', item.ingredientid)
-    //     params.append(
-    //       'stock',
-    //       prompt(`Enter new stock level for ${item.name}:`, item.stock),
-    //     )
-  
-    //     const config = {
-    //       headers: {
-    //         'Content-Type': 'application/x-www-form-urlencoded',
-    //       },
-    //     }
-  
-    //     axios
-    //       .patch('http://localhost:3000/inventory/updateStock', params, config)
-    //       .then(() => this.fetchInventory())
-    //       .catch(error => console.error('Error updating stock:', error))
-    //   },
-    //   deleteItem(ingredientid) {
-    //     if (confirm('Are you sure you want to delete this item?')) {
-    //       axios
-    //         .delete('http://localhost:3000/inventory/delete/' + ingredientid)
-    //         .then(() => this.fetchInventory())
-    //         .catch(error => console.error('Error deleting item:', error))
-    //     }
-    //   },
-    //   addNewItem() {
-    //     const params = new URLSearchParams()
-    //     params.append('ingredientid', prompt('Enter ID:'))
-    //     params.append('name', prompt('Enter name:'))
-    //     params.append('stock', prompt('Enter stock:'))
-    //     params.append('maxstock', prompt('Enter max stock:'))
-    //     params.append('units', prompt('Enter units:'))
-  
-    //     const config = {
-    //       headers: {
-    //         'Content-Type': 'application/x-www-form-urlencoded',
-    //       },
-    //     }
-    //     axios
-    //       .post('http://localhost:3000/inventory/add', params, config)
-    //       .then(() => this.fetchInventory())
-    //       .catch(error => console.error('Error adding new item:', error))
-    //   },
+      }
     },
     mounted() {
       this.fetchInventory()
@@ -116,12 +62,12 @@
     color: black;
     padding: 15px;
     text-align: center;
+    width: 200px;
+    height: 75px;
   }
   
-  button {
-     /* margin: 5px;
-  padding: 5px 10px;
-  cursor: pointer; */
+  /* button {
+
   font-size: medium;
   border: 2px solid #080808;
   border-radius: 30px;
@@ -133,7 +79,7 @@
   cursor: pointer;
   transition: background-color 0.3s, box-shadow 0.3s;
   box-shadow: 0 4px 3px #080808;
-  }
+  } */
   
   button:hover {
     background-color: #d2ceb8;
