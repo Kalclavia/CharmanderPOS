@@ -120,16 +120,20 @@
   }
   
   button {
-    border: 1px solid black;
-    border-radius: 5px;
-    background-color: #f0f0f0;
-    color: black;
-    padding: 10px;
-    cursor: pointer;
-    margin: 5px 0;
-    transition:
-      background-color 0.3s,
-      box-shadow 0.3s;
+     /* margin: 5px;
+  padding: 5px 10px;
+  cursor: pointer; */
+  font-size: medium;
+  border: 2px solid #080808;
+  border-radius: 30px;
+  background-color: #e7e4d7;
+  color: #080808;
+  font: Arial;
+  padding: 15px;
+  margin-bottom: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s, box-shadow 0.3s;
+  box-shadow: 0 4px 3px #080808;
   }
   
   button:hover {

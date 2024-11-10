@@ -26,7 +26,7 @@
         </tr>
       </tbody>
     </table>
-    <button @click="openModal('add')">Add Item</button>
+    <button class="button2" @click="openModal('add')">Add Item</button>
 
     <inventoryModal
       v-if="showModal"
@@ -126,11 +126,13 @@ export default {
       this.closeModal();
     },
     deleteItem(ingredientid){
+      if (confirm('Are you sure you want to delete this item?')) {
       axios
           .delete('http://localhost:3000/inventory/delete/' + ingredientid)
           .then(() => this.fetchItems())
           .catch(error => console.error('Error deleting item:', error))
     }
+  }
   },
   mounted() {
     this.fetchItems();
@@ -173,8 +175,39 @@ th {
   padding: 0;
 }
 button {
-  margin: 5px;
+  /* margin: 5px;
   padding: 5px 10px;
+  cursor: pointer; */
+  border: 2px solid #080808;
+  border-radius: 30px;
+  background-color: #e7e4d7;
+  color: #080808;
+  font: Arial;
+  padding: 5px;
+  margin-bottom: 5px;
   cursor: pointer;
+  transition: background-color 0.3s, box-shadow 0.3s;
+  box-shadow: 0 4px 3px #080808;
+}
+
+.button2 {
+  /* margin: 5px;
+  padding: 5px 10px;
+  cursor: pointer; */
+  font-size: medium;
+  border: 2px solid #080808;
+  border-radius: 30px;
+  background-color: #e7e4d7;
+  color: #080808;
+  font: Arial;
+  padding: 15px;
+  margin-bottom: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s, box-shadow 0.3s;
+  box-shadow: 0 4px 3px #080808;
+}
+
+button:hover{
+  background-color:#cfcbb7;
 }
 </style>
