@@ -18,8 +18,8 @@
             <option value="manager">manager</option>
           </select>
         </div>
-        <div class="field">
-          <label for="isfired">Fired:</label>
+        <div>
+          <label class="field-radio" for="isfired">Fired:</label>
           <input
             type="checkbox"
             value="true"
@@ -76,7 +76,7 @@ export default {
 </script>
 
 <style scoped>
-.custom-input {
+/* .custom-input {
   border: 0;
   outline: 0;
   border: 1px solid #ccc;
@@ -99,18 +99,6 @@ export default {
   width: 50%;
 }
 
-/* .radio-group label {
-  display: flex;
-  align-items: center;
-} */
-
-/* .custom-input {
-  width: 50%;
-  -moz-box-sizing: border-box;
-  -webkit-box-sizing: border-box;
-  box-sizing: border-box;
-} */
-
 .field {
   width: 100%;
   display: flex;
@@ -132,6 +120,62 @@ export default {
   justify-content: space-around;
   align-items: center;
 }
+
+
+.custom-select {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #f0f0f0;
+  font-size: 14px;
+  color: #333;
+  width: 50%;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+.custom-select:hover {
+  background-color: #d2ceb8;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+} */
+.custom-select {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #f0f0f0;
+  font-size: 14px;
+  color: #333;
+  width: 100%;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+.field {
+  margin-bottom: 15px;
+}
+
+.field label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.field input {
+  width: 100%;
+  padding: 8px;
+  box-sizing: border-box;
+}
+.field-radio {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: space-between;
+}
+
 .button {
   border: 1px solid black;
   border-radius: 5px;
@@ -151,24 +195,13 @@ export default {
   background-color: #d2ceb8;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
-
-.custom-select {
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  background-color: #f0f0f0;
-  font-size: 14px;
-  color: #333;
-  width: 50%;
-  -moz-box-sizing: border-box;
-  -webkit-box-sizing: border-box;
-  box-sizing: border-box;
+.flex-button {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
 }
 
-/* .custom-select:focus {
-  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
-} */
-.custom-select:hover {
-  background-color: #d2ceb8;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+.radio-group {
+  margin-left: auto;
 }
 </style>

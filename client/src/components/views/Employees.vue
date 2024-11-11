@@ -228,37 +228,34 @@ export default {
 }
 
 .modal-overlay {
-  border: 1.5px solid black;
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
+  right: 0;
+  bottom: 0;
   background: rgba(0, 0, 0, 0.5);
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
   z-index: 1000;
 }
 
 .modal {
-  border: 1.5px solid black;
-  background: #e7e4d7;
+  background-color: #d2ceb8;
+  color: #000;
+  border-radius: 8px;
   padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
-  z-index: 1001;
-  height: 35vh;
-  color: black;
+  width: 400px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
-.modal-enter-active,
+/* .modal-enter-active,
 .modal-leave-active {
   transition: opacity 0.5s;
 }
 .modal-enter,
 .modal-leave-to {
   opacity: 0;
-}
+} */
 .employee {
   padding: 20px;
 }
