@@ -210,4 +210,11 @@ button {
 button:hover{
   background-color:#cfcbb7;
 }
+
+.flex-button {
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-start;
+  margin-top: 20px;
+}
 </style>

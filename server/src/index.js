@@ -400,6 +400,23 @@ app.get("/prices", (req, res) => {
     .catch((error) => res.status(500).json({ error: error.message }));
 });
 
+/**
+ *set menu price.
+ * @method GET /prices
+ * @param {string} type The type of menu items to retrieve.
+ * @returns {objects[]} Array of menu items with their names.
+ */
+app.get("/prices/setprice", (req, res) => {
+  const { itemid, price } = req.body;
+  pool
+    .query(
+      "UPDATE ingredients SET price = $1 WHERE itemid = $2 RETURNING *;",
+      [price, itemid]
+    )
+    .then((query_res) => res.json(query_res.rows[0]))
+    .catch((error) => res.status(500).json({ error: error.message }));
+});
+
 var port = 3000;
 console.log(`Server is listening on localhost:${port}`);
 app.listen(3000);

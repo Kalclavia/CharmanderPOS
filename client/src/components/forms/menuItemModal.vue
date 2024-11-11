@@ -224,9 +224,9 @@ export default {
   color: #000;
   border-radius: 8px;
   padding: 20px;
-  width: 400px;
+  width: 500px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  height: 100%;
+  height: 80%;
 }
 
 h2 {

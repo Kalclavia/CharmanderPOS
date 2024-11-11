@@ -5,25 +5,35 @@
           v-for="ingredient in ingredients"
           :key="ingredient.ingredientid"
         >
-          <button class = "ingredient-card">
+          <button @click="openModal(ingredient)" class = "ingredient-card">
             <p> {{ ingredient.type }}</p>
             <p> {{ ingredient.price }}</p>
           </button>
 
         </div>
       </div>
-      <!-- <button @click="updateItem" class="add-button">Update Prices</button> -->
+      <menuPriceModal 
+        v-if="showModal"
+        :item="selectedItem"
+        @close="closeModal"
+        @submit="handleFormSubmit"
+    />
     </div>
   </template>
   
   <script>
   import axios from 'axios'
-  
+  import menuPriceModal from '../forms/menuPriceModal.vue';
   export default {
-    name: 'Inventory',
+    name: 'MenuPrices',
+    components: {
+      menuPriceModal,
+    },
     data() {
       return {
         ingredients: [],
+        showModal: false,
+        selectedItem: null,
       }
     },
     methods: {
@@ -35,7 +45,14 @@
         } catch (error) {
           console.error('Error fetching inventory:', error)
         }
-      }
+      },
+      openModal(item = null) {
+        this.selectedItem = item;
+        this.showModal = true;
+      },
+      closeModal() {
+        this.showModal = false;
+      },
     },
     mounted() {
       this.fetchInventory()
@@ -65,21 +82,6 @@
     width: 200px;
     height: 75px;
   }
-  
-  /* button {
-
-  font-size: medium;
-  border: 2px solid #080808;
-  border-radius: 30px;
-  background-color: #e7e4d7;
-  color: #080808;
-  font: Arial;
-  padding: 15px;
-  margin-bottom: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s, box-shadow 0.3s;
-  box-shadow: 0 4px 3px #080808;
-  } */
   
   button:hover {
     background-color: #d2ceb8;
