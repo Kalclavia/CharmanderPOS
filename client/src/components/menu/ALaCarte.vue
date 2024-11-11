@@ -2,23 +2,23 @@
     <div class="alacarte">
         <h2>Sides</h2>
         <div class="grid">
-            <button v-for="side in sides" :key="side" @click="toggleSides(side)"
-                :class="{ selected: selectedSides.includes(side) }">
+            <button v-for="side in sides" :key="side.name" @click="toggleSides(side)"
+                :class="{ selected: isSelected(side, 'side') }">
                 <img v-if="getSideImage(side)" :src="getSideImage(side)" :alt="getSideName(side)" class="side-image"
                     @error="handleImageError" />
                 <span>{{ getSideName(side) }}</span>
-                <span v-if="selectedSides.includes(side)" class="checkmark">✓</span>
+                <span v-if="isSelected(side, 'side')" class="checkmark">✓</span>
             </button>
         </div>
 
         <h2>Entrees</h2>
         <div class="grid">
-            <button v-for="entree in entrees" :key="entree" @click="toggleEntrees(entree)"
-                :class="{ selected: selectedEntrees.includes(entree) }">
+            <button v-for="entree in entrees" :key="entree.name" @click="toggleEntrees(entree)"
+                :class="{ selected: isSelected(entree, 'entree') }">
                 <img v-if="getEntreeImage(entree)" :src="getEntreeImage(entree)" :alt="getEntreeName(entree)"
                     class="entree-image" @error="handleImageError" />
                 <span>{{ getEntreeName(entree) }}</span>
-                <span v-if="selectedEntrees.includes(entree)" class="checkmark">✓</span>
+                <span v-if="isSelected(entree, 'entree')" class="checkmark">✓</span>
             </button>
         </div>
 
@@ -35,7 +35,6 @@
                     {{ size.name }} - ${{ size.price.toFixed(2) }}
                 </button>
             </div>
-            <!-- Red X Button -->
             <button @click="cancelSizeSelection" class="close-button">✖</button>
         </div>
 
@@ -45,6 +44,11 @@
         </button>
     </div>
 </template>
+
+
+
+
+
 <script>
 import axios from 'axios';
 
@@ -89,14 +93,18 @@ export default {
             }
         },
         toggleSides(side) {
-            this.currentItem = side;
-            this.currentItemType = 'side';
-            this.showSizeModal = true;
+        this.currentItem = side;
+        this.currentItemType = 'side';
+        this.showSizeModal = true;
         },
         toggleEntrees(entree) {
             this.currentItem = entree;
             this.currentItemType = 'entree';
             this.showSizeModal = true;
+        },
+        isSelected(item, type) {
+        const selectedList = type === 'side' ? this.selectedSides : this.selectedEntrees;
+        return selectedList.some(selected => selected.name.includes(this.getSideName(item) || this.getEntreeName(item)));
         },
         selectSize(size, type) {
             const itemToAdd = {
@@ -105,14 +113,16 @@ export default {
             };
             
             if (type === 'side') {
-                this.selectedSides.push(itemToAdd);
+                this.selectedSides.push(itemToAdd); // Adds the selected item with size to selectedSides
             } else {
-                this.selectedEntrees.push(itemToAdd);
+                this.selectedEntrees.push(itemToAdd); // Adds the selected item with size to selectedEntrees
             }
 
             this.showSizeModal = false;
             this.currentItem = null;
+            this.currentItemType = null; // Reset currentItemType after selection
         },
+
         cancelSizeSelection() {
             this.showSizeModal = false;
             this.currentItem = null;

@@ -3,12 +3,23 @@
     <h2>Drinks</h2>
     <div class="grid">
       <button v-for="drink in drinks" :key="drink" @click="toggleDrinks(drink)"
-        :class="{ selected: selectedDrinks.includes(drink) }">
+        :class="{ selected: isSelected(drink) }">
         <img v-if="getDrinkImage(drink)" :src="getDrinkImage(drink)" :alt="getDrinkName(drink)" class="drink-image"
           @error="handleImageError" />
         <span>{{ getDrinkName(drink) }}</span>
-        <span v-if="selectedDrinks.includes(drink)" class="checkmark">✓</span>
+        <span v-if="isSelected(drink)" class="checkmark">✓</span>
       </button>
+    </div>
+    <!-- Size Selection Modal -->
+    <div v-if="showSizeModal" class="size-modal">
+      <h3 class="modal-title">Select Size for {{ getDrinkName(currentItem) }}</h3>
+      <div>
+        <button v-for="size in sizeOptions.drink" :key="size.name" @click="selectSize(size)">
+          {{ size.name }} - ${{ size.price.toFixed(2) }}
+        </button>
+      </div>
+      <!-- Red X Button -->
+      <button @click="cancelSizeSelection" class="close-button">✖</button>
     </div>
     <!-- Add to Cart Button -->
     <button class="add-to-cart" @click="addToCart" :disabled="!canAddToCart">
@@ -25,7 +36,17 @@ export default {
   data() {
     return {
       drinks: [],
-      selectedDrinks: []
+      selectedDrinks: [],
+      showSizeModal: false,
+      currentItem: null,
+      currentItemType: null,
+      sizeOptions: {
+      drink: [
+        { name: 'Small', price: 2.10 },
+        { name: 'Medium', price: 2.30 },
+        { name: 'Large', price: 2.50 }
+      ]
+      }
     }
   },
   computed: {
@@ -46,25 +67,63 @@ export default {
       }
     },
     toggleDrinks(drink) {
-      if (this.selectedDrinks.includes(drink)) {
-        this.selectedDrinks = this.selectedDrinks.filter(selected => selected !== drink);
-      } else {
-        this.selectedDrinks.push(drink);
-      }
+      // if (this.selectedDrinks.includes(drink)) {
+      //   this.selectedDrinks = this.selectedDrinks.filter(selected => selected !== drink);
+      // } else {
+      //   this.selectedDrinks.push(drink);
+      // }
+      if (this.getDrinkName(drink).toLowerCase() === 'aquafina' || this.getDrinkName(drink).toLowerCase() === 'gatorade lemon lime') {
+      // For Aquafina and Gatorade, add directly to selectedDrinks without showing size modal
+      const itemToAdd = {
+        name: `Drink: ${this.getDrinkName(drink)}`,
+        price: this.getDrinkName(drink).toLowerCase() === 'aquafina' ? 1.50 : 2.00 // Aquafina: $1.50, Gatorade: $2.00
+      };
+        this.selectedDrinks.push(itemToAdd);
+
+    } else {
+      // For other drinks, show the size modal
+      this.currentItem = drink;
+      this.currentItemType = 'drink';
+      this.showSizeModal = true;
+    }  
+
     },
+
+    isSelected(drink) {
+      const drinkName = this.getDrinkName(drink);
+      return this.selectedDrinks.some(selectedDrink => 
+        selectedDrink.name === `Drink: ${drinkName}` ||
+        selectedDrink.name.startsWith(`Drink: ${drinkName} (`)
+      );
+    },
+
+    selectSize(size) {
+      const itemToAdd = {
+        name: `Drink: ${this.getDrinkName(this.currentItem)} (${size.name})`,
+        price: size.price
+      };
+      this.selectedDrinks.push(itemToAdd);
+      this.showSizeModal = false;
+      this.currentItem = null;
+    },
+    cancelSizeSelection() {
+            this.showSizeModal = false;
+            this.currentItem = null;
+        },
     addToCart() {
       if (this.canAddToCart) {
         // Flatten itemsToAdd array with selected sides and entrees
-        const itemsToAdd = [];
+        const itemsToAdd = [...this.selectedDrinks];
 
         // Add each selected side
-        this.selectedDrinks.forEach(drink => {
-          itemsToAdd.push({
-            name: `Drink: ${this.getDrinkName(drink)}`,
-            price: 4.50
-          });
-        });
+        // this.selectedDrinks.forEach(drink => {
+        //   itemsToAdd.push({
+        //     name: `Drink: ${this.getDrinkName(drink)}`,
+        //     price: 4.50
+        //   });
+        // });
 
+        this.$emit('addToCart', this.selectedDrinks);
         // Emit the itemsToAdd array to the cart
         this.$emit('addToCart', itemsToAdd);
 
@@ -184,4 +243,41 @@ button:hover {
     box-shadow: 0 4px 3px #080808;
     cursor: not-allowed;
 }
+.size-modal {
+    position: fixed;
+    top: 50%;
+    left: 60%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    z-index: 1001;
+    color:#080808;
+}
+
+.size-modal button {
+    margin: 5px;
+    padding: 10px;
+}
+
+.close-button {
+    position: absolute; /* Positioning relative to the modal */
+    bottom: 10px; /* Adjust as needed */
+    right: 10px; /* Adjust as needed */
+    background-color: transparent; /* No background */
+    border: none; /* No border */
+    color: red; /* Red color for the X */
+    font-size: 24px; /* Adjust font size as needed */
+    cursor: pointer; /* Change cursor to pointer */
+}
+
+.close-button:hover {
+    color: darkred; /* Change color on hover for better UX */
+    background-color: transparent !important;
+    box-shadow: none !important;
+   
+
+}
+
 </style>
