@@ -1,5 +1,5 @@
 <template>
-    <div class="checkout-page">
+    <div class="checkout-page" v-if="!showUserInfo">
         <h2>Choose a payment method</h2>
         <!-- Payment options as big rectangles with icons above text -->
         <div class="payment-options">
@@ -29,13 +29,19 @@
             <button @click="placeOrder" class="place-order-button">Place Order</button>
         </div>
     </div>
+
+    <UserInfo v-else @cancel="cancelUserInfo" @confirm="confirmOrder" />
 </template>
 
 <script>
+import UserInfo from './UserInfo.vue';
+
 export default {
+    components: { UserInfo },
     data() {
         return {
             selectedPayment: null,
+            showUserInfo: false
         };
     },
     methods: {
@@ -48,11 +54,15 @@ export default {
                 alert('Please select a payment method.');
                 return;
             }
-            this.$emit('confirmOrder', this.selectedPayment); // Emit event with payment method
-        },
+            this.showUserInfo = true;        },
         cancelOrder() {
             this.$emit('cancelOrder'); // Emit event to cancel
         },
+        confirmOrder(userDetails) {
+            // Send user details and payment information as needed
+            console.log("Order confirmed with details:", userDetails);
+            // Handle order confirmation (e.g., save to database, show a confirmation message)
+        }
     },
 };
 </script>
