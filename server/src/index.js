@@ -376,6 +376,17 @@ app.post("/menu/item/delete", (req, res) => {
     .catch((error) => res.status(500).json({ error: error.message }));
 });
 
+app.get("/menu/item/view/ingredients", (req, res) => {
+  const { foodid } = req.query;
+  pool
+    .query(
+      "SELECT ingredients.name AS ingredient_name, quantity, ingredients.ingredientid FROM foods JOIN recipes ON foods.foodid = recipes.foodid JOIN ingredients ON recipes.ingredientid = ingredients.ingredientid WHERE foods.foodid = $1;",
+      [foodid]
+    )
+    .then((query_res) => res.json(query_res.rows))
+    .catch((error) => res.status(500).json({ error: error.message }));
+});
+
 /**
  * Get all menu prices.
  * @method GET /prices

@@ -2,16 +2,21 @@
   <div class="inventory">
     <div class="grid">
       <div v-for="food in foods" :key="food.ingredientid">
-        <button class="ingredient-card">{{ food.name }}</button>
+        <button class="ingredient-card" @click="updateItem(food)">
+          {{ food.name }}
+        </button>
       </div>
     </div>
-    <button @click="addNewItem" class="add-button">Add New Item</button>
-    <button @click="deleteItem" class="add-button">Delete Item</button>
+    <div class="buttons">
+      <button @click="addNewItem" class="add-button">Add New Item</button>
+      <button @click="deleteItem" class="add-button">Delete Item</button>
+    </div>
     <MenuItemModal
       v-if="showAddMenuItem"
       @close="addNewItem"
-      @submit="handleFormSubmit"
       :food="selectedFood"
+      :isNewItem="newItem"
+      :IngredientList="ingredientList"
     />
   </div>
 </template>
@@ -29,6 +34,9 @@ export default {
     return {
       foods: [],
       showAddMenuItem: false,
+      selectedFood: null,
+      newItem: false,
+      ingredientList: [],
     }
   },
   methods: {
@@ -40,8 +48,33 @@ export default {
         console.error('Error fetching inventory:', error)
       }
     },
+
+    fetchIngredientList(food) {
+      const params = new URLSearchParams()
+      params.append('foodid', food.foodid)
+      const config = {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        params: { foodid: food.foodid },
+      }
+      axios
+        .get('http://localhost:3000/menu/item/view/ingredients', config)
+        .then(res => {
+          ;(this.ingredientList = res.data), (this.newItem = false)
+          this.selectedFood = food
+          this.showAddMenuItem = !this.showAddMenuItem
+        })
+        .catch(error => console.error('Error fetching inventory total:', error))
+    },
+
     addNewItem() {
+      this.newItem = true
+      this.selectedFood = null
       this.showAddMenuItem = !this.showAddMenuItem
+    },
+    updateItem(food) {
+      this.fetchIngredientList(food)
     },
     handleFormSubmit() {},
   },
@@ -55,7 +88,10 @@ export default {
 .inventory {
   padding: 20px;
 }
-
+.buttons {
+  display: flex;
+  justify-content: space-around;
+}
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));

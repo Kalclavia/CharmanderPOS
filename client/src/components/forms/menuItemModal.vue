@@ -1,7 +1,7 @@
 <template>
   <div class="modal-overlay" @click="closeModal">
     <div class="modal" @click.stop>
-      <h2>{{ isNewItem ? 'Edit Food' : 'Add New Food' }}</h2>
+      <h2>{{ isNewItem ? 'Add New Food' : 'Edit Food' }}</h2>
       <form @submit.prevent="submitForm">
         <div class="form-group">
           <label for="name">Food Name:</label>
@@ -58,7 +58,7 @@
 
         <div class="modal-actions">
           <button type="submit">
-            {{ isNewItem ? 'Update' : 'Add' }}
+            {{ isNewItem ? 'Add' : 'Update' }}
           </button>
           <button type="button" @click="closeModal">Cancel</button>
         </div>
@@ -82,22 +82,25 @@ export default {
       axios
         .get('http://localhost:3000/inventory')
         .then(res => (this.ingredients = res.data))
+        .then(this.updateFoodForm())
         .catch(error => console.error('Error adding new item:', error))
     },
     addNewFoodItem() {
-      const params = new URLSearchParams()
-      params.append('foodid', this.lastid)
-      params.append('name', this.form.name)
-      params.append('type', this.form.type)
-      const config = {
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
+      if (this.form.name != '' && this.form.type != '') {
+        const params = new URLSearchParams()
+        params.append('foodid', this.lastid)
+        params.append('name', this.form.name)
+        params.append('type', this.form.type)
+        const config = {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+        }
+        axios
+          .post('http://localhost:3000/menu/item/add', params, config)
+          .then(this.addNewFoodRecipe)
+          .catch(error => console.error('Error adding new item:', error))
       }
-      axios
-        .post('http://localhost:3000/menu/item/add', params, config)
-        .then(this.addNewFoodRecipe)
-        .catch(error => console.error('Error adding new item:', error))
     },
     addNewFoodRecipe() {
       for (let i = 0; i < this.form.quantity.length; i++) {
@@ -121,13 +124,16 @@ export default {
               params,
               config,
             )
-            .then()
+            .then(this.closeModal())
             .catch(error => console.error('Error adding new item:', error))
         }
       }
     },
     submitForm() {
-      this.addNewFoodItem()
+      if (this.isNewItem) {
+        this.addNewFoodItem()
+      } else {
+      }
     },
     deleteItem() {
       this.$emit('delete', this.form)
@@ -139,9 +145,42 @@ export default {
     updateIngredient(index, value) {
       this.form.ingredientName[index] = value
     },
+    updateFoodForm() {
+      if (this.food != null) {
+        this.form.foodid = this.food.foodid
+        this.form.name = this.food.name
+        this.form.type = this.food.type
+
+        for (let i = 0; i < this.IngredientList.length; i++) {
+          this.form.quantity[this.IngredientList[i].ingredientid - 1] =
+            this.IngredientList[i].quantity
+        }
+      }
+    },
   },
+  // watch: {
+  //   IngredientList: {
+  //     immediate: true,
+  //     handler(newVal) {
+  //       if (newVal && newVal.length) {
+  //         // this.form.quantity = newVal.map(
+  //         //   ingredient => ingredient.quantity || 0,
+  //         // )
+  //         // this.form.ingredientName = newVal.map(
+  //         //   ingredient => ingredient.name || '',
+  //         // )
+  //         // for (let i = 0; i < this.IngredientList.length; i++) {
+  //         //   this.form.quantity[this.IngredientList[i].ingredientid - 1] =
+  //         //     this.IngredientList[i].quantity
+  //         // }
+  //       }
+  //     },
+  //   },
+  // },
   props: {
     food: { type: Object, default: null },
+    isNewItem: { type: Boolean, required: true },
+    IngredientList: { type: Array, required: false, default: null },
   },
   data() {
     return {
@@ -157,12 +196,8 @@ export default {
     }
   },
 
-  computed: {
-    isNewItem() {
-      return this.item && !this.item.id
-    },
-  },
   mounted() {
+    // this.updateFoodForm()
     this.fetchIngredients()
   },
 }
