@@ -76,7 +76,7 @@ export default {
       // For Aquafina and Gatorade, add directly to selectedDrinks without showing size modal
       const itemToAdd = {
         name: `Drink: ${this.getDrinkName(drink)}`,
-        price: this.getDrinkName(drink).toLowerCase() === 'aquafina' ? 1.50 : 2.00 // Aquafina: $1.50, Gatorade: $2.00
+        price: this.getDrinkName(drink).toLowerCase() === 'aquafina' ? 2.30 : 2.70 // Aquafina: $1.50, Gatorade: $2.00
       };
         this.selectedDrinks.push(itemToAdd);
 
