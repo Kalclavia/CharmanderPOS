@@ -10,6 +10,7 @@
                 <span v-if="selectedSides.includes(side)" class="checkmark">✓</span>
             </button>
         </div>
+
         <h2>Entrees</h2>
         <div class="grid">
             <button v-for="entree in entrees" :key="entree" @click="toggleEntrees(entree)"
@@ -21,15 +22,31 @@
             </button>
         </div>
 
+        <!-- Size Selection Modal -->
+        <div v-if="showSizeModal" class="size-modal">
+            <h3 class="modal-title">Select Size for {{ currentItemType === 'side' ? getSideName(currentItem) : getEntreeName(currentItem) }}</h3>
+            <div v-if="currentItemType === 'side'">
+                <button v-for="size in sizeOptions.side" :key="size.name" @click="selectSize(size, 'side')">
+                    {{ size.name }} - ${{ size.price.toFixed(2) }}
+                </button>
+            </div>
+            <div v-else>
+                <button v-for="size in sizeOptions.entree" :key="size.name" @click="selectSize(size, 'entree')">
+                    {{ size.name }} - ${{ size.price.toFixed(2) }}
+                </button>
+            </div>
+            <!-- Red X Button -->
+            <button @click="cancelSizeSelection" class="close-button">✖</button>
+        </div>
+
         <!-- Add to Cart Button -->
         <button class="add-to-cart" @click="addToCart" :disabled="!canAddToCart">
             Add to Cart
         </button>
     </div>
 </template>
-
 <script>
-import axios from 'axios' // Make sure to install axios if you haven't already
+import axios from 'axios';
 
 export default {
     name: 'ALaCarte',
@@ -38,8 +55,22 @@ export default {
             sides: [],
             entrees: [],
             selectedSides: [],
-            selectedEntrees: []
-        }
+            selectedEntrees: [],
+            showSizeModal: false,
+            currentItem: null,
+            currentItemType: null,
+            sizeOptions: {
+                side: [
+                    { name: 'Medium', price: 4.40 },
+                    { name: 'Large', price: 5.40 }
+                ],
+                entree: [
+                    { name: 'Small', price: 5.20 },
+                    { name: 'Medium', price: 8.50 },
+                    { name: 'Large', price: 11.20 }
+                ]
+            }
+        };
     },
     computed: {
         canAddToCart() {
@@ -49,55 +80,47 @@ export default {
     methods: {
         async fetchMenuItems() {
             try {
-                const sideResponse = await axios.get(
-                    'http://localhost:3000/menu/Side',
-                )
-                const entreeResponse = await axios.get(
-                    'http://localhost:3000/menu/Entree',
-                )
-                this.sides = sideResponse.data
-                this.entrees = entreeResponse.data
-                console.log(this.sides)
-                console.log(this.entrees)
+                const sideResponse = await axios.get('http://localhost:3000/menu/Side');
+                const entreeResponse = await axios.get('http://localhost:3000/menu/Entree');
+                this.sides = sideResponse.data;
+                this.entrees = entreeResponse.data;
             } catch (error) {
-                console.error('Error fetching menu items:', error)
+                console.error('Error fetching menu items:', error);
             }
         },
         toggleSides(side) {
-            if (this.selectedSides.includes(side)) {
-                this.selectedSides = this.selectedSides.filter(selected => selected !== side);
-            } else {
-                this.selectedSides.push(side);
-            }
+            this.currentItem = side;
+            this.currentItemType = 'side';
+            this.showSizeModal = true;
         },
         toggleEntrees(entree) {
-            if (this.selectedEntrees.includes(entree)) {
-                this.selectedEntrees = this.selectedEntrees.filter(selected => selected !== entree);
+            this.currentItem = entree;
+            this.currentItemType = 'entree';
+            this.showSizeModal = true;
+        },
+        selectSize(size, type) {
+            const itemToAdd = {
+                name: `${type === 'side' ? 'Side' : 'Entree'}: ${type === 'side' ? this.getSideName(this.currentItem) : this.getEntreeName(this.currentItem)} (${size.name})`,
+                price: size.price
+            };
+            
+            if (type === 'side') {
+                this.selectedSides.push(itemToAdd);
             } else {
-                this.selectedEntrees.push(entree);
+                this.selectedEntrees.push(itemToAdd);
             }
+
+            this.showSizeModal = false;
+            this.currentItem = null;
+        },
+        cancelSizeSelection() {
+            this.showSizeModal = false;
+            this.currentItem = null;
         },
         addToCart() {
             if (this.canAddToCart) {
-                // Flatten itemsToAdd array with selected sides and entrees
-                const itemsToAdd = [];
-
-                // Add each selected side
-                this.selectedSides.forEach(side => {
-                    itemsToAdd.push({
-                        name: `Side: ${this.getSideName(side)}`,
-                        price: 4.50
-                    });
-                });
-
-                // Add each selected entree
-                this.selectedEntrees.forEach(entree => {
-                    itemsToAdd.push({
-                        name: `Entree: ${this.getEntreeName(entree)}`,
-                        price: 5.50
-                    });
-                });
-
+                const itemsToAdd = [...this.selectedSides, ...this.selectedEntrees];
+                
                 // Emit the itemsToAdd array to the cart
                 this.$emit('addToCart', itemsToAdd);
 
@@ -106,55 +129,33 @@ export default {
                 this.selectedEntrees = [];
             }
         },
-        selectItem(item) {
-            console.log(item)
-            this.$emit('selectItem', item) // Emit selected item to the parent
-        },
         getSideName(side) {
-            if (typeof side === 'string') {
-                return side
-            }
-            else if (side && side.name) {
-                return side.name
-            }
-
-            return 'Unknown Side'
+            return typeof side === 'string' ? side : (side && side.name ? side.name : 'Unknown Side');
         },
         getSideImage(side) {
-            let name = this.getSideName(side)
-            if (!name) return null
-            const fileName = `${name.toLowerCase().replace(/\s+/g, '')}.png`
-            const imagePath = `/src/assets/${fileName}`
-            console.log('Image path:', imagePath)
-            return imagePath
+            let name = this.getSideName(side);
+            if (!name) return null;
+            const fileName = `${name.toLowerCase().replace(/\s+/g, '')}.png`;
+            return `/src/assets/${fileName}`;
         },
         getEntreeName(entree) {
-            if (typeof entree === 'string') {
-                return entree
-            }
-            else if (entree && entree.name) {
-                return entree.name
-            }
-
-            return 'Unknown Entree'
+            return typeof entree === 'string' ? entree : (entree && entree.name ? entree.name : 'Unknown Entree');
         },
         getEntreeImage(entree) {
-            let name = this.getEntreeName(entree)
-            if (!name) return null
-            const fileName = `${name.toLowerCase().replace(/\s+/g, '')}.png`
-            const imagePath = `/src/assets/${fileName}`
-            console.log('Image path:', imagePath)
-            return imagePath
+            let name = this.getEntreeName(entree);
+            if (!name) return null;
+            const fileName = `${name.toLowerCase().replace(/\s+/g, '')}.png`;
+            return `/src/assets/${fileName}`;
         },
         handleImageError(event) {
-            console.error('Image failed to load:', event.target.src)
-            event.target.style.display = 'none'
+            console.error('Image failed to load:', event.target.src);
+            event.target.style.display = 'none';
         }
     },
     mounted() {
-        this.fetchMenuItems() // Fetch menu items when the component mounts
-    },
-}
+        this.fetchMenuItems(); // Fetch menu items when the component mounts
+    }
+};
 </script>
 
 <style scoped>
@@ -246,4 +247,42 @@ button:hover {
     box-shadow: 0 4px 3px #080808;
     cursor: not-allowed;
 }
+
+.size-modal {
+    position: fixed;
+    top: 50%;
+    left: 60%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    z-index: 1001;
+    color:#080808;
+}
+
+.size-modal button {
+    margin: 5px;
+    padding: 10px;
+}
+
+.close-button {
+    position: absolute; /* Positioning relative to the modal */
+    bottom: 10px; /* Adjust as needed */
+    right: 10px; /* Adjust as needed */
+    background-color: transparent; /* No background */
+    border: none; /* No border */
+    color: red; /* Red color for the X */
+    font-size: 24px; /* Adjust font size as needed */
+    cursor: pointer; /* Change cursor to pointer */
+}
+
+.close-button:hover {
+    color: darkred; /* Change color on hover for better UX */
+    background-color: transparent !important;
+    box-shadow: none !important;
+   
+
+}
+
 </style>
