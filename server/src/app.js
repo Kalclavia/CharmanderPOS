@@ -239,3 +239,26 @@ app.get('/menu/:type', async (req, res) => {
 var port = 3000;
 console.log(`Server is listening on localhost:${port}`);
 app.listen(3000);
+/**
+ * Get the price of a specific menu item.
+ * @method GET /menu/price
+ * @param {string} itemName The name of the item to retrieve the price of.
+ * @returns {object} The price of the specified item.
+ */
+app.get('/menu/price', async (req, res) => {
+  const itemName = req.query.itemName; // Get item name from query parameter
+  const sql = "SELECT type, price FROM itemtypes WHERE type = $1";
+  
+  try {
+    const query_res = await pool.query(sql, [itemName]);
+    if (query_res.rows.length > 0) {
+      const price = query_res.rows[0].price;
+      res.json({ price });
+    } else {
+      res.status(404).json({ error: "Item not found" });
+    }
+  } catch (error) {
+    console.error("Error fetching item price:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
