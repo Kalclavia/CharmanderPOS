@@ -62,8 +62,8 @@
         }
         axios
         .patch('http://localhost:3000/prices/setprice', params, config)
-        .then(() => this.fetchItems())
-        .catch(error => console.error('Error updating name:', error))
+        .then(() => this.fetchInventory())
+        .catch(error => console.error('Error updating price:', error))
 
         console.log('updated item:',form.price)
       },

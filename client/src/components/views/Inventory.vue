@@ -20,13 +20,15 @@
           <td>{{ item.maxstock }}</td>
           <td>{{ item.units }}</td>
           <td>
-            <button @click="openModal('update', item)">Update</button>
-            <button @click="deleteItem(item.ingredientid)">Delete</button>
+            <div class="buttons" >
+              <button @click="openModal('update', item)">Update</button>
+              <button @click="deleteItem(item.ingredientid)">Delete</button>
+            </div>
           </td>
         </tr>
       </tbody>
     </table>
-    <button class="button2" @click="openModal('add')">Add Item</button>
+  <div class="buttons2"><button class="button2" @click="openModal('add')">Add Item</button></div>
 
     <inventoryModal
       v-if="showModal"
@@ -144,6 +146,17 @@ export default {
 <style scoped>
 .inventory {
   padding: 20px;
+}
+
+.buttons {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.buttons2 {
+  display: flex;
+  justify-content: space-around;
+  padding-top: 15px;
 }
 
 .table {
