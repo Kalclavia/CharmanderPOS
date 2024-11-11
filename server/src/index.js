@@ -234,8 +234,10 @@ app.patch("/inventory/updateName", (req, res) => {
 app.get("/inventory/id", (req, res) => {
   pool
     .query("SELECT COUNT(*) FROM ingredients")
-    .then((query_res) => {res.json(query_res.rows[0]), console.log(res)})
-    .catch((error) => res.status(500).json({error: error.message }));
+    .then((query_res) => {
+      res.json(query_res.rows[0]), console.log(res);
+    })
+    .catch((error) => res.status(500).json({ error: error.message }));
 });
 /**
  * Get the id of the last item endpoint
@@ -321,6 +323,9 @@ app.get("/menu/:type", (req, res) => {
     })
     .catch((error) => res.status(500).json({ error: error.message }));
 });
+
+// food items
+
 /**
  * Get all menu items.
  * @method GET /menu
@@ -330,6 +335,43 @@ app.get("/menu/:type", (req, res) => {
 app.get("/menu", (req, res) => {
   pool
     .query("SELECT * FROM foods;")
+    .then((query_res) => res.json(query_res.rows))
+    .catch((error) => res.status(500).json({ error: error.message }));
+});
+
+app.get("/menu/item/total", (req, res) => {
+  pool
+    .query("SELECT COUNT(*) FROM foods;")
+    .then((query_res) => res.json(query_res.rows[0]))
+    .catch((error) => res.status(500).json({ error: error.message }));
+});
+
+app.post("/menu/item/add", (req, res) => {
+  const { foodid, name, type } = req.body;
+  pool
+    .query("INSERT INTO foods (foodid, name, type) VALUES($1,$2,$3);", [
+      foodid,
+      name,
+      type,
+    ])
+    .then((query_res) => res.json(query_res.rows[0]))
+    .catch((error) => res.status(500).json({ error: error.message }));
+});
+
+app.post("/menu/item/add/ingredient", (req, res) => {
+  const { foodid, ingredientID, quantity, foodname, ingredientname } = req.body;
+  pool
+    .query(
+      "INSERT INTO recipes (foodid, ingredientid, quantity, foodname, ingredientname ) VALUES($1,$2,$3,$4,$5);",
+      [foodid, ingredientID, quantity, foodname, ingredientname]
+    )
+    .then((query_res) => res.json(query_res.rows[0]))
+    .catch((error) => res.status(500).json({ error: error.message }));
+});
+
+app.post("/menu/item/delete", (req, res) => {
+  pool
+    .query("DELETE FROM foods WHERE name = ?;")
     .then((query_res) => res.json(query_res.rows))
     .catch((error) => res.status(500).json({ error: error.message }));
 });
