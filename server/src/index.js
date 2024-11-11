@@ -402,16 +402,16 @@ app.get("/prices", (req, res) => {
 
 /**
  *set menu price.
- * @method GET /prices
- * @param {string} type The type of menu items to retrieve.
- * @returns {objects[]} Array of menu items with their names.
+ * @method SET /prices/setprice
+ * @param {string} type The type of menu items to change.
+ * @returns {objects} Updated Object.
  */
 app.get("/prices/setprice", (req, res) => {
-  const { itemid, price } = req.body;
+  const { type, price } = req.body;
   pool
     .query(
-      "UPDATE ingredients SET price = $1 WHERE itemid = $2 RETURNING *;",
-      [price, itemid]
+      "UPDATE itemtypes SET price = $1 WHERE type = $2 RETURNING *;",
+      [price, type]
     )
     .then((query_res) => res.json(query_res.rows[0]))
     .catch((error) => res.status(500).json({ error: error.message }));

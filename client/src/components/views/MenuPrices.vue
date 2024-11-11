@@ -50,6 +50,23 @@
         this.selectedItem = item;
         this.showModal = true;
       },
+      handleFormSubmit(form){
+        const params = new URLSearchParams()
+        params.append('type', form.type)
+        params.append('price', form.price)
+
+        const config = {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+        }
+        axios
+        .patch('http://localhost:3000/prices/setprice', params, config)
+        .then(() => this.fetchItems())
+        .catch(error => console.error('Error updating name:', error))
+
+        console.log('updated item:',form.price)
+      },
       closeModal() {
         this.showModal = false;
       },

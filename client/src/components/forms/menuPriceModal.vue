@@ -9,8 +9,8 @@
           </div>
           <div class="form-group">
             <label for="Price">Price:</label>
-            <input type="decimal" v-model="form.price" required />
-          </div>
+            <input type="number" v-model="form.price" step="0.01" min="0" required />
+            </div>
           <div class="modal-actions">
             <button type="submit">{{ 'Update'}}</button>
             <button type="button" @click="closeModal">Cancel</button>
