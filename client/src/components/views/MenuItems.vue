@@ -103,6 +103,12 @@ export default {
         .get('http://localhost:3000/menu')
         .then(res => {
           this.foods = res.data
+          axios
+            .get('http://localhost:3000/menu/view/removed')
+            .then(res => {
+              this.deletedfoods = res.data
+            })
+            .catch(error => console.error('Error fetching foods:', error))
         })
         .catch(error => console.error('Error fetching foods:', error))
     },
@@ -118,13 +124,13 @@ export default {
       this.showAddMenuItem = !this.showAddMenuItem
       this.fetchInventory()
       this.fetchFoods()
-      this.fetchDeletedFoods()
+      // this.fetchDeletedFoods()
     },
     handleDeleteSubmit() {
       this.showDeleteMenuItem = !this.showDeleteMenuItem
       this.fetchInventory()
       this.fetchFoods()
-      this.fetchDeletedFoods()
+      // this.fetchDeletedFoods()
     },
   },
   mounted() {

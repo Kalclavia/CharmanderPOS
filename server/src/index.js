@@ -334,7 +334,7 @@ app.get("/menu/:type", (req, res) => {
  */
 app.get("/menu", (req, res) => {
   pool
-    .query("SELECT * FROM foods WHERE isremoved = FALSE ORDER BY foodid ASC;")
+    .query("SELECT * FROM foods WHERE isremoved = false ORDER BY foodid ASC;")
     .then((query_res) => res.json(query_res.rows))
     .catch((error) => res.status(500).json({ error: error.message }));
 });
