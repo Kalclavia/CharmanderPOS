@@ -444,7 +444,7 @@ app.get("/menu/item/view/recipe", (req, res) => {
  */
 app.get("/prices", (req, res) => {
   pool
-    .query("SELECT * FROM itemtypes;")
+    .query("SELECT * FROM itemtypes ORDER BY itemid ASC;")
     .then((query_res) => res.json(query_res.rows))
     .catch((error) => res.status(500).json({ error: error.message }));
 });
@@ -455,7 +455,7 @@ app.get("/prices", (req, res) => {
  * @param {string} type The type of menu items to change.
  * @returns {objects} Updated Object.
  */
-app.get("/prices/setprice", (req, res) => {
+app.patch("/prices/setprice", (req, res) => {
   const { type, price } = req.body;
   pool
     .query("UPDATE itemtypes SET price = $1 WHERE type = $2 RETURNING *;", [

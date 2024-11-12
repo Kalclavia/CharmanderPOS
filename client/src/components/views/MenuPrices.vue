@@ -54,7 +54,6 @@
         const params = new URLSearchParams()
         params.append('type', form.type)
         params.append('price', form.price)
-
         const config = {
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
