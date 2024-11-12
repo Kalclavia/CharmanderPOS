@@ -17,6 +17,15 @@
             <option>Drink</option>
           </select>
         </div>
+        <div class="form-group-radio" v-if="IsDeletedItem">
+          <label for="isDeleted">Deleted Food:</label>
+          <input
+            type="checkbox"
+            value="true"
+            v-model="form.isDeleted"
+            class="radio-group"
+          />
+        </div>
         <div class="form-group">
           <label for="type">Ingredients:</label>
           <div class="scrollable-table">
@@ -131,6 +140,7 @@ export default {
         params.append('name', this.form.name)
         params.append('type', this.form.type)
         params.append('foodid', this.form.foodid)
+        params.append('isRemoved', this.form.isDeleted)
         console.log(params)
         const config = {
           headers: {
@@ -233,6 +243,7 @@ export default {
         this.form.foodid = this.food.foodid
         this.form.name = this.food.name
         this.form.type = this.food.type
+        this.form.isDeleted = this.IsDeletedItem
         for (let i = 0; i < this.IngredientList.length; i++) {
           this.form.quantity[this.IngredientList[i].ingredientid - 1] =
             this.IngredientList[i].quantity
@@ -267,6 +278,7 @@ export default {
     food: { type: Object, default: null },
     isNewItem: { type: Boolean, required: true },
     IngredientList: { type: Array, required: false, default: null },
+    IsDeletedItem: { type: Boolean, required: true },
   },
   data() {
     return {
@@ -276,6 +288,7 @@ export default {
         type: '',
         quantity: [],
         ingredientName: [],
+        isDeleted: false,
       },
       ingredients: [],
       lastid: -1,
@@ -301,10 +314,12 @@ export default {
   align-items: flex-start;
   justify-content: center;
   z-index: 1000;
-  padding-top: 40px;
-  padding-bottom: 40px;
+  padding-top: 5px;
+  padding-bottom: 5px;
 }
-
+.radio-group {
+  margin-left: auto;
+}
 .modal {
   background-color: #d2ceb8;
   color: #000;
@@ -317,6 +332,21 @@ export default {
 
 h2 {
   margin-top: 0;
+}
+
+.form-group-radio {
+  margin-bottom: 15px;
+}
+
+.form-group-radio label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.form-group-radio input {
+  padding: 8px;
+  box-sizing: border-box;
 }
 
 .form-group {

@@ -2,7 +2,7 @@
   <div class="inventory">
     <div class="grid">
       <div v-for="food in foods" :key="food.ingredientid">
-        <button class="ingredient-card" @click="updateItem(food)">
+        <button class="ingredient-card" @click="updateItem(food, false)">
           {{ food.name }}
         </button>
       </div>
@@ -17,12 +17,20 @@
       :food="selectedFood"
       :isNewItem="newItem"
       :IngredientList="ingredientList"
+      :IsDeletedItem="isDeletedItem"
     />
     <MenuItemDeleteModel
       v-if="showDeleteMenuItem"
       :foods="foods"
       @close="handleDeleteSubmit"
     />
+    <div class="grid-deleted">
+      <div v-for="food in deletedfoods" :key="food.ingredientid">
+        <button class="ingredient-card" @click="updateItem(food, true)">
+          {{ food.name }}
+        </button>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -39,11 +47,13 @@ export default {
   data() {
     return {
       foods: [],
+      deletedfoods: [],
       showAddMenuItem: false,
       selectedFood: null,
       newItem: false,
       ingredientList: [],
       showDeleteMenuItem: false,
+      isDeletedItem: false,
     }
   },
   methods: {
@@ -79,9 +89,11 @@ export default {
       this.newItem = true
       this.selectedFood = null
       this.showAddMenuItem = !this.showAddMenuItem
+      this.isDeletedItem = false
     },
-    updateItem(food) {
+    updateItem(food, deleteditem) {
       this.fetchIngredientList(food)
+      this.isDeletedItem = deleteditem
     },
     deleteItem() {
       this.showDeleteMenuItem = !this.showDeleteMenuItem
@@ -94,19 +106,30 @@ export default {
         })
         .catch(error => console.error('Error fetching foods:', error))
     },
+    fetchDeletedFoods() {
+      axios
+        .get('http://localhost:3000/menu/view/removed')
+        .then(res => {
+          this.deletedfoods = res.data
+        })
+        .catch(error => console.error('Error fetching foods:', error))
+    },
     handleFormSubmit() {
       this.showAddMenuItem = !this.showAddMenuItem
       this.fetchInventory()
       this.fetchFoods()
+      this.fetchDeletedFoods()
     },
     handleDeleteSubmit() {
       this.showDeleteMenuItem = !this.showDeleteMenuItem
       this.fetchInventory()
       this.fetchFoods()
+      this.fetchDeletedFoods()
     },
   },
   mounted() {
     this.fetchInventory()
+    this.fetchDeletedFoods()
   },
 }
 </script>
@@ -124,6 +147,14 @@ export default {
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 10px;
   margin-bottom: 20px;
+}
+
+.grid-deleted {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px;
+  margin-bottom: 20px;
+  margin-top: 20px;
 }
 
 .ingredient-card {

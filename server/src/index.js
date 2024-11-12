@@ -334,7 +334,14 @@ app.get("/menu/:type", (req, res) => {
  */
 app.get("/menu", (req, res) => {
   pool
-    .query("SELECT * FROM foods ORDER BY foodid ASC;")
+    .query("SELECT * FROM foods WHERE isremoved = FALSE ORDER BY foodid ASC;")
+    .then((query_res) => res.json(query_res.rows))
+    .catch((error) => res.status(500).json({ error: error.message }));
+});
+
+app.get("/menu/view/removed", (req, res) => {
+  pool
+    .query("SELECT * FROM foods WHERE isremoved = true ORDER BY foodid ASC;")
     .then((query_res) => res.json(query_res.rows))
     .catch((error) => res.status(500).json({ error: error.message }));
 });
@@ -372,12 +379,12 @@ app.post("/menu/item/add/recipe", (req, res) => {
 app.post("/menu/item/delete", (req, res) => {
   const { foodname, foodid } = req.body;
   console.log(foodname);
+  // pool
+  //   .query("DELETE FROM recipes WHERE foodid = $1;", [foodid])
+  //   .then()
+  //   .catch((error) => res.status(500).json({ error: error.message }));
   pool
-    .query("DELETE FROM recipes WHERE foodid = $1;", [foodid])
-    .then()
-    .catch((error) => res.status(500).json({ error: error.message }));
-  pool
-    .query("DELETE FROM foods WHERE name = $1;", [foodname])
+    .query("UPDATE foods SET isremoved = true WHERE foodid = $1;", [foodid])
     .then((query_res) => res.json(query_res.rows))
     .catch((error) => res.status(500).json({ error: error.message }));
 });
@@ -394,13 +401,12 @@ app.get("/menu/item/view/ingredients", (req, res) => {
 });
 
 app.patch("/menu/item/update/type", (req, res) => {
-  const { type, name, foodid } = req.body;
+  const { type, name, isRemoved, foodid } = req.body;
   pool
-    .query("UPDATE foods SET type = $1, name = $2 WHERE foodid = $3;", [
-      type,
-      name,
-      foodid,
-    ])
+    .query(
+      "UPDATE foods SET type = $1, name = $2, isremoved = $3 WHERE foodid = $4;",
+      [type, name, isRemoved, foodid]
+    )
     .then((query_res) => res.json(query_res.rows))
     .catch((error) => res.status(500).json({ error: error.message }));
 });
@@ -452,10 +458,10 @@ app.get("/prices", (req, res) => {
 app.get("/prices/setprice", (req, res) => {
   const { type, price } = req.body;
   pool
-    .query(
-      "UPDATE itemtypes SET price = $1 WHERE type = $2 RETURNING *;",
-      [price, type]
-    )
+    .query("UPDATE itemtypes SET price = $1 WHERE type = $2 RETURNING *;", [
+      price,
+      type,
+    ])
     .then((query_res) => res.json(query_res.rows[0]))
     .catch((error) => res.status(500).json({ error: error.message }));
 });
