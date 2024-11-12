@@ -1,5 +1,5 @@
 <template>
-    <div class="checkout-page" v-if="!showUserInfo">
+    <div class="checkout-page" v-if="!showUserInfo && !orderConfirmed">
         <h2>Choose a payment method</h2>
         <!-- Payment options as big rectangles with icons above text -->
         <div class="payment-options">
@@ -30,18 +30,26 @@
         </div>
     </div>
 
-    <UserInfo v-else @cancel="cancelUserInfo" @confirm="confirmOrder" />
+    <UserInfo v-else-if="showUserInfo && !orderConfirmed" @cancel="cancelUserInfo" @confirm="completeOrder" />
+
+    <OrderComplete v-else :transactionId="orderDetails.transactionId" :readyTime="orderDetails.readyTime" />
 </template>
 
 <script>
 import UserInfo from './UserInfo.vue';
+import OrderComplete from './OrderComplete.vue';
 
 export default {
-    components: { UserInfo },
+    components: { UserInfo, OrderComplete },
     data() {
         return {
             selectedPayment: null,
-            showUserInfo: false
+            showUserInfo: false,
+            orderConfirmed: false,
+            orderDetails: {
+                transactionId: '',
+                readyTime: ''
+            }
         };
     },
     methods: {
@@ -58,10 +66,13 @@ export default {
         cancelOrder() {
             this.$emit('cancelOrder'); // Emit event to cancel
         },
-        confirmOrder(userDetails) {
-            // Send user details and payment information as needed
-            console.log("Order confirmed with details:", userDetails);
-            // Handle order confirmation (e.g., save to database, show a confirmation message)
+        cancelUserInfo() {
+            this.showUserInfo = false; // Return to CheckoutPage
+        },
+        completeOrder(details) {
+            this.orderDetails.transactionId = details.transactionId;
+            this.orderDetails.readyTime = details.readyTime;
+            this.orderConfirmed = true; // Switch to OrderComplete view
         }
     },
 };

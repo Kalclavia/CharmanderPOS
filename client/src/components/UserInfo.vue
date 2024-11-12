@@ -32,7 +32,14 @@ export default {
                 alert("Please fill in both fields.");
                 return;
             }
-            this.$emit('confirm', { name: this.name, phone: this.phone });
+            const transactionId = 'TX' + Math.floor(Math.random() * 100000); // Example ID
+            const readyTime = this.calculateReadyTime();
+            this.$emit('confirm', { name: this.name, phone: this.phone, transactionId, readyTime });
+        },
+        calculateReadyTime() {
+            const now = new Date();
+            now.setMinutes(now.getMinutes() + 5 + Math.floor(Math.random() * 6)); // 5-10 minutes
+            return now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
         }
     }
 };
