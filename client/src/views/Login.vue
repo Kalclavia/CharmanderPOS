@@ -36,8 +36,10 @@ export default {
       for (var i = 0; i < this.employeeData.length; i++) {
         if (this.inputID == this.employeeData[i].employeeid) {
           if (this.employeeData[i].role == 'manager') {
+            $cookies.set('manager', 'true', null, '/')
             this.$router.push('/manager')
           } else {
+            $cookies.set('manager', 'false', null, '/')
             this.$router.push('/cashier')
           }
         }
@@ -45,7 +47,7 @@ export default {
     },
   },
   mounted() {
-    this.fetchEmployees() // Fetch menu items when the component mounts
+    this.fetchEmployees()
   },
 }
 </script>
