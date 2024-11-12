@@ -13,10 +13,15 @@
     </div>
     <MenuItemModal
       v-if="showAddMenuItem"
-      @close="addNewItem"
+      @close="handleFormSubmit"
       :food="selectedFood"
       :isNewItem="newItem"
       :IngredientList="ingredientList"
+    />
+    <MenuItemDeleteModel
+      v-if="showDeleteMenuItem"
+      :foods="foods"
+      @close="handleDeleteSubmit"
     />
   </div>
 </template>
@@ -24,11 +29,12 @@
 <script>
 import axios from 'axios'
 import MenuItemModal from '../forms/menuItemModal.vue'
-
+import MenuItemDeleteModel from '../forms/menuItemDeleteModel.vue'
 export default {
   name: 'Inventory',
   components: {
     MenuItemModal,
+    MenuItemDeleteModel,
   },
   data() {
     return {
@@ -37,6 +43,7 @@ export default {
       selectedFood: null,
       newItem: false,
       ingredientList: [],
+      showDeleteMenuItem: false,
     }
   },
   methods: {
@@ -76,7 +83,27 @@ export default {
     updateItem(food) {
       this.fetchIngredientList(food)
     },
-    handleFormSubmit() {},
+    deleteItem() {
+      this.showDeleteMenuItem = !this.showDeleteMenuItem
+    },
+    fetchFoods() {
+      axios
+        .get('http://localhost:3000/menu')
+        .then(res => {
+          this.foods = res.data
+        })
+        .catch(error => console.error('Error fetching foods:', error))
+    },
+    handleFormSubmit() {
+      this.showAddMenuItem = !this.showAddMenuItem
+      this.fetchInventory()
+      this.fetchFoods()
+    },
+    handleDeleteSubmit() {
+      this.showDeleteMenuItem = !this.showDeleteMenuItem
+      this.fetchInventory()
+      this.fetchFoods()
+    },
   },
   mounted() {
     this.fetchInventory()

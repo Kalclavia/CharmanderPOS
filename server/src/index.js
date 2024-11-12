@@ -244,15 +244,15 @@ app.get("/inventory/id", (req, res) => {
  * @method GET /inventory/itemStock
  * @returns {object} The items stock
  */
-app.get("/inventory/itemStock", (req, res) => {
-  const { ingredientid } = req.body;
-  pool
-    .query("SELECT stock FROM ingredients WHERE ingredientid = $1;", [
-      ingredientid,
-    ])
-    .then((query_res) => res.json(query_res.rows[0]))
-    .catch((error) => res.status(500).json({ error: error.message }));
-});
+// app.get("/inventory/itemStock", (req, res) => {
+//   const { ingredientid } = req.body;
+//   pool
+//     .query("SELECT stock FROM ingredients WHERE ingredientid = $1;", [
+//       ingredientid,
+//     ])
+//     .then((query_res) => res.json(query_res.rows[0]))
+//     .catch((error) => res.status(500).json({ error: error.message }));
+// });
 /**
  * Get the 10 lowest stocked items
  * @method GET /inventory/itemStock
@@ -334,7 +334,7 @@ app.get("/menu/:type", (req, res) => {
  */
 app.get("/menu", (req, res) => {
   pool
-    .query("SELECT * FROM foods;")
+    .query("SELECT * FROM foods ORDER BY foodid ASC;")
     .then((query_res) => res.json(query_res.rows))
     .catch((error) => res.status(500).json({ error: error.message }));
 });
@@ -358,7 +358,7 @@ app.post("/menu/item/add", (req, res) => {
     .catch((error) => res.status(500).json({ error: error.message }));
 });
 
-app.post("/menu/item/add/ingredient", (req, res) => {
+app.post("/menu/item/add/recipe", (req, res) => {
   const { foodid, ingredientID, quantity, foodname, ingredientname } = req.body;
   pool
     .query(
@@ -370,8 +370,14 @@ app.post("/menu/item/add/ingredient", (req, res) => {
 });
 
 app.post("/menu/item/delete", (req, res) => {
+  const { foodname, foodid } = req.body;
+  console.log(foodname);
   pool
-    .query("DELETE FROM foods WHERE name = ?;")
+    .query("DELETE FROM recipes WHERE foodid = $1;", [foodid])
+    .then()
+    .catch((error) => res.status(500).json({ error: error.message }));
+  pool
+    .query("DELETE FROM foods WHERE name = $1;", [foodname])
     .then((query_res) => res.json(query_res.rows))
     .catch((error) => res.status(500).json({ error: error.message }));
 });
@@ -383,6 +389,43 @@ app.get("/menu/item/view/ingredients", (req, res) => {
       "SELECT ingredients.name AS ingredient_name, quantity, ingredients.ingredientid FROM foods JOIN recipes ON foods.foodid = recipes.foodid JOIN ingredients ON recipes.ingredientid = ingredients.ingredientid WHERE foods.foodid = $1;",
       [foodid]
     )
+    .then((query_res) => res.json(query_res.rows))
+    .catch((error) => res.status(500).json({ error: error.message }));
+});
+
+app.patch("/menu/item/update/type", (req, res) => {
+  const { type, name, foodid } = req.body;
+  pool
+    .query("UPDATE foods SET type = $1, name = $2 WHERE foodid = $3;", [
+      type,
+      name,
+      foodid,
+    ])
+    .then((query_res) => res.json(query_res.rows))
+    .catch((error) => res.status(500).json({ error: error.message }));
+});
+
+app.patch("/menu/item/update/recipe", (req, res) => {
+  const { quantity, ingredientID, foodid } = req.body;
+  console.log(req.body);
+  pool
+    .query(
+      `UPDATE recipes 
+       SET quantity = CASE WHEN $1 = '' THEN NULL ELSE $1::INTEGER END 
+       WHERE ingredientid = $2 AND foodid = $3`,
+      [quantity, ingredientID, foodid]
+    )
+    .then((query_res) => res.json(query_res.rows))
+    .catch((error) => res.status(500).json({ error: error.message }));
+});
+
+app.get("/menu/item/view/recipe", (req, res) => {
+  const { ingredientID, foodid } = req.query;
+  pool
+    .query("SELECT * FROM recipes WHERE ingredientid = $1 AND foodid = $2", [
+      ingredientID,
+      foodid,
+    ])
     .then((query_res) => res.json(query_res.rows))
     .catch((error) => res.status(500).json({ error: error.message }));
 });

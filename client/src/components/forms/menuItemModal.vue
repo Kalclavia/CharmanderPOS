@@ -76,7 +76,7 @@ export default {
       axios
         .get('http://localhost:3000/menu/item/total')
         .then(res => {
-          ;(this.lastid = res.data.count), (this.form.foodid = this.lastid)
+          this.lastid = res.data.count
         })
         .catch(error => console.error('Error fetching inventory total:', error))
       axios
@@ -119,21 +119,104 @@ export default {
             },
           }
           axios
-            .post(
-              'http://localhost:3000/menu/item/add/ingredient',
-              params,
-              config,
-            )
+            .post('http://localhost:3000/menu/item/add/recipe', params, config)
             .then(this.closeModal())
             .catch(error => console.error('Error adding new item:', error))
         }
       }
     },
+    updateFoodItem() {
+      if (this.form.name != '' && this.form.type != '') {
+        const params = new URLSearchParams()
+        params.append('name', this.form.name)
+        params.append('type', this.form.type)
+        params.append('foodid', this.form.foodid)
+        console.log(params)
+        const config = {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+        }
+        axios
+          .patch('http://localhost:3000/menu/item/update/type', params, config)
+          .then()
+          .catch(error => console.error('Error adding new item:', error))
+      }
+    },
+    updateFoodItemRecipe() {
+      console.log(this.form)
+      for (let i = 0; i < this.form.quantity.length; i++) {
+        if (this.form.quantity[i] != undefined) {
+          const params = new URLSearchParams()
+          params.append('quantity', this.form.quantity[i])
+          params.append('ingredientID', i + 1)
+          params.append('foodid', this.form.foodid)
+          params.append('foodname', this.form.name)
+          params.append('ingredientname', this.form.ingredientName[i])
+
+          const config = {
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            params,
+          }
+
+          let size = 0
+          axios
+            .get('http://localhost:3000/menu/item/view/recipe', config)
+            .then(res => (size = res.data.length))
+            .then(res => {
+              if (size == 1) {
+                axios
+                  .patch(
+                    'http://localhost:3000/menu/item/update/recipe',
+                    params,
+                    config,
+                  )
+                  .then(res => console.log(res.data))
+                  .catch(error =>
+                    console.error('Error adding new item:', error),
+                  )
+              } else {
+                axios
+                  .post(
+                    'http://localhost:3000/menu/item/add/recipe',
+                    params,
+                    config,
+                  )
+                  .then(console.log(params))
+                  .catch(error =>
+                    console.error('Error adding new item:', error),
+                  )
+              }
+            })
+            .catch(error => console.error('Error adding new item:', error))
+        }
+        this.updateFoodItem()
+      }
+
+      // const params = new URLSearchParams()
+      // params.append('name', this.form.name)
+      // params.append('type', this.form.type)
+      // params.append('foodid', this.form.foodid)
+      // console.log(params)
+      // const config = {
+      //   headers: {
+      //     'Content-Type': 'application/x-www-form-urlencoded',
+      //   },
+      // }
+      // axios
+      //   .patch('http://localhost:3000/menu/item/update/type', params, config)
+      //   .then()
+      //   .catch(error => console.error('Error adding new item:', error))
+    },
     submitForm() {
       if (this.isNewItem) {
         this.addNewFoodItem()
       } else {
+        this.updateFoodItemRecipe()
       }
+      this.closeModal()
     },
     deleteItem() {
       this.$emit('delete', this.form)
@@ -150,11 +233,14 @@ export default {
         this.form.foodid = this.food.foodid
         this.form.name = this.food.name
         this.form.type = this.food.type
-
         for (let i = 0; i < this.IngredientList.length; i++) {
           this.form.quantity[this.IngredientList[i].ingredientid - 1] =
             this.IngredientList[i].quantity
+          this.form.ingredientName[this.IngredientList[i].ingredientid - 1] =
+            this.IngredientList[i].ingredient_name
         }
+      } else {
+        this.form.foodid = this.lastid
       }
     },
   },
