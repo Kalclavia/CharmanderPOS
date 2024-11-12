@@ -312,7 +312,7 @@ export default {
   padding: 20px;
   width: 500px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  height: 80%;
+  height: 100%;
 }
 
 h2 {
