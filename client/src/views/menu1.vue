@@ -1,8 +1,48 @@
 <template>
-  <div class="main-content">
-    <h1>{{ item }} Panda Express</h1>
-    <MenuBoard :item="'A La Carte'" />
+<div class="main-content">
+  <div class="column">
+    <img src="../assets/hotones.png" alt="Get the Hot Ones Blazing Bourbon Chicken - Limited Time Offer! Panel" class="ad-image"/>
   </div>
+  <div class="column">
+    <div class="banner">
+      <h1>(1) CHOOSE A MEAL</h1>
+    </div>
+
+    <div class="item">    
+      <h2>BOWL</h2>
+      <h3>1 Entree + Side(s)</h3>
+    </div>
+
+    <div class="item">
+      <h2>PLATE</h2>
+      <h3>2 Entree + Side(s)</h3>
+    </div>
+    
+    <div class="item">
+      <h2>BIGGER PLATE</h2>
+      <h3>3 Entree + Side(s)</h3>
+    </div>
+    
+    <div>
+      <div class="banner">
+        <h1>PANDA BUNDLES <i>&nbsp;&nbsp;&nbsp;&nbsp;Add a medium drink</i></h1>
+      </div>
+
+    <div class="item">
+      <h2>BOWL + DRINK</h2>
+    </div>
+
+    <div class="item">
+      <h2>PLATE + DRINK</h2>
+    </div>
+
+    <div class="item">
+      <h2>BIGGER PLATE + DRINK</h2>
+    </div>
+
+    </div>   
+  </div>
+</div>
 </template>
 
 <script>
@@ -32,23 +72,37 @@ export default {
   left: 0px;
   right: 0;
   bottom: 0;
-  background-color: #9b150b;
+  background-color: #000000;
   color: #e7e4d7;
-  padding: 40px;
+  padding: 0px;
   overflow-y: auto;
+  display: flex;
 }
 
-.panel {
-  position: fixed;
-  top: 0;
-  right: 0;
-  width: 40%;
-  height: 100%;
-  background-color: #000000e3;
-  color: #e7e4d7;
-  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
-  padding: 20px;
-  overflow-y: auto;
-  z-index: 999;
+.column {
+  flex: 1;
 }
+
+.fill {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden
+}
+.column img {
+  width: 100%; /* Makes the image fill the column width */
+  height: 100%; /* Maintains the aspect ratio */
+  object-fit: cover; /* Ensures the image covers the container while maintaining aspect ratio */
+}
+
+.banner {
+  background-color: #9b150b;
+  padding: 20px;
+}
+
+.item {
+  padding-left: 20px;
+  padding: 10px;
+}
+
 </style>

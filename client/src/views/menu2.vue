@@ -1,8 +1,9 @@
 <template>
   <div class="main-content">
-    <h1>{{ item }} Panda Express</h1>
-    <MenuBoard :item="'Appetizers'" />
-    <MenuBoard :item="'Drinks'" />
+    <div class="banner">
+      <h1>(2) Choose Entrees & Sides</h1>
+    </div>
+    <MenuBoard :item="'A La Carte'" />
   </div>
 </template>
 
@@ -29,13 +30,13 @@ export default {
 <style scoped>
 .main-content {
   position: fixed;
-  top: 0px;
-  bottom: 0px;
+  top: 0;
   left: 0px;
   right: 0;
-  background-color: #9b150b;
+  bottom: 0;
+  background-color: #000000e3;
   color: #e7e4d7;
-  padding: 40px;
+  padding: 0px;
   overflow-y: auto;
 }
 
@@ -51,5 +52,10 @@ export default {
   padding: 20px;
   overflow-y: auto;
   z-index: 999;
+}
+
+.banner {
+  background-color: #9b150b;
+  padding: 20px;
 }
 </style>
