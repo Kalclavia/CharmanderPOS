@@ -26,6 +26,11 @@
       :is="'MenuPrices'"
       @selectItem="selectItem"
     />
+    <component
+      v-if="item === 'View Reports'"
+      :is="'Reports'"
+      @selectItem="selectItem"
+    />
   </div>
 </template>
 
@@ -35,6 +40,7 @@ import Inventory from './views/Inventory.vue'
 import Employees from './views/Employees.vue'
 import MenuItems from './views/MenuItems.vue';
 import MenuPrices from './views/MenuPrices.vue';
+import Reports from './views/Reports.vue';
 
 export default {
   name: 'MainContent',
@@ -51,7 +57,8 @@ export default {
     Inventory,
     LaunchPage,
     MenuItems,
-    MenuPrices
+    MenuPrices,
+    Reports
   },
 }
 </script>
