@@ -48,7 +48,6 @@ export default {
     },
     submitForm() {
       this.deleteFood()
-      this.closeModal()
     },
     closeModal() {
       this.$emit('close')

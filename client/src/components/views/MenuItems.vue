@@ -64,6 +64,7 @@ export default {
           import.meta.env.VITE_API_ENDPOINT + 'menu',
         )
         this.foods = response.data
+        console.log(this.foods)
       } catch (error) {
         console.error('Error fetching inventory:', error)
       }
