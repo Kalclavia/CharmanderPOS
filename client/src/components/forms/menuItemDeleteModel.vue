@@ -43,7 +43,9 @@ export default {
           params,
           config,
         )
-        .then(res => {})
+        .then(res => {
+          this.closeModal
+        })
         .catch(error => console.error('Error fetching inventory total:', error))
     },
     submitForm() {
