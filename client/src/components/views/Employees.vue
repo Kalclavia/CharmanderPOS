@@ -33,8 +33,8 @@
     <div class="flex-button">
       <button class="add-employee" @click="addEmployee()">Add Employee</button>
     </div>
-    <h2 class="text">Fired Employees</h2>
-    <table class="table">
+    <h2 v-if="firedEmployees.length != 0" class="text">Fired Employees</h2>
+    <table class="table" v-if="firedEmployees.length != 0">
       <thead>
         <tr>
           <th>ID</th>

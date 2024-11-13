@@ -313,7 +313,7 @@ app.patch("/inventory/updateStockFromTransaction", (req, res) => {
  */
 app.get("/menu/:type", (req, res) => {
   const type = req.params.type;
-  const sql = "SELECT name FROM foods WHERE type = $1";
+  const sql = "SELECT name FROM foods WHERE type = $1 AND isremoved = false";
   pool
     .query(sql, [type])
     .then((query_res) => {

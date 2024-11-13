@@ -24,6 +24,7 @@
       :foods="foods"
       @close="handleDeleteSubmit"
     />
+    <h2 class="text" v-if="deletedfoods.length != 0">Removed Menu Items</h2>
     <div class="grid-deleted">
       <div v-for="food in deletedfoods" :key="food.ingredientid">
         <button class="ingredient-card" @click="updateItem(food, true)">
