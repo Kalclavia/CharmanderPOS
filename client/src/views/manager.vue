@@ -6,10 +6,10 @@
 </template>
 
 <script>
-import LaunchPage from '../components/ManagerHome.vue';
-import MenuBar from '../components/NavBar.vue';
-import MainContent from '../components/ManagerContent.vue';
-import { collapsed } from '../components/state.js';
+import LaunchPage from '../components/ManagerHome.vue'
+import MenuBar from '../components/NavBar.vue'
+import MainContent from '../components/ManagerContent.vue'
+import { collapsed } from '../components/state.js'
 
 export default {
   name: 'App',
@@ -21,23 +21,21 @@ export default {
   data() {
     return {
       isOnLaunchPage: true,
-      selectedItem: "Home", 
-    };
+      selectedItem: 'Home',
+    }
   },
   created() {
     // Set initial states
-    this.isOnLaunchPage = true;
-    collapsed.value = true; 
+    this.isOnLaunchPage = true
+    collapsed.value = true
   },
   methods: {
     selectItem(item) {
-      this.selectedItem = item;
-      this.isOnLaunchPage = false;
+      this.selectedItem = item
+      this.isOnLaunchPage = false
     },
-  }
-};
+  },
+}
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>
