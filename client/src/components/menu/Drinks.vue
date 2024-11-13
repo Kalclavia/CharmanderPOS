@@ -2,19 +2,34 @@
   <div class="drink">
     <h2>Drinks</h2>
     <div class="grid">
-      <button v-for="drink in drinks" :key="drink" @click="toggleDrinks(drink)"
-        :class="{ selected: isSelected(drink) }">
-        <img v-if="getDrinkImage(drink)" :src="getDrinkImage(drink)" :alt="getDrinkName(drink)" class="drink-image"
-          @error="handleImageError" />
+      <button
+        v-for="drink in drinks"
+        :key="drink"
+        @click="toggleDrinks(drink)"
+        :class="{ selected: isSelected(drink) }"
+      >
+        <img
+          v-if="getDrinkImage(drink)"
+          :src="getDrinkImage(drink)"
+          :alt="getDrinkName(drink)"
+          class="drink-image"
+          @error="handleImageError"
+        />
         <span>{{ getDrinkName(drink) }}</span>
         <span v-if="isSelected(drink)" class="checkmark">✓</span>
       </button>
     </div>
     <!-- Size Selection Modal -->
     <div v-if="showSizeModal" class="size-modal">
-      <h3 class="modal-title">Select Size for {{ getDrinkName(currentItem) }}</h3>
+      <h3 class="modal-title">
+        Select Size for {{ getDrinkName(currentItem) }}
+      </h3>
       <div>
-        <button v-for="size in sizeOptions.drink" :key="size.name" @click="selectSize(size)">
+        <button
+          v-for="size in sizeOptions.drink"
+          :key="size.name"
+          @click="selectSize(size)"
+        >
           {{ size.name }} - ${{ size.price.toFixed(2) }}
         </button>
       </div>
@@ -42,23 +57,23 @@ export default {
       currentItemType: null,
       sizeOptions: {
         drink: [
-          { name: 'Small', price: 2.10 },
-          { name: 'Medium', price: 2.30 },
-          { name: 'Large', price: 2.50 }
-        ]
-      }
+          { name: 'Small', price: 2.1 },
+          { name: 'Medium', price: 2.3 },
+          { name: 'Large', price: 2.5 },
+        ],
+      },
     }
   },
   computed: {
     canAddToCart() {
-      return this.selectedDrinks.length > 0;
-    }
+      return this.selectedDrinks.length > 0
+    },
   },
   methods: {
     async fetchMenuItems() {
       try {
         const drinkResponse = await axios.get(
-          'http://localhost:3000/menu/Drink',
+          import.meta.env.VITE_API_ENDPOINT + 'menu/Drink',
         )
         this.drinks = drinkResponse.data
         console.log(this.drinks)
@@ -72,58 +87,60 @@ export default {
       // } else {
       //   this.selectedDrinks.push(drink);
       // }
-      if (this.getDrinkName(drink).toLowerCase() === 'aquafina' || this.getDrinkName(drink).toLowerCase() === 'gatorade lemon lime') {
+      if (
+        this.getDrinkName(drink).toLowerCase() === 'aquafina' ||
+        this.getDrinkName(drink).toLowerCase() === 'gatorade lemon lime'
+      ) {
         // For Aquafina and Gatorade, add directly to selectedDrinks without showing size modal
         const itemToAdd = {
           name: `Drink: ${this.getDrinkName(drink)}`,
-          price: this.getDrinkName(drink).toLowerCase() === 'aquafina' ? 2.30 : 2.70 // Aquafina: $1.50, Gatorade: $2.00
-        };
-        this.selectedDrinks.push(itemToAdd);
-
+          price:
+            this.getDrinkName(drink).toLowerCase() === 'aquafina' ? 2.3 : 2.7, // Aquafina: $1.50, Gatorade: $2.00
+        }
+        this.selectedDrinks.push(itemToAdd)
       } else {
         // For other drinks, show the size modal
-        this.currentItem = drink;
-        this.currentItemType = 'drink';
-        this.showSizeModal = true;
+        this.currentItem = drink
+        this.currentItemType = 'drink'
+        this.showSizeModal = true
       }
-
     },
 
     isSelected(drink) {
-      const drinkName = this.getDrinkName(drink);
-      return this.selectedDrinks.some(selectedDrink =>
-        selectedDrink.name === `Drink: ${drinkName}` ||
-        selectedDrink.name.startsWith(`Drink: ${drinkName} (`)
-      );
+      const drinkName = this.getDrinkName(drink)
+      return this.selectedDrinks.some(
+        selectedDrink =>
+          selectedDrink.name === `Drink: ${drinkName}` ||
+          selectedDrink.name.startsWith(`Drink: ${drinkName} (`),
+      )
     },
 
     selectSize(size) {
       const itemToAdd = {
         name: `Drink: ${this.getDrinkName(this.currentItem)} (${size.name})`,
-        price: size.price
-      };
-      this.selectedDrinks.push(itemToAdd);
-      this.showSizeModal = false;
-      this.currentItem = null;
+        price: size.price,
+      }
+      this.selectedDrinks.push(itemToAdd)
+      this.showSizeModal = false
+      this.currentItem = null
     },
     cancelSizeSelection() {
-      this.showSizeModal = false;
-      this.currentItem = null;
+      this.showSizeModal = false
+      this.currentItem = null
     },
     addToCart() {
       if (this.canAddToCart) {
         // Emit the selected drinks array to the cart
-        this.$emit('addToCart', this.selectedDrinks);
+        this.$emit('addToCart', this.selectedDrinks)
 
         // Clear selections after adding to cart
-        this.selectedDrinks = [];
+        this.selectedDrinks = []
       }
     },
     getDrinkName(drink) {
       if (typeof drink === 'string') {
         return drink
-      }
-      else if (drink && drink.name) {
+      } else if (drink && drink.name) {
         return drink.name
       }
 
@@ -163,7 +180,9 @@ button {
   color: black;
   padding: 10px;
   cursor: pointer;
-  transition: background-color 0.3s, box-shadow 0.3s;
+  transition:
+    background-color 0.3s,
+    box-shadow 0.3s;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -205,11 +224,10 @@ button:hover {
   box-shadow: 0 4px 3px #080808;
 }
 
-
 .add-to-cart {
   padding: 15px 15px;
   font-size: 15px;
-  background-color: #4CAF50;
+  background-color: #4caf50;
   color: rgb(0, 0, 0);
   border: none;
   border-radius: 10px;
@@ -221,7 +239,9 @@ button:hover {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background-color 0.3s, box-shadow 0.3s;
+  transition:
+    background-color 0.3s,
+    box-shadow 0.3s;
   height: 30px;
   box-shadow: 0 4px 3px #080808;
 }
@@ -274,7 +294,5 @@ button:hover {
   /* Change color on hover for better UX */
   background-color: transparent !important;
   box-shadow: none !important;
-
-
 }
 </style>

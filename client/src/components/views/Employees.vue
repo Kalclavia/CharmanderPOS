@@ -101,11 +101,11 @@ export default {
   methods: {
     fetchEmployees() {
       axios
-        .get('http://localhost:3000/employees')
+        .get(import.meta.env.VITE_API_ENDPOINT + 'employees')
         .then(res => (this.employees = res.data))
         .catch(error => console.error('Error adding new item:', error))
       axios
-        .get('http://localhost:3000/employees/getFired')
+        .get(import.meta.env.VITE_API_ENDPOINT + 'employees/getFired')
         .then(res => ((this.firedEmployees = res.data), (this.loading = false)))
         .catch(error => console.error('Error adding new item:', error))
     },
@@ -136,7 +136,7 @@ export default {
     //     params.get('employeeid') != 'undefined'
     //   ) {
     //     axios
-    //       .post('http://localhost:3000/employees/add', params, config)
+    //       .post(import.meta.env.VITE_API_ENDPOINT + 'employees/add', params, config)
     //       .then(res => {
     //         this.fetchEmployees()
     //         this.toggleEmployeeForm()
@@ -164,23 +164,35 @@ export default {
         console.log(form.newemployee)
         if (form.newemployee == true) {
           axios
-            .post('http://localhost:3000/employees/add', params, config)
+            .post(
+              import.meta.env.VITE_API_ENDPOINT + 'employees/add',
+              params,
+              config,
+            )
             .then(res => this.fetchEmployees(), this.toggleEmployeeForm())
             .catch(error => console.error('Error adding employee', error))
         } else {
           axios
-            .patch('http://localhost:3000/employees/updateName', params, config)
+            .patch(
+              import.meta.env.VITE_API_ENDPOINT + 'employees/updateName',
+              params,
+              config,
+            )
             .catch(error =>
               console.error('Error updating employee name:', error),
             )
           axios
-            .patch('http://localhost:3000/employees/updateRole', params, config)
+            .patch(
+              import.meta.env.VITE_API_ENDPOINT + 'employees/updateRole',
+              params,
+              config,
+            )
             .catch(error =>
               console.error('Error updating employee role:', error),
             )
           axios
             .patch(
-              'http://localhost:3000/employees/updateFired',
+              import.meta.env.VITE_API_ENDPOINT + 'employees/updateFired',
               params,
               config,
             )

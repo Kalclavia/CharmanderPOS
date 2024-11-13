@@ -24,7 +24,8 @@
 
         <!-- Size Selection Modal -->
         <div v-if="showSizeModal" class="size-modal">
-            <h3 class="modal-title">Select Size for {{ currentItemType === 'side' ? getSideName(currentItem) : getEntreeName(currentItem) }}</h3>
+            <h3 class="modal-title">Select Size for {{ currentItemType === 'side' ? getSideName(currentItem) :
+                getEntreeName(currentItem) }}</h3>
             <div v-if="currentItemType === 'side'">
                 <button v-for="size in sizeOptions.side" :key="size.name" @click="selectSize(size, 'side')">
                     {{ size.name }} - ${{ size.price.toFixed(2) }}
@@ -84,8 +85,8 @@ export default {
     methods: {
         async fetchMenuItems() {
             try {
-                const sideResponse = await axios.get('http://localhost:3000/menu/Side');
-                const entreeResponse = await axios.get('http://localhost:3000/menu/Entree');
+                const sideResponse = await axios.get(import.meta.env.VITE_API_ENDPOINT + 'menu/Side');
+                const entreeResponse = await axios.get(import.meta.env.VITE_API_ENDPOINT + 'menu/Entree');
                 this.sides = sideResponse.data;
                 this.entrees = entreeResponse.data;
             } catch (error) {
@@ -93,9 +94,9 @@ export default {
             }
         },
         toggleSides(side) {
-        this.currentItem = side;
-        this.currentItemType = 'side';
-        this.showSizeModal = true;
+            this.currentItem = side;
+            this.currentItemType = 'side';
+            this.showSizeModal = true;
         },
         toggleEntrees(entree) {
             this.currentItem = entree;
@@ -103,15 +104,15 @@ export default {
             this.showSizeModal = true;
         },
         isSelected(item, type) {
-        const selectedList = type === 'side' ? this.selectedSides : this.selectedEntrees;
-        return selectedList.some(selected => selected.name.includes(this.getSideName(item) || this.getEntreeName(item)));
+            const selectedList = type === 'side' ? this.selectedSides : this.selectedEntrees;
+            return selectedList.some(selected => selected.name.includes(this.getSideName(item) || this.getEntreeName(item)));
         },
         selectSize(size, type) {
             const itemToAdd = {
                 name: `${type === 'side' ? 'Side' : 'Entree'}: ${type === 'side' ? this.getSideName(this.currentItem) : this.getEntreeName(this.currentItem)} (${size.name})`,
                 price: size.price
             };
-            
+
             if (type === 'side') {
                 this.selectedSides.push(itemToAdd); // Adds the selected item with size to selectedSides
             } else {
@@ -130,7 +131,7 @@ export default {
         addToCart() {
             if (this.canAddToCart) {
                 const itemsToAdd = [...this.selectedSides, ...this.selectedEntrees];
-                
+
                 // Emit the itemsToAdd array to the cart
                 this.$emit('addToCart', itemsToAdd);
 
@@ -266,9 +267,9 @@ button:hover {
     background-color: white;
     padding: 20px;
     border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     z-index: 1001;
-    color:#080808;
+    color: #080808;
 }
 
 .size-modal button {
@@ -277,22 +278,30 @@ button:hover {
 }
 
 .close-button {
-    position: absolute; /* Positioning relative to the modal */
-    bottom: 10px; /* Adjust as needed */
-    right: 10px; /* Adjust as needed */
-    background-color: transparent; /* No background */
-    border: none; /* No border */
-    color: red; /* Red color for the X */
-    font-size: 24px; /* Adjust font size as needed */
-    cursor: pointer; /* Change cursor to pointer */
+    position: absolute;
+    /* Positioning relative to the modal */
+    bottom: 10px;
+    /* Adjust as needed */
+    right: 10px;
+    /* Adjust as needed */
+    background-color: transparent;
+    /* No background */
+    border: none;
+    /* No border */
+    color: red;
+    /* Red color for the X */
+    font-size: 24px;
+    /* Adjust font size as needed */
+    cursor: pointer;
+    /* Change cursor to pointer */
 }
 
 .close-button:hover {
-    color: darkred; /* Change color on hover for better UX */
+    color: darkred;
+    /* Change color on hover for better UX */
     background-color: transparent !important;
     box-shadow: none !important;
-   
+
 
 }
-
 </style>

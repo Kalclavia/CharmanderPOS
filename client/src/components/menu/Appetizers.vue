@@ -64,7 +64,7 @@ export default {
   methods: {
     async fetchMenuItems() {
       try {
-        const response = await axios.get('http://localhost:3000/menu/Appetizer');
+        const response = await axios.get(import.meta.env.VITE_API_ENDPOINT + 'menu/Appetizer');
         this.appetizers = response.data;
         console.log(this.appetizers);
       } catch (error) {

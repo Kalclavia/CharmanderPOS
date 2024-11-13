@@ -38,7 +38,11 @@ export default {
       }
       console.log(params)
       axios
-        .post('http://localhost:3000/menu/item/delete', params, config)
+        .post(
+          import.meta.env.VITE_API_ENDPOINT + 'menu/item/delete',
+          params,
+          config,
+        )
         .then(res => {})
         .catch(error => console.error('Error fetching inventory total:', error))
     },

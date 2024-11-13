@@ -20,7 +20,7 @@
           <td>{{ item.maxstock }}</td>
           <td>{{ item.units }}</td>
           <td>
-            <div class="buttons" >
+            <div class="buttons">
               <button @click="openModal('update', item)">Update</button>
               <button @click="deleteItem(item.ingredientid)">Delete</button>
             </div>
@@ -28,7 +28,9 @@
         </tr>
       </tbody>
     </table>
-  <div class="buttons2"><button class="button2" @click="openModal('add')">Add Item</button></div>
+    <div class="buttons2">
+      <button class="button2" @click="openModal('add')">Add Item</button>
+    </div>
 
     <inventoryModal
       v-if="showModal"
@@ -42,8 +44,8 @@
 </template>
 
 <script>
-import axios from 'axios';
-import inventoryModal from '../forms/inventoryModal.vue';
+import axios from 'axios'
+import inventoryModal from '../forms/inventoryModal.vue'
 
 export default {
   name: 'Inventory',
@@ -53,38 +55,40 @@ export default {
   data() {
     return {
       items: [],
-      total : -1,
+      total: -1,
       loading: true,
       showModal: false,
       modalMode: 'add',
       selectedItem: null,
-    };
+    }
   },
   methods: {
     fetchLastItem() {
-      axios.get('http://localhost:3000/inventory/id')
+      axios
+        .get(import.meta.env.VITE_API_ENDPOINT + 'inventory/id')
         .then(res => {
-          this.total = ++res.data.count;
-          this.loading = false;
+          this.total = ++res.data.count
+          this.loading = false
         })
-        .catch(error => console.error('Error fetching inventory total:', error));
+        .catch(error => console.error('Error fetching inventory total:', error))
     },
     fetchItems() {
-      axios.get('http://localhost:3000/inventory')
+      axios
+        .get(import.meta.env.VITE_API_ENDPOINT + 'inventory')
         .then(res => {
-          this.items = res.data;
-          this.loading = false;
+          this.items = res.data
+          this.loading = false
         })
-        .catch(error => console.error('Error fetching inventory items:', error));
+        .catch(error => console.error('Error fetching inventory items:', error))
     },
     openModal(mode, item = null) {
-      this.modalMode = mode;
-      this.selectedItem = item;
-      this.showModal = true;
+      this.modalMode = mode
+      this.selectedItem = item
+      this.showModal = true
     },
     closeModal() {
-      this.showModal = false;
-      this.selectedItem = null;
+      this.showModal = false
+      this.selectedItem = null
     },
     handleFormSubmit(form) {
       const params = new URLSearchParams()
@@ -100,47 +104,66 @@ export default {
         },
       }
       console.log('lastid:', this.total)
-      if(form.ingredientid === this.total){
+      if (form.ingredientid === this.total) {
         //adding new item
         axios
-        .post('http://localhost:3000/inventory/add', params, config)
-        .then(() => this.fetchItems())
-        .catch(error => console.error('Error adding new item:', error))
+          .post(
+            import.meta.env.VITE_API_ENDPOINT + 'inventory/add',
+            params,
+            config,
+          )
+          .then(() => this.fetchItems())
+          .catch(error => console.error('Error adding new item:', error))
         console.log('Added new item')
-      }
-      else{
+      } else {
         //updating item
         axios
-        .patch('http://localhost:3000/inventory/updateStock', params, config)
-        //.then(() => this.fetchItems())
-        .catch(error => console.error('Error updating stock:', error))
+          .patch(
+            import.meta.env.VITE_API_ENDPOINT + 'inventory/updateStock',
+            params,
+            config,
+          )
+          //.then(() => this.fetchItems())
+          .catch(error => console.error('Error updating stock:', error))
         axios
-        .patch('http://localhost:3000/inventory/updateMaxStock', params, config)
-        //.then(() => this.fetchItems())
-        .catch(error => console.error('Error updating max stock:', error))
+          .patch(
+            import.meta.env.VITE_API_ENDPOINT + 'inventory/updateMaxStock',
+            params,
+            config,
+          )
+          //.then(() => this.fetchItems())
+          .catch(error => console.error('Error updating max stock:', error))
         axios
-        .patch('http://localhost:3000/inventory/updateName', params, config)
-        .then(() => this.fetchItems())
-        .catch(error => console.error('Error updating name:', error))
+          .patch(
+            import.meta.env.VITE_API_ENDPOINT + 'inventory/updateName',
+            params,
+            config,
+          )
+          .then(() => this.fetchItems())
+          .catch(error => console.error('Error updating name:', error))
 
-        console.log('updated item:',form.ingredientid)
+        console.log('updated item:', form.ingredientid)
       }
-      this.closeModal();
+      this.closeModal()
     },
-    deleteItem(ingredientid){
+    deleteItem(ingredientid) {
       if (confirm('Are you sure you want to delete this item?')) {
-      axios
-          .delete('http://localhost:3000/inventory/delete/' + ingredientid)
+        axios
+          .delete(
+            import.meta.env.VITE_API_ENDPOINT +
+              'inventory/delete/' +
+              ingredientid,
+          )
           .then(() => this.fetchItems())
           .catch(error => console.error('Error deleting item:', error))
-    }
-  }
+      }
+    },
   },
   mounted() {
-    this.fetchItems();
-    this.fetchLastItem();
+    this.fetchItems()
+    this.fetchLastItem()
   },
-};
+}
 </script>
 
 <style scoped>
@@ -199,7 +222,9 @@ button {
   padding: 5px;
   margin-bottom: 5px;
   cursor: pointer;
-  transition: background-color 0.3s, box-shadow 0.3s;
+  transition:
+    background-color 0.3s,
+    box-shadow 0.3s;
   box-shadow: 0 4px 3px #080808;
 }
 
@@ -216,12 +241,14 @@ button {
   padding: 15px;
   margin-bottom: 5px;
   cursor: pointer;
-  transition: background-color 0.3s, box-shadow 0.3s;
+  transition:
+    background-color 0.3s,
+    box-shadow 0.3s;
   box-shadow: 0 4px 3px #080808;
 }
 
-button:hover{
-  background-color:#cfcbb7;
+button:hover {
+  background-color: #cfcbb7;
 }
 
 .flex-button {

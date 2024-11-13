@@ -26,7 +26,7 @@ export default {
   methods: {
     fetchEmployees() {
       axios
-        .get('http://localhost:3000/employees')
+        .get(import.meta.env.VITE_API_ENDPOINT + 'employees')
         .then(res => {
           this.employeeData = res.data
         })

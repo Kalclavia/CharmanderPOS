@@ -60,7 +60,9 @@ export default {
   methods: {
     async fetchInventory() {
       try {
-        const response = await axios.get('http://localhost:3000/menu')
+        const response = await axios.get(
+          import.meta.env.VITE_API_ENDPOINT + 'menu',
+        )
         this.foods = response.data
       } catch (error) {
         console.error('Error fetching inventory:', error)
@@ -77,7 +79,10 @@ export default {
         params: { foodid: food.foodid },
       }
       axios
-        .get('http://localhost:3000/menu/item/view/ingredients', config)
+        .get(
+          import.meta.env.VITE_API_ENDPOINT + 'menu/item/view/ingredients',
+          config,
+        )
         .then(res => {
           ;(this.ingredientList = res.data), (this.newItem = false)
           this.selectedFood = food
@@ -101,11 +106,11 @@ export default {
     },
     fetchFoods() {
       axios
-        .get('http://localhost:3000/menu')
+        .get(import.meta.env.VITE_API_ENDPOINT + 'menu')
         .then(res => {
           this.foods = res.data
           axios
-            .get('http://localhost:3000/menu/view/removed')
+            .get(import.meta.env.VITE_API_ENDPOINT + 'menu/view/removed')
             .then(res => {
               this.deletedfoods = res.data
             })
@@ -115,7 +120,7 @@ export default {
     },
     fetchDeletedFoods() {
       axios
-        .get('http://localhost:3000/menu/view/removed')
+        .get(import.meta.env.VITE_API_ENDPOINT + 'menu/view/removed')
         .then(res => {
           this.deletedfoods = res.data
         })

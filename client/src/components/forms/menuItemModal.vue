@@ -83,13 +83,13 @@ export default {
   methods: {
     fetchIngredients() {
       axios
-        .get('http://localhost:3000/menu/item/total')
+        .get(import.meta.env.VITE_API_ENDPOINT + 'menu/item/total')
         .then(res => {
           this.lastid = res.data.count
         })
         .catch(error => console.error('Error fetching inventory total:', error))
       axios
-        .get('http://localhost:3000/inventory')
+        .get(import.meta.env.VITE_API_ENDPOINT + 'inventory')
         .then(res => (this.ingredients = res.data))
         .then(this.updateFoodForm())
         .catch(error => console.error('Error adding new item:', error))
@@ -106,7 +106,11 @@ export default {
           },
         }
         axios
-          .post('http://localhost:3000/menu/item/add', params, config)
+          .post(
+            import.meta.env.VITE_API_ENDPOINT + 'menu/item/add',
+            params,
+            config,
+          )
           .then(this.addNewFoodRecipe)
           .catch(error => console.error('Error adding new item:', error))
       }
@@ -128,7 +132,11 @@ export default {
             },
           }
           axios
-            .post('http://localhost:3000/menu/item/add/recipe', params, config)
+            .post(
+              import.meta.env.VITE_API_ENDPOINT + 'menu/item/add/recipe',
+              params,
+              config,
+            )
             .then(this.closeModal())
             .catch(error => console.error('Error adding new item:', error))
         }
@@ -148,7 +156,11 @@ export default {
           },
         }
         axios
-          .patch('http://localhost:3000/menu/item/update/type', params, config)
+          .patch(
+            import.meta.env.VITE_API_ENDPOINT + 'menu/item/update/type',
+            params,
+            config,
+          )
           .then()
           .catch(error => console.error('Error adding new item:', error))
       }
@@ -173,13 +185,17 @@ export default {
 
           let size = 0
           axios
-            .get('http://localhost:3000/menu/item/view/recipe', config)
+            .get(
+              import.meta.env.VITE_API_ENDPOINT + 'menu/item/view/recipe',
+              config,
+            )
             .then(res => (size = res.data.length))
             .then(res => {
               if (size == 1) {
                 axios
                   .patch(
-                    'http://localhost:3000/menu/item/update/recipe',
+                    import.meta.env.VITE_API_ENDPOINT +
+                      'menu/item/update/recipe',
                     params,
                     config,
                   )
@@ -190,7 +206,7 @@ export default {
               } else {
                 axios
                   .post(
-                    'http://localhost:3000/menu/item/add/recipe',
+                    import.meta.env.VITE_API_ENDPOINT + 'menu/item/add/recipe',
                     params,
                     config,
                   )
@@ -216,7 +232,7 @@ export default {
       //   },
       // }
       // axios
-      //   .patch('http://localhost:3000/menu/item/update/type', params, config)
+      //   .patch(import.meta.env.VITE_API_ENDPOINT + 'menu/item/update/type', params, config)
       //   .then()
       //   .catch(error => console.error('Error adding new item:', error))
     },

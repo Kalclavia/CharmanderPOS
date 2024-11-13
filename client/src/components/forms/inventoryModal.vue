@@ -34,28 +34,29 @@
 </template>
 
 <script>
-import axios from 'axios';
+import axios from 'axios'
 export default {
   name: 'InventoryModal',
   methods: {
     async fetchLastItem() {
-      await axios.get('http://localhost:3000/inventory/id')
+      await axios
+        .get(import.meta.env.VITE_API_ENDPOINT + 'inventory/id')
         .then(res => {
-          this.form.ingredientid = ++res.data.count;
-          this.loading = false;
+          this.form.ingredientid = ++res.data.count
+          this.loading = false
         })
-        .catch(error => console.error('Error fetching inventory total:', error));
+        .catch(error => console.error('Error fetching inventory total:', error))
     },
     submitForm() {
-      this.$emit('submit', this.form);
-      this.closeModal();
+      this.$emit('submit', this.form)
+      this.closeModal()
     },
     deleteItem() {
-      this.$emit('delete', this.form);
-      this.closeModal();
+      this.$emit('delete', this.form)
+      this.closeModal()
     },
     closeModal() {
-      this.$emit('close');
+      this.$emit('close')
     },
   },
   props: {
@@ -70,18 +71,18 @@ export default {
   },
   data() {
     return {
-      form: { ingredientid: -1 , name: '', stock: 0, maxstock: 0, unit: '' },
-    };
+      form: { ingredientid: -1, name: '', stock: 0, maxstock: 0, unit: '' },
+    }
   },
   computed: {
     isNewItem() {
-      return this.item && !this.item.id;
+      return this.item && !this.item.id
     },
   },
-  async mounted(){
-    await this.fetchLastItem(); 
+  async mounted() {
+    await this.fetchLastItem()
     if (this.item) {
-      this.form = { ...this.item };
+      this.form = { ...this.item }
     }
   },
   // mounted() {
@@ -89,8 +90,7 @@ export default {
   //     this.form = { ...this.item };
   //   }
   // },
-  
-};
+}
 </script>
 
 <style scoped>
@@ -148,19 +148,19 @@ button {
   cursor: pointer;
 }
 
-button[type="submit"] {
+button[type='submit'] {
   background-color: #ffffff;
   color: #000;
   border-color: #000;
 }
 
-button[type="button"] {
+button[type='button'] {
   background-color: #ffffff;
   color: #000;
   border-color: #000;
 }
 
-button[type="button"]:nth-child(3) {
+button[type='button']:nth-child(3) {
   background-color: #ffffff;
   border-color: #000;
 }
