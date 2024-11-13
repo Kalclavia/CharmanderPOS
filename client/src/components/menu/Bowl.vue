@@ -115,7 +115,7 @@ export default {
       const fileName = `${name.toLowerCase().replace(/\s+/g, '')}.png`
       const imagePath = `/src/assets/${fileName}`
       console.log('Image path:', imagePath)
-      return imagePath
+      return new URL(`/src/assets/${fileName}`,import.meta.url).href;
     },
     getEntreeName(entree) {
       if (typeof entree === 'string') {
@@ -132,7 +132,7 @@ export default {
       const fileName = `${name.toLowerCase().replace(/\s+/g, '')}.png`
       const imagePath = `/src/assets/${fileName}`
       console.log('Image path:', imagePath)
-      return imagePath
+      return new URL(`/src/assets/${fileName}`,import.meta.url).href;
     },
     handleImageError(event) {
       console.error('Image failed to load:', event.target.src)

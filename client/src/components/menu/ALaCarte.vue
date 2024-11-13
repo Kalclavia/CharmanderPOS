@@ -147,7 +147,7 @@ export default {
             let name = this.getSideName(side);
             if (!name) return null;
             const fileName = `${name.toLowerCase().replace(/\s+/g, '')}.png`;
-            return `/src/assets/${fileName}`;
+            return new URL(`/src/assets/${fileName}`,import.meta.url).href;
         },
         getEntreeName(entree) {
             return typeof entree === 'string' ? entree : (entree && entree.name ? entree.name : 'Unknown Entree');
@@ -156,7 +156,7 @@ export default {
             let name = this.getEntreeName(entree);
             if (!name) return null;
             const fileName = `${name.toLowerCase().replace(/\s+/g, '')}.png`;
-            return `/src/assets/${fileName}`;
+            return new URL(`/src/assets/${fileName}`,import.meta.url).href;
         },
         handleImageError(event) {
             console.error('Image failed to load:', event.target.src);

@@ -152,7 +152,7 @@ export default {
       const fileName = `${name.toLowerCase().replace(/\s+/g, '')}.png`
       const imagePath = `/src/assets/${fileName}`
       console.log('Image path:', imagePath)
-      return imagePath
+      return new URL(`/src/assets/${fileName}`,import.meta.url).href;
     },
   },
   mounted() {
