@@ -1,12 +1,12 @@
 <template>
     <div class="user-info-page">
         <h2>Please Enter Your Details</h2>
-        
+
         <label for="name">Name:</label>
         <input type="text" id="name" v-model="name" placeholder="Enter your name" />
 
         <label for="phone">Phone Number:</label>
-        <input type="text" id="phone" v-model="phone" placeholder="Enter your phone number" />
+        <input type="text" id="phone" v-model="phone" placeholder="(XXX) XXX - XXXX" @input="formatPhone" />
 
         <div class="bottom-buttons">
             <button @click="cancel" class="cancel-button">Cancel</button>
@@ -16,32 +16,60 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
     data() {
         return {
             name: '',
-            phone: ''
+            phone: '',
+            transactionId: null,
         };
     },
+    async mounted() {
+        try {
+            const response = await axios.get(import.meta.env.VITE_API_ENDPOINT + 'transactions/latestID');
+            this.transactionId = `${response.data.transactionID}`;
+        } catch (error) {
+            console.error("Failed to fetch transaction ID:", error);
+            alert("Could not retrieve transaction ID.");
+        }
+    },
     methods: {
+        formatPhone() {
+            let cleaned = this.phone.replace(/\D/g, '');
+            if (cleaned.length <= 3) {
+                this.phone = `(${cleaned}`;
+            } else if (cleaned.length <= 6) {
+                this.phone = `(${cleaned.slice(0, 3)}) ${cleaned.slice(3)}`;
+            } else if (cleaned.length <= 10) {
+                this.phone = `(${cleaned.slice(0, 3)}) ${cleaned.slice(3, 6)} - ${cleaned.slice(6)}`;
+            } else {
+                this.phone = `(${cleaned.slice(0, 3)}) ${cleaned.slice(3, 6)} - ${cleaned.slice(6, 10)}`;
+            }
+        },
         cancel() {
-            this.$emit('cancelOrder'); // Emit event to go back to CheckoutPage
+            this.$emit("cancelOrder");
         },
         confirm() {
             if (!this.name || !this.phone) {
                 alert("Please fill in both fields.");
                 return;
             }
-            const transactionId = 'TX' + Math.floor(Math.random() * 100000); // Example ID
             const readyTime = this.calculateReadyTime();
-            this.$emit('confirm', { name: this.name, phone: this.phone, transactionId, readyTime });
+            this.$emit("confirm", {
+                name: this.name,
+                phone: this.phone,
+                transactionId: this.transactionId,
+                readyTime,
+            });
         },
         calculateReadyTime() {
             const now = new Date();
-            now.setMinutes(now.getMinutes() + 5 + Math.floor(Math.random() * 6)); // 5-10 minutes
-            return now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        }
-    }
+            now.setMinutes(now.getMinutes() + 5 + Math.floor(Math.random() * 6));
+            return now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+        },
+    },
 };
 </script>
 

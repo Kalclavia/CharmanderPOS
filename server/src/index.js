@@ -489,6 +489,26 @@ app.get('/menu/price', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
+/**
+ * Get the newest transaction ID.
+ * @method GET /transactions/latestID
+ * @returns {object} The latest transaction ID incremented by 1.
+ */
+app.get("/transactions/latestID", async (req, res) => {
+  const sql = "SELECT MAX(transactionid) FROM transactions";
+  
+  try {
+    const query_res = await pool.query(sql);
+    const transactionID = query_res.rows[0].max; // Get the max transaction ID
+    const nextTransactionID = (transactionID !== null) ? transactionID + 1 : 1; // Increment by 1, default to 1 if null
+    res.json({ transactionID: nextTransactionID });
+  } catch (error) {
+    console.error("Error fetching transaction ID:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 var port = 3000;
 console.log(`Server is listening on localhost:${port}`);
 app.listen(3000);
