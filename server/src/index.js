@@ -501,6 +501,49 @@ app.patch("/prices/setprice", (req, res) => {
     .catch((error) => res.status(500).json({ error: error.message }));
 });
 
+// reports
+//http://localhost:3000/report/itemsByDateRange?startDate=2023-01-01&endDate=2023-01-31
+app.get("/report/itemsByDateRange", (req, res) => {
+  const startDate = req.query.startDate;
+  const endDate = req.query.endDate;
+
+  pool
+    .query(
+      "SELECT COALESCE(f.name, it.type) AS food_name, COALESCE(f.type, 'Drink') AS food_type FROM transactionitems ti LEFT JOIN foods f ON f.foodid = ANY (ARRAY[ti.food1, ti.food2, ti.food3, ti.food4]) JOIN itemtypes it ON ti.itemtype = it.itemid JOIN transactions t ON t.transactionid = ti.transactionid WHERE t.date >= CAST($1 AS TIMESTAMP) AND t.date <= CAST($2 AS TIMESTAMP) AND f.name NOT IN ('Bowl', 'Plate', 'Bigger Plate') ORDER BY food_name ASC;",
+      [startDate, endDate]
+    )
+    .then((query_res) => res.json(query_res.rows))
+    .catch((error) => res.status(500).json({ error: error.message }));
+});
+
+app.get("/report/ingredientsByDateRange", (req, res) => {
+  const startDate = req.query.startDate;
+  const endDate = req.query.endDate;
+
+  pool
+    .query(
+      "SELECT i.name AS ingredient_name, i.ingredientid AS ingredient_id, SUM(r.quantity) AS total_used FROM transactionitems ti JOIN transactions t ON ti.transactionid = t.transactionid JOIN recipes r ON r.foodid IN (ti.food1, ti.food2, ti.food3, ti.food4) JOIN ingredients i ON r.ingredientid = i.ingredientid WHERE t.date >= CAST($1 AS TIMESTAMP) AND t.date <= CAST($2 AS TIMESTAMP) GROUP BY i.name, i.ingredientid ORDER BY i.name ASC;",
+      [startDate, endDate]
+    )
+    .then((query_res) => res.json(query_res.rows))
+    .catch((error) => res.status(500).json({ error: error.message }));
+});
+
+app.get("/report/transactionBreakDown", (req, res) => {
+  // let startDate = "2023-01-01";
+  // let endDate = "2023-01-02";
+  let startDate = new Date().toISOString();
+  let endDate = new Date();
+  endDate.setDate(endDate.getDate() + 1);
+  endDate = endDate.toISOString();
+  pool
+    .query(
+      "SELECT COUNT(t.transactionid) AS num_orders, EXTRACT(HOUR FROM t.date) AS order_hour, SUM(t.total) AS order_total, t.employeeid, e.name AS employee_name FROM transactions t JOIN employees e ON t.employeeid = e.employeeid WHERE t.date >= CAST($1 AS TIMESTAMP) AND t.date < CAST($2 AS TIMESTAMP) GROUP BY order_hour, t.employeeid, e.name ORDER BY order_hour ASC;",
+      [startDate, endDate]
+    )
+    .then((query_res) => res.json(query_res.rows))
+    .catch((error) => res.status(500).json({ error: error.message }));
+});
 /**
  * Get the price of a specific menu item.
  * @method GET /menu/price

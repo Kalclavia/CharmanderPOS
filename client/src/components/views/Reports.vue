@@ -1,43 +1,39 @@
 <template>
-    <div class="buttons">
-        <button>Sales Report</button>
-        <button>Product Usage Report</button>
-        <button>X-Report</button>
-        <button>Z-Report</button>
-    </div>
-    <div style="padding-top: 20px;">
-      <barchart/>
-    </div>
-    <div class="buttons"><button>Toggle Chart Style</button></div>
-  </template>
-  
-  <script>
- 
-  import barchart from '../charts/barchart.vue';
-  export default {
-    name:"Reports",
-    components: {
-        barchart
-    },
-    data() {
-      return {
-       
-      };
-    },
-    methods: {
-     
-    },
-  };
-  </script>
-  
-  <style scoped>
-    .buttons {
-        padding-top: 25px;
-        display: flex;
-        justify-content: space-around;
-    }
+  <div class="buttons">
+    <button>Sales Report</button>
+    <button>Product Usage Report</button>
+    <button>X-Report</button>
+    <button>Z-Report</button>
+  </div>
+  <div style="padding-top: 20px">
+    <barchart />
+  </div>
+  <div class="buttons"><button>Toggle Chart Style</button></div>
+</template>
 
-    button {
+<script>
+import barchart from '../charts/barchart.vue'
+export default {
+  name: 'Reports',
+  components: {
+    barchart,
+  },
+  data() {
+    return {}
+  },
+  methods: {},
+  mounted: {},
+}
+</script>
+
+<style scoped>
+.buttons {
+  padding-top: 25px;
+  display: flex;
+  justify-content: space-around;
+}
+
+button {
   font-size: medium;
   border: 2px solid #080808;
   border-radius: 30px;
@@ -57,5 +53,4 @@ button:hover {
   background-color: #d2ceb8;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
-  </style>
-  
+</style>
