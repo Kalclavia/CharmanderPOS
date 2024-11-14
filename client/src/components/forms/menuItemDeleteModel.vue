@@ -44,7 +44,7 @@ export default {
           config,
         )
         .then(res => {
-          this.closeModal
+          this.closeModal()
         })
         .catch(error => console.error('Error fetching inventory total:', error))
     },

@@ -110,13 +110,15 @@ export default {
         .get(import.meta.env.VITE_API_ENDPOINT + 'menu')
         .then(res => {
           this.foods = res.data
+        })
+        .then(() =>
           axios
             .get(import.meta.env.VITE_API_ENDPOINT + 'menu/view/removed')
             .then(res => {
               this.deletedfoods = res.data
             })
-            .catch(error => console.error('Error fetching foods:', error))
-        })
+            .catch(error => console.error('Error fetching foods:', error)),
+        )
         .catch(error => console.error('Error fetching foods:', error))
     },
     fetchDeletedFoods() {

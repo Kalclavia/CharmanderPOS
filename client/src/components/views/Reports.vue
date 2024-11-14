@@ -12,6 +12,7 @@
 </template>
 
 <script>
+import axios from 'axios'
 import barchart from '../charts/barchart.vue'
 export default {
   name: 'Reports',
@@ -19,10 +20,44 @@ export default {
     barchart,
   },
   data() {
-    return {}
+    return { employeeTransaction: [], ingredientsByDateRange: [] }
   },
-  methods: {},
-  mounted: {},
+  methods: {
+    fetchEmployeeTransaction() {
+      axios
+        .get(import.meta.env.VITE_API_ENDPOINT + 'report/transactionBreakDown')
+        .then(response => {
+          this.employeeTransaction = response.data
+        })
+        .then(() => console.log(this.employeeTransaction))
+        .catch(error => {
+          console.error('Error fetching employee transaction:', error)
+        })
+    },
+    fetchIngredientsByDateRange() {
+      const config = {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        params: { startDate: '2023-01-01', endDate: '2023-01-02' },
+      }
+      axios
+        .get(
+          import.meta.env.VITE_API_ENDPOINT + 'report/ingredientsByDateRange',
+          config,
+        )
+        .then(response => {
+          this.ingredientsByDateRange = response.data
+        })
+        .then(() => console.log(this.ingredientsByDateRange))
+        .catch(error => {
+          console.error('Error fetching employee transaction:', error)
+        })
+    },
+  },
+  mounted() {
+    this.fetchIngredientsByDateRange()
+  },
 }
 </script>
 
