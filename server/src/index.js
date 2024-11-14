@@ -329,7 +329,6 @@ app.get("/menu/:type", (req, res) => {
 /**
  * Get all menu items.
  * @method GET /menu
- * @param {string} type The type of menu items to retrieve.
  * @returns {objects[]} Array of menu items with their names.
  */
 app.get("/menu", (req, res) => {
@@ -338,21 +337,33 @@ app.get("/menu", (req, res) => {
     .then((query_res) => res.json(query_res.rows))
     .catch((error) => res.status(500).json({ error: error.message }));
 });
-
+/**
+ * Get all menu items that were removed.
+ * @method GET /menu/view/removed
+ * @returns {objects} Array of removed menu items with their names.
+ */
 app.get("/menu/view/removed", (req, res) => {
   pool
     .query("SELECT * FROM foods WHERE isremoved = true ORDER BY foodid ASC;")
     .then((query_res) => res.json(query_res.rows))
     .catch((error) => res.status(500).json({ error: error.message }));
 });
-
+/**
+ * Get the last id from the foods table.
+ * @method GET /menu/item/total
+ * @returns {objects} The id of the last food item.
+ */
 app.get("/menu/item/total", (req, res) => {
   pool
     .query("SELECT COUNT(*) FROM foods;")
     .then((query_res) => res.json(query_res.rows[0]))
     .catch((error) => res.status(500).json({ error: error.message }));
 });
-
+/**
+ * Add a new food item.
+ * @method POST /menu/item/add
+ * @returns {objects} Newly added food item.
+ */
 app.post("/menu/item/add", (req, res) => {
   const { foodid, name, type } = req.body;
   pool
@@ -364,7 +375,11 @@ app.post("/menu/item/add", (req, res) => {
     .then((query_res) => res.json(query_res.rows[0]))
     .catch((error) => res.status(500).json({ error: error.message }));
 });
-
+/**
+ * Add a new food item recipe.
+ * @method POST /menu/item/add/recipe
+ * @returns {objects} Newly added recipe item.
+ */
 app.post("/menu/item/add/recipe", (req, res) => {
   const { foodid, ingredientID, quantity, foodname, ingredientname } = req.body;
   pool
@@ -375,7 +390,11 @@ app.post("/menu/item/add/recipe", (req, res) => {
     .then((query_res) => res.json(query_res.rows[0]))
     .catch((error) => res.status(500).json({ error: error.message }));
 });
-
+/**
+ * Remove a food item from the database.
+ * @method POST /menu/item/delete
+ * @returns {objects} Removed food item.
+ */
 app.post("/menu/item/delete", (req, res) => {
   const { foodname, foodid } = req.body;
   console.log(foodname);
@@ -388,7 +407,11 @@ app.post("/menu/item/delete", (req, res) => {
     .then((query_res) => res.json(query_res.rows))
     .catch((error) => res.status(500).json({ error: error.message }));
 });
-
+/**
+ * View the recipe of a food item.
+ * @method GET /menu/item/view/ingredients
+ * @returns {objects} The recipe of the food item.
+ */
 app.get("/menu/item/view/ingredients", (req, res) => {
   const { foodid } = req.query;
   pool
@@ -399,7 +422,11 @@ app.get("/menu/item/view/ingredients", (req, res) => {
     .then((query_res) => res.json(query_res.rows))
     .catch((error) => res.status(500).json({ error: error.message }));
 });
-
+/**
+ * Update the name and type of a food item.
+ * @method PATCH /menu/item/update/type
+ * @returns {objects} The updated food item.
+ */
 app.patch("/menu/item/update/type", (req, res) => {
   const { type, name, isRemoved, foodid } = req.body;
   pool
@@ -410,7 +437,11 @@ app.patch("/menu/item/update/type", (req, res) => {
     .then((query_res) => res.json(query_res.rows))
     .catch((error) => res.status(500).json({ error: error.message }));
 });
-
+/**
+ * Update the recipe of a food item.
+ * @method PATCH /menu/item/update/recipe
+ * @returns {objects} The updated recipe item.
+ */
 app.patch("/menu/item/update/recipe", (req, res) => {
   const { quantity, ingredientID, foodid } = req.body;
   console.log(req.body);
@@ -424,7 +455,11 @@ app.patch("/menu/item/update/recipe", (req, res) => {
     .then((query_res) => res.json(query_res.rows))
     .catch((error) => res.status(500).json({ error: error.message }));
 });
-
+/**
+ * View the recipe of a food item.
+ * @method GET /menu/item/view/recipe
+ * @returns {objects} The recipe of the food item.
+ */
 app.get("/menu/item/view/recipe", (req, res) => {
   const { ingredientID, foodid } = req.query;
   pool
@@ -472,10 +507,10 @@ app.patch("/prices/setprice", (req, res) => {
  * @param {string} itemName The name of the item to retrieve the price of.
  * @returns {object} The price of the specified item.
  */
-app.get('/menu/price', async (req, res) => {
+app.get("/menu/price", async (req, res) => {
   const itemName = req.query.itemName; // Get item name from query parameter
   const sql = "SELECT type, price FROM itemtypes WHERE type = $1";
-  
+
   try {
     const query_res = await pool.query(sql, [itemName]);
     if (query_res.rows.length > 0) {
