@@ -38,9 +38,9 @@
 import LaunchPage from './ManagerHome.vue'
 import Inventory from './views/Inventory.vue'
 import Employees from './views/Employees.vue'
-import MenuItems from './views/MenuItems.vue';
-import MenuPrices from './views/MenuPrices.vue';
-import Reports from './views/Reports.vue';
+import MenuItems from './views/MenuItems.vue'
+import MenuPrices from './views/MenuPrices.vue'
+import Reports from './views/Reports.vue'
 
 export default {
   name: 'MainContent',
@@ -58,7 +58,7 @@ export default {
     LaunchPage,
     MenuItems,
     MenuPrices,
-    Reports
+    Reports,
   },
 }
 </script>

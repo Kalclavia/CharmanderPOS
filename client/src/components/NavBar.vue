@@ -1,7 +1,13 @@
 <template>
   <div class="menu-bar" :style="{ width: sideBarWidth }">
     <span class="collapsebar">
-      <button @click="toggleSideBar" class="arrow" :class="{'rotate':collapsed}">&gt;&gt;</button>
+      <button
+        @click="toggleSideBar"
+        class="arrow"
+        :class="{ rotate: collapsed }"
+      >
+        &gt;&gt;
+      </button>
     </span>
     <span v-if="collapsed"> </span>
     <span v-else>
@@ -54,17 +60,22 @@
       >
         Reports
       </button>
+      <Translate />
     </span>
   </div>
 </template>
 
 <script>
 import { collapsed, toggleSideBar, sideBarWidth, showButtons } from './state.js'
+import Translate from './translate/translateModel.vue'
 
 export default {
   name: 'MenuBar',
   setup() {
     return { collapsed, toggleSideBar, sideBarWidth, showButtons }
+  },
+  components: {
+    Translate,
   },
 }
 </script>
@@ -116,10 +127,10 @@ export default {
   color: #080808;
   background-color: transparent;
   border: none;
-  transition: 0.2s linear; 
+  transition: 0.2s linear;
 }
 
-.rotate{
+.rotate {
   transform: rotate(180deg);
   transition: 0.2s linear;
 }
