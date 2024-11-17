@@ -6,26 +6,32 @@
     <button>Z-Report</button>
   </div>
   <div style="padding-top: 20px">
-    <barchart />
+    <productBarChartbarchart />
   </div>
   <div class="buttons"><button>Toggle Chart Style</button></div>
 </template>
 
 <script>
 import axios from 'axios'
-import barchart from '../charts/barchart.vue'
+import productBarChartbarchart from '../charts/productBarChart.vue'
 export default {
   name: 'Reports',
   components: {
-    barchart,
+    productBarChartbarchart,
   },
   data() {
     return { employeeTransaction: [], ingredientsByDateRange: [] }
   },
   methods: {
     fetchEmployeeTransaction() {
+       const config = {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        params: { startDate: '2023-01-01', endDate: '2023-01-02' },
+      }
       axios
-        .get(import.meta.env.VITE_API_ENDPOINT + 'report/transactionBreakDown')
+        .get(import.meta.env.VITE_API_ENDPOINT + 'report/transactionBreakDown', config)
         .then(response => {
           this.employeeTransaction = response.data
         })
@@ -56,7 +62,7 @@ export default {
     },
   },
   mounted() {
-    this.fetchIngredientsByDateRange()
+    //this.fetchIngredientsByDateRange()
   },
 }
 </script>
