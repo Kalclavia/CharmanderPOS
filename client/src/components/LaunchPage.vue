@@ -1,5 +1,5 @@
 <template>
-    <div class="launch-page">
+    <div class="launch-page" @click="$emit('startOrder')">
         <img src="@/assets/panda-logo.png" alt="Panda Express Logo" class="logo" />
         <button @click="$emit('startOrder')" class="tap-to-order">TAP TO ORDER</button>
     </div>
@@ -28,6 +28,7 @@ export default {
     justify-content: center;
     background-color: #9b150b;
     color: white;
+    cursor: pointer;
 }
 
 .logo {

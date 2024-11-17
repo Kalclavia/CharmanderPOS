@@ -2,19 +2,10 @@
   <div class="drink">
     <h2>Drinks</h2>
     <div class="grid">
-      <button
-        v-for="drink in drinks"
-        :key="drink"
-        @click="toggleDrinks(drink)"
-        :class="{ selected: isSelected(drink) }"
-      >
-        <img
-          v-if="getDrinkImage(drink)"
-          :src="getDrinkImage(drink)"
-          :alt="getDrinkName(drink)"
-          class="drink-image"
-          @error="handleImageError"
-        />
+      <button v-for="drink in drinks" :key="drink" @click="toggleDrinks(drink)"
+        :class="{ selected: isSelected(drink) }">
+        <img v-if="getDrinkImage(drink)" :src="getDrinkImage(drink)" :alt="getDrinkName(drink)" class="drink-image"
+          @error="handleImageError" />
         <span>{{ getDrinkName(drink) }}</span>
         <span v-if="isSelected(drink)" class="checkmark">✓</span>
       </button>
@@ -25,11 +16,7 @@
         Select Size for {{ getDrinkName(currentItem) }}
       </h3>
       <div>
-        <button
-          v-for="size in sizeOptions.drink"
-          :key="size.name"
-          @click="selectSize(size)"
-        >
+        <button v-for="size in sizeOptions.drink" :key="size.name" @click="selectSize(size)">
           {{ size.name }} - ${{ size.price.toFixed(2) }}
         </button>
       </div>
@@ -152,7 +139,7 @@ export default {
       const fileName = `${name.toLowerCase().replace(/\s+/g, '')}.png`
       const imagePath = `/src/assets/${fileName}`
       console.log('Image path:', imagePath)
-      return new URL(`/src/assets/${fileName}`,import.meta.url).href;
+      return new URL(`/src/assets/${fileName}`, import.meta.url).href;
     },
   },
   mounted() {

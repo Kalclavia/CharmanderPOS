@@ -4,8 +4,8 @@
     <div class="grid">
       <button v-for="appetizer in appetizers" :key="appetizer" @click="toggleAppetizers(appetizer)"
         :class="{ selected: isSelected(appetizer) }">
-        <img v-if="getAppetizerImage(appetizer)" :src="getAppetizerImage(appetizer)" :alt="getAppetizerName(appetizer)" class="appetizer-image"
-          @error="handleImageError" />
+        <img v-if="getAppetizerImage(appetizer)" :src="getAppetizerImage(appetizer)" :alt="getAppetizerName(appetizer)"
+          class="appetizer-image" @error="handleImageError" />
         <span>{{ getAppetizerName(appetizer) }}</span>
         <span v-if="isSelected(appetizer)" class="checkmark">✓</span>
       </button>
@@ -86,7 +86,7 @@ export default {
       }
     },
     isSelected(appetizer) {
-      return this.selectedAppetizers.some(selected => 
+      return this.selectedAppetizers.some(selected =>
         selected.name.startsWith(`Appetizer: ${this.getAppetizerName(appetizer)}`)
       );
     },
@@ -96,7 +96,7 @@ export default {
         price: size.price
       };
       // Remove any existing selection for this appetizer
-      this.selectedAppetizers = this.selectedAppetizers.filter(item => 
+      this.selectedAppetizers = this.selectedAppetizers.filter(item =>
         !item.name.startsWith(`Appetizer: ${this.getAppetizerName(this.currentItem)}`)
       );
       this.selectedAppetizers.push(itemToAdd);
@@ -129,7 +129,7 @@ export default {
       const fileName = `${name.toLowerCase().replace(/\s+/g, '')}.png`
       const imagePath = `/src/assets/${fileName}`
       console.log('Image path:', imagePath)
-      return new URL(`/src/assets/${fileName}`,import.meta.url).href;
+      return new URL(`/src/assets/${fileName}`, import.meta.url).href;
     },
     handleImageError(event) {
       console.error('Image failed to load:', event.target.src)
@@ -156,18 +156,18 @@ export default {
 
 button {
   border: 2px solid black;
-    border-radius: 10px;
-    background-color: #e7e4d7;
-    color: black;
-    padding: 10px;
-    cursor: pointer;
-    transition: background-color 0.3s, box-shadow 0.3s;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: auto;
-    position: relative;
+  border-radius: 10px;
+  background-color: #e7e4d7;
+  color: black;
+  padding: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s, box-shadow 0.3s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: auto;
+  position: relative;
 }
 
 button:hover {
@@ -176,17 +176,17 @@ button:hover {
 }
 
 .selected {
-    background-color: #d2ceb8;
-    box-shadow: 0 0 0 2px #080808;
+  background-color: #d2ceb8;
+  box-shadow: 0 0 0 2px #080808;
 }
 
 .checkmark {
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    color: green;
-    font-size: 20px;
-    font-weight: bold;
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  color: green;
+  font-size: 20px;
+  font-weight: bold;
 }
 
 .appetizer-image {
@@ -197,69 +197,69 @@ button:hover {
 }
 
 .add-to-cart-container {
-    max-height: min-content;
-    position: fixed;
-    box-shadow: 0 4px 3px #080808;
+  max-height: min-content;
+  position: fixed;
+  box-shadow: 0 4px 3px #080808;
 }
 
 .add-to-cart {
-    padding: 15px 15px;
-    font-size: 15px;
-    background-color: #4CAF50;
-    color: rgb(0, 0, 0);
-    border: none;
-    border-radius: 10px;
-    position: fixed;
-    top: 45px;
-    right: 145px;
-    z-index: 1000;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background-color 0.3s, box-shadow 0.3s;
-    height: 30px;
-    box-shadow: 0 4px 3px #080808;
+  padding: 15px 15px;
+  font-size: 15px;
+  background-color: #4CAF50;
+  color: rgb(0, 0, 0);
+  border: none;
+  border-radius: 10px;
+  position: fixed;
+  top: 45px;
+  right: 145px;
+  z-index: 1000;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s, box-shadow 0.3s;
+  height: 30px;
+  box-shadow: 0 4px 3px #080808;
 }
 
 .add-to-cart:disabled {
-    background-color: #e7e4d7;
-    box-shadow: 0 4px 3px #080808;
-    cursor: not-allowed;
+  background-color: #e7e4d7;
+  box-shadow: 0 4px 3px #080808;
+  cursor: not-allowed;
 }
 
 .size-modal {
-    position: fixed;
-    top: 50%;
-    left: 60%;
-    transform: translate(-50%, -50%);
-    background-color: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.3);
-    z-index: 1001;
-    color:#080808;
+  position: fixed;
+  top: 50%;
+  left: 60%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  z-index: 1001;
+  color: #080808;
 }
 
 .size-modal button {
-    margin: 5px;
-    padding: 10px;
+  margin: 5px;
+  padding: 10px;
 }
 
 .close-button {
-    position: absolute;
-    bottom: 10px;
-    right: 10px;
-    background-color: transparent;
-    border: none;
-    color: red;
-    font-size: 24px;
-    cursor: pointer;
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background-color: transparent;
+  border: none;
+  color: red;
+  font-size: 24px;
+  cursor: pointer;
 }
 
 .close-button:hover {
-    color: darkred;
-    background-color: transparent !important;
-    box-shadow: none !important;
+  color: darkred;
+  background-color: transparent !important;
+  box-shadow: none !important;
 }
 </style>
