@@ -24,14 +24,17 @@ export default {
   },
   methods: {
     fetchEmployeeTransaction() {
-       const config = {
+      const config = {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
         },
         params: { startDate: '2023-01-01', endDate: '2023-01-02' },
       }
       axios
-        .get(import.meta.env.VITE_API_ENDPOINT + 'report/transactionBreakDown', config)
+        .get(
+          import.meta.env.VITE_API_ENDPOINT + 'report/transactionBreakDown',
+          config,
+        )
         .then(response => {
           this.employeeTransaction = response.data
         })

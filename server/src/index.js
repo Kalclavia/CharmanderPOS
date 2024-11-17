@@ -519,7 +519,6 @@ app.get("/report/itemsByDateRange", (req, res) => {
 app.get("/report/ingredientsByDateRange", (req, res) => {
   const startDate = req.query.startDate;
   const endDate = req.query.endDate;
-
   pool
     .query(
       "SELECT i.name AS ingredient_name, i.ingredientid AS ingredient_id, SUM(r.quantity) AS total_used FROM transactionitems ti JOIN transactions t ON ti.transactionid = t.transactionid JOIN recipes r ON r.foodid IN (ti.food1, ti.food2, ti.food3, ti.food4) JOIN ingredients i ON r.ingredientid = i.ingredientid WHERE t.date >= CAST($1 AS TIMESTAMP) AND t.date <= CAST($2 AS TIMESTAMP) GROUP BY i.name, i.ingredientid ORDER BY i.name ASC;",
