@@ -1,5 +1,5 @@
 <template>
-  <div class="launch-page">
+  <div class="launch-page" @click="$emit('startOrder')"> 
     <img src="@/assets/panda-logo.png" alt="Panda Express Logo" class="logo" />
     <button @click="$emit('startOrder')" class="tap-to-order">
       TAP TO ORDER
