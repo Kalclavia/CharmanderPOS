@@ -36,9 +36,10 @@
       <!-- User Info -->
       <UserInfo v-if="showUserInfo && !isOrderComplete" @cancelUserInfo="cancelUserInfo"
         @completeOrder="completeOrder" />
-      
+
       <!-- Order Completion Screen -->
-      <OrderComplete v-if="isOrderComplete" @newOrder="resetOrder" />
+      <OrderComplete v-if="isOrderComplete" :transactionId="transactionId" :readyTime="readyTime"
+        @newOrder="resetOrder" />
     </div>
   </div>
 </template>
@@ -159,6 +160,8 @@ export default {
       this.isCartVisible = false; // Hide cart when returning from checkout
     },
     completeOrder() {
+      this.transactionId = '123456789'; // You can replace this with dynamic logic
+      this.readyTime = '12:30 PM'; // You can replace this with dynamic logic
       // Set isOrderComplete to true to show the OrderComplete component
       this.isOrderComplete = true;
       this.showUserInfo = false; // Hide UserInfo after completion
@@ -169,7 +172,8 @@ export default {
     resetOrder() {
       this.isOrderComplete = false;
       this.cartItems = [];
-      this.orderDetails = { transactionId: '', readyTime: '' };  // Reset order details
+      this.transactionId = ''; // Reset transactionId
+      this.readyTime = ''; // Reset readyTime
       this.isOnLaunchPage = true;
       this.showUserInfo = false;
       this.showUserInfo = false;

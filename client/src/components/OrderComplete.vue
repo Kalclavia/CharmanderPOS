@@ -1,5 +1,5 @@
 <template>
-    <div class="order-complete-page" v-if="isOrderComplete">
+    <div class="order-complete-page" v-if="transactionId && readyTime">
         <img src="@/assets/panda-logo.png" alt="Panda Logo" class="panda-logo" />
         <img src="@/assets/confirmation-check.gif" alt="Confirmation Check" class="confirmation-check" />
         <h2>Order Complete!</h2>
