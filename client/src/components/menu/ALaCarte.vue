@@ -8,6 +8,9 @@
                     @error="handleImageError" />
                 <span>{{ getSideName(side) }}</span>
                 <span v-if="isSelected(side, 'side')" class="checkmark">✓</span>
+                <span v-if="getSelectedSize(side, 'side')" class="size-tag">
+                    {{ getSelectedSize(side, 'side') }}
+                </span>
             </button>
         </div>
 
@@ -19,6 +22,9 @@
                     class="entree-image" @error="handleImageError" />
                 <span>{{ getEntreeName(entree) }}</span>
                 <span v-if="isSelected(entree, 'entree')" class="checkmark">✓</span>
+                <span v-if="getSelectedSize(entree, 'entree')" class="size-tag">
+                    {{ getSelectedSize(entree, 'entree') }}
+                </span>
             </button>
         </div>
 
@@ -45,10 +51,6 @@
         </button>
     </div>
 </template>
-
-
-
-
 
 <script>
 import axios from 'axios';
@@ -103,27 +105,44 @@ export default {
             this.currentItemType = 'entree';
             this.showSizeModal = true;
         },
+        getSelectedSize(item, type) {
+            const selectedList = type === 'side' ? this.selectedSides : this.selectedEntrees;
+            const selectedItem = selectedList.find(selected => 
+                selected.name.includes(type === 'side' ? this.getSideName(item) : this.getEntreeName(item))
+            );
+            return selectedItem ? selectedItem.size : null;
+        },
         isSelected(item, type) {
             const selectedList = type === 'side' ? this.selectedSides : this.selectedEntrees;
             return selectedList.some(selected => selected.name.includes(this.getSideName(item) || this.getEntreeName(item)));
         },
         selectSize(size, type) {
-            const itemToAdd = {
-                name: `${type === 'side' ? 'Side' : 'Entree'}: ${type === 'side' ? this.getSideName(this.currentItem) : this.getEntreeName(this.currentItem)} (${size.name})`,
-                price: size.price
-            };
+            // Ensure only one selected item for each entree/side
+            const selectedList = type === 'side' ? this.selectedSides : this.selectedEntrees;
+            const existingItemIndex = selectedList.findIndex(item => item.name.includes(
+                type === 'side' ? this.getSideName(this.currentItem) : this.getEntreeName(this.currentItem)
+            ));
 
-            if (type === 'side') {
-                this.selectedSides.push(itemToAdd); // Adds the selected item with size to selectedSides
+            // If an item of the same type exists, replace it with the new size, otherwise add a new one
+            if (existingItemIndex !== -1) {
+                selectedList[existingItemIndex] = {
+                    name: `${type === 'side' ? 'Side' : 'Entree'}: ${type === 'side' ? this.getSideName(this.currentItem) : this.getEntreeName(this.currentItem)} (${size.name})`,
+                    price: size.price,
+                    size: size.name
+                };
             } else {
-                this.selectedEntrees.push(itemToAdd); // Adds the selected item with size to selectedEntrees
+                const itemToAdd = {
+                    name: `${type === 'side' ? 'Side' : 'Entree'}: ${type === 'side' ? this.getSideName(this.currentItem) : this.getEntreeName(this.currentItem)} (${size.name})`,
+                    price: size.price,
+                    size: size.name
+                };
+                selectedList.push(itemToAdd); // Adds the selected item with size to selectedSides or selectedEntrees
             }
 
             this.showSizeModal = false;
             this.currentItem = null;
             this.currentItemType = null; // Reset currentItemType after selection
         },
-
         cancelSizeSelection() {
             this.showSizeModal = false;
             this.currentItem = null;
@@ -301,7 +320,14 @@ button:hover {
     /* Change color on hover for better UX */
     background-color: transparent !important;
     box-shadow: none !important;
+}
 
-
+.size-tag {
+    margin-left: 5px;
+    padding: 2px 6px;
+    background-color: #4CAF50;
+    color: white;
+    font-size: 12px;
+    border-radius: 12px;
 }
 </style>

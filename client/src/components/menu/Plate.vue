@@ -2,19 +2,9 @@
   <div class="plate">
     <h2>Pick 1 Side</h2>
     <div class="grid">
-      <button
-        v-for="side in sides"
-        :key="side"
-        @click="selectSide(side)"
-        :class="{ selected: selectedSide === side }"
-      >
-        <img
-          v-if="getSideImage(side)"
-          :src="getSideImage(side)"
-          :alt="getSideName(side)"
-          class="side-image"
-          @error="handleImageError"
-        />
+      <button v-for="side in sides" :key="side" @click="selectSide(side)" :class="{ selected: selectedSide === side }">
+        <img v-if="getSideImage(side)" :src="getSideImage(side)" :alt="getSideName(side)" class="side-image"
+          @error="handleImageError" />
         <span>{{ getSideName(side) }}</span>
         <span v-if="selectedSide === side" class="checkmark">✓</span>
       </button>
@@ -22,19 +12,10 @@
 
     <h2>Pick 2 Entrees</h2>
     <div class="grid">
-      <button
-        v-for="entree in entrees"
-        :key="entree"
-        @click="selectEntree(entree)"
-        :class="{ selected: selectedEntrees.includes(entree) }"
-      >
-        <img
-          v-if="getEntreeImage(entree)"
-          :src="getEntreeImage(entree)"
-          :alt="getEntreeName(entree)"
-          class="entree-image"
-          @error="handleImageError"
-        />
+      <button v-for="entree in entrees" :key="entree" @click="selectEntree(entree)"
+        :class="{ selected: selectedEntrees.includes(entree) }">
+        <img v-if="getEntreeImage(entree)" :src="getEntreeImage(entree)" :alt="getEntreeName(entree)"
+          class="entree-image" @error="handleImageError" />
         <span>{{ getEntreeName(entree) }}</span>
         <span v-if="selectedEntrees.includes(entree)" class="checkmark">✓</span>
       </button>
@@ -119,7 +100,7 @@ export default {
       if (!name) return null
       const fileName = `${name.toLowerCase().replace(/\s+/g, '')}.png`
       const imagePath = `/src/assets/${fileName}`
-      return new URL(`/src/assets/${fileName}`,import.meta.url).href;
+      return new URL(`/src/assets/${fileName}`, import.meta.url).href;
     },
     getEntreeName(entree) {
       if (typeof entree === 'string') {
@@ -134,7 +115,7 @@ export default {
       if (!name) return null
       const fileName = `${name.toLowerCase().replace(/\s+/g, '')}.png`
       const imagePath = `/src/assets/${fileName}`
-      return new URL(`/src/assets/${fileName}`,import.meta.url).href;
+      return new URL(`/src/assets/${fileName}`, import.meta.url).href;
     },
     handleImageError(event) {
       console.error('Image failed to load:', event.target.src)

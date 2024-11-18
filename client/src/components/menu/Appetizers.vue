@@ -8,6 +8,9 @@
           @error="handleImageError" />
         <span>{{ getAppetizerName(appetizer) }}</span>
         <span v-if="isSelected(appetizer)" class="checkmark">✓</span>
+        <span v-if="getSelectedSize(appetizer)" class="size-tag">
+          {{ getSelectedSize(appetizer) }}
+        </span>
       </button>
     </div>
     <!-- Size Selection Modal -->
@@ -90,10 +93,17 @@ export default {
         selected.name.startsWith(`Appetizer: ${this.getAppetizerName(appetizer)}`)
       );
     },
+    getSelectedSize(appetizer) {
+      const selectedAppetizer = this.selectedAppetizers.find(item => 
+        item.name.startsWith(`Appetizer: ${this.getAppetizerName(appetizer)}`)
+      );
+      return selectedAppetizer ? selectedAppetizer.size : null;
+    },
     selectSize(size) {
       const itemToAdd = {
         name: `Appetizer: ${this.getAppetizerName(this.currentItem)} (${size.name})`,
-        price: size.price
+        price: size.price,
+        size: size.name
       };
       // Remove any existing selection for this appetizer
       this.selectedAppetizers = this.selectedAppetizers.filter(item => 
@@ -261,5 +271,14 @@ button:hover {
     color: darkred;
     background-color: transparent !important;
     box-shadow: none !important;
+}
+
+.size-tag {
+    margin-left: 5px;
+    padding: 2px 6px;
+    background-color: #4CAF50;
+    color: white;
+    font-size: 12px;
+    border-radius: 12px;
 }
 </style>

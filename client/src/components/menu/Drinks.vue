@@ -2,21 +2,15 @@
   <div class="drink">
     <h2>Drinks</h2>
     <div class="grid">
-      <button
-        v-for="drink in drinks"
-        :key="drink"
-        @click="toggleDrinks(drink)"
-        :class="{ selected: isSelected(drink) }"
-      >
-        <img
-          v-if="getDrinkImage(drink)"
-          :src="getDrinkImage(drink)"
-          :alt="getDrinkName(drink)"
-          class="drink-image"
-          @error="handleImageError"
-        />
+      <button v-for="drink in drinks" :key="drink" @click="toggleDrinks(drink)"
+        :class="{ selected: isSelected(drink) }">
+        <img v-if="getDrinkImage(drink)" :src="getDrinkImage(drink)" :alt="getDrinkName(drink)" class="drink-image"
+          @error="handleImageError" />
         <span>{{ getDrinkName(drink) }}</span>
         <span v-if="isSelected(drink)" class="checkmark">✓</span>
+        <span v-if="getSelectedSize(drink)" class="size-tag">
+          {{ getSelectedSize(drink) }}
+        </span>
       </button>
     </div>
     <!-- Size Selection Modal -->
@@ -25,11 +19,7 @@
         Select Size for {{ getDrinkName(currentItem) }}
       </h3>
       <div>
-        <button
-          v-for="size in sizeOptions.drink"
-          :key="size.name"
-          @click="selectSize(size)"
-        >
+        <button v-for="size in sizeOptions.drink" :key="size.name" @click="selectSize(size)">
           {{ size.name }} - ${{ size.price.toFixed(2) }}
         </button>
       </div>
@@ -114,12 +104,22 @@ export default {
           selectedDrink.name.startsWith(`Drink: ${drinkName} (`),
       )
     },
-
+    getSelectedSize(drink) {
+      const selectedDrink = this.selectedDrinks.find(item =>
+        item.name.startsWith(`Drink: ${this.getDrinkName(drink)}`)
+      );
+      return selectedDrink ? selectedDrink.size : null;
+    },
     selectSize(size) {
       const itemToAdd = {
         name: `Drink: ${this.getDrinkName(this.currentItem)} (${size.name})`,
         price: size.price,
+        size: size.name
       }
+      // Remove any existing selection for this appetizer
+      this.selectedDrinks = this.selectedDrinks.filter(item => 
+        !item.name.startsWith(`Drink: ${this.getDrinkName(this.currentItem)}`)
+      );
       this.selectedDrinks.push(itemToAdd)
       this.showSizeModal = false
       this.currentItem = null
@@ -152,7 +152,7 @@ export default {
       const fileName = `${name.toLowerCase().replace(/\s+/g, '')}.png`
       const imagePath = `/src/assets/${fileName}`
       console.log('Image path:', imagePath)
-      return new URL(`/src/assets/${fileName}`,import.meta.url).href;
+      return new URL(`/src/assets/${fileName}`, import.meta.url).href;
     },
   },
   mounted() {
@@ -294,5 +294,14 @@ button:hover {
   /* Change color on hover for better UX */
   background-color: transparent !important;
   box-shadow: none !important;
+}
+
+.size-tag {
+    margin-left: 5px;
+    padding: 2px 6px;
+    background-color: #4CAF50;
+    color: white;
+    font-size: 12px;
+    border-radius: 12px;
 }
 </style>

@@ -1,8 +1,8 @@
 <template>
     <div class="checkout-page" v-if="!showUserInfo && !orderConfirmed">
         <h2>Choose a payment method</h2>
-        <!-- Payment options as big rectangles with icons above text -->
         <div class="payment-options">
+            <!-- Payment option buttons -->
             <div class="payment-button" :class="{ selected: selectedPayment === 'Cash' }"
                 @click="togglePayment('Cash')">
                 <img src="@/assets/cash-icon.png" alt="Cash" />
@@ -29,22 +29,13 @@
             <button @click="placeOrder" class="place-order-button">Place Order</button>
         </div>
     </div>
-
-    <UserInfo v-else-if="showUserInfo && !orderConfirmed" @cancel="cancelUserInfo" @confirm="completeOrder" />
-
-    <OrderComplete v-else :transactionId="orderDetails.transactionId" :readyTime="orderDetails.readyTime" />
 </template>
 
 <script>
-import UserInfo from './UserInfo.vue';
-import OrderComplete from './OrderComplete.vue';
-
 export default {
-    components: { UserInfo, OrderComplete },
     data() {
         return {
             selectedPayment: null,
-            showUserInfo: false,
             orderConfirmed: false,
             orderDetails: {
                 transactionId: '',
@@ -62,18 +53,11 @@ export default {
                 alert('Please select a payment method.');
                 return;
             }
-            this.showUserInfo = true;        },
+            this.$emit('confirmOrder');
+        },
         cancelOrder() {
             this.$emit('cancelOrder'); // Emit event to cancel
         },
-        cancelUserInfo() {
-            this.showUserInfo = false; // Return to CheckoutPage
-        },
-        completeOrder(details) {
-            this.orderDetails.transactionId = details.transactionId;
-            this.orderDetails.readyTime = details.readyTime;
-            this.orderConfirmed = true; // Switch to OrderComplete view
-        }
     },
 };
 </script>
@@ -85,12 +69,13 @@ export default {
     align-items: center;
     padding: 40px;
     position: fixed;
-    top: 250px;
+    top: 0;
     left: 450px;
     right: 0;
     bottom: 0;
     color: #e7e4d7;
     overflow-y: auto;
+    background-color: #9b150b;
 }
 
 h2 {

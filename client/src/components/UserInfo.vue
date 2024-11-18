@@ -1,12 +1,12 @@
 <template>
     <div class="user-info-page">
         <h2>Please Enter Your Details</h2>
-        
+
         <label for="name">Name:</label>
         <input type="text" id="name" v-model="name" placeholder="Enter your name" />
 
         <label for="phone">Phone Number:</label>
-        <input type="text" id="phone" v-model="phone" placeholder="Enter your phone number" />
+        <input type="text" id="phone" v-model="phone" placeholder="(XXX) XXX - XXXX" @input="formatPhone" />
 
         <div class="bottom-buttons">
             <button @click="cancel" class="cancel-button">Cancel</button>
@@ -17,31 +17,50 @@
 
 <script>
 export default {
+    props: {
+        transactionId: {
+            type: String,
+            required: true,  // Ensure transactionId is passed as a prop
+        }
+    },
     data() {
         return {
             name: '',
-            phone: ''
+            phone: '',
         };
     },
     methods: {
+        formatPhone() {
+            let cleaned = this.phone.replace(/\D/g, '');
+            if (cleaned.length <= 3) {
+                this.phone = `(${cleaned}`;
+            } else if (cleaned.length <= 6) {
+                this.phone = `(${cleaned.slice(0, 3)}) ${cleaned.slice(3)}`;
+            } else if (cleaned.length <= 10) {
+                this.phone = `(${cleaned.slice(0, 3)}) ${cleaned.slice(3, 6)} - ${cleaned.slice(6)}`;
+            } else {
+                this.phone = `(${cleaned.slice(0, 3)}) ${cleaned.slice(3, 6)} - ${cleaned.slice(6, 10)}`;
+            }
+        },
         cancel() {
-            this.$emit('cancelOrder'); // Emit event to go back to CheckoutPage
+            this.$emit('cancelUserInfo');
         },
         confirm() {
             if (!this.name || !this.phone) {
-                alert("Please fill in both fields.");
+                alert('Please fill in both fields.');
                 return;
             }
-            const transactionId = 'TX' + Math.floor(Math.random() * 100000); // Example ID
+
             const readyTime = this.calculateReadyTime();
-            this.$emit('confirm', { name: this.name, phone: this.phone, transactionId, readyTime });
+            // Emit order details to parent, including transactionId from props
+            this.$emit('completeOrder');
         },
         calculateReadyTime() {
             const now = new Date();
-            now.setMinutes(now.getMinutes() + 5 + Math.floor(Math.random() * 6)); // 5-10 minutes
+            now.setMinutes(now.getMinutes() + 5 + Math.floor(Math.random() * 6));
             return now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
         }
-    }
+    },
 };
 </script>
 
