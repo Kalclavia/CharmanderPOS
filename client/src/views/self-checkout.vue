@@ -45,6 +45,7 @@
 </template>
 
 <script>
+import axios from 'axios';
 import LaunchPage from '../components/LaunchPage.vue';
 import MenuBar from '../components/MenuBar.vue';
 import MainContent from '../components/MainContent.vue';
@@ -75,7 +76,7 @@ export default {
       selectedMenu: null,
       name: '',
       phone: '',
-      transactionId: '',
+      transactionId: null,
       readyTime: '',
       isCartVisible: false,
       showUserInfo: false,
@@ -159,24 +160,45 @@ export default {
       this.isCheckoutVisible = false; // Go back to main content view
       this.isCartVisible = false; // Hide cart when returning from checkout
     },
-    completeOrder() {
-      this.transactionId = '123456789'; // You can replace this with dynamic logic
-      this.readyTime = '12:30 PM'; // You can replace this with dynamic logic
-      // Set isOrderComplete to true to show the OrderComplete component
-      this.isOrderComplete = true;
-      this.showUserInfo = false; // Hide UserInfo after completion
+    // Complete the order
+    async completeOrder() {
+      try {
+        // Fetch the next available transaction ID from the backend
+        const response = await axios.get(import.meta.env.VITE_API_ENDPOINT + 'transactions/latestID');
+        this.transactionId = `${response.data.transactionID}`;
+
+        // Generate the ready time by calling calculateReadyTime
+        this.readyTime = this.calculateReadyTime();
+
+        // Update the order state
+        this.isOrderComplete = true;
+        this.showUserInfo = false; // Hide the User Info after completion
+
+      } catch (error) {
+        console.error('Error fetching transaction ID:', error);
+        alert('There was an error processing your order. Please try again.');
+      }
+    },
+    // Calculate ready time (5-10 minutes from now)
+    calculateReadyTime() {
+      const now = new Date();
+      const randomMinutes = Math.floor(Math.random() * 6) + 5; // Random value between 5 and 10
+      now.setMinutes(now.getMinutes() + randomMinutes); // Add random minutes
+
+      return now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     },
     cancelUserInfo() {
       this.showUserInfo = false; // Go back to CheckoutPage
     },
     resetOrder() {
-      this.isOrderComplete = false;
-      this.cartItems = [];
-      this.transactionId = ''; // Reset transactionId
-      this.readyTime = ''; // Reset readyTime
-      this.isOnLaunchPage = true;
-      this.showUserInfo = false;
-      this.showUserInfo = false;
+      this.isOrderComplete = false; // Reset order completion status
+      this.cartItems = []; // Clear the cart items
+      this.transactionId = ''; // Reset transaction ID
+      this.readyTime = ''; // Reset ready time
+      this.isCheckoutVisible = false; // Hide the checkout page
+      this.isCartVisible = false; // Hide the cart panel
+      this.isOnLaunchPage = true; // Go back to the launch page
+      this.showUserInfo = false; // Hide the user info form
     },
   },
 };
@@ -193,7 +215,7 @@ export default {
   transition: background-color 0.3s, box-shadow 0.3s;
   box-shadow: 0 4px 3px #080808;
   border-radius: 75px;
-  z-index: 1000;
+  z-index: 1001;
   display: flex;
   align-items: center;
   justify-content: center;
