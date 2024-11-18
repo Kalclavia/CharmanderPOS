@@ -3,14 +3,12 @@
         <span class="collapsebar" @click="toggleCart"></span>
         <span v-if="collapsed"></span>
         <span v-else>
-            <!-- Change header text to 'Order Summary' if isCheckout is true -->
-            <h2 class="title">{{ isCheckout ? 'Order Summary' : 'Shopping Cart' }}</h2> 
+            <h2 class="title">{{ isCheckoutVisible ? 'Order Summary' : 'Shopping Cart' }}</h2>
 
             <div class="cart-items">
                 <ul>
                     <li v-for="(item, index) in cartItems" :key="index">
-                        <!-- Conditionally hide remove button -->
-                        <button v-if="!isCheckout" class="remove-btn" @click="removeFromCart(index)">×</button>
+                        <button v-if="!isCheckoutVisible" class="remove-btn" @click="removeFromCart(index)">×</button>
                         <div class="item-name">{{ item.name }}</div>
                         <div class="item-price">${{ item.price.toFixed(2) }}</div>
                     </li>
@@ -20,55 +18,45 @@
             <div class="total">Total: ${{ total.toFixed(2) }}</div>
         </span>
 
-        <!-- Hide these buttons during checkout -->
-        <button v-if="!isCheckout" class="clear-order-btn" @click="clearOrder">Clear Order</button>
-        <button v-if="!isCheckout" class="place-order-btn" @click="showCheckout">Place Order</button>
+        <button v-if="!isCheckoutVisible" class="clear-order-btn" @click="clearOrder">Clear Order</button>
+        <button v-if="!isCheckoutVisible" class="place-order-btn" @click="showCheckout">Place Order</button>
 
-        <!-- Conditional rendering for CheckoutPage -->
-        <CheckoutPage v-if="isCheckoutPageVisible" :cartItems="cartItems" @confirmOrder="finalizeOrder" @cancelOrder="isCheckoutPageVisible = false" />
+        <!-- Show CheckoutPage based on isCheckoutVisible prop -->
+        <CheckoutPage v-if="isCheckoutVisible" :cartItems="cartItems" @confirmOrder="finalizeOrder"
+            @cancelOrder="isCheckoutVisible = false" />
     </div>
 </template>
 
 <script>
 import { ref, computed } from 'vue';
-import CheckoutPage from './CheckoutPage.vue';
 
 export default {
     name: 'Cart',
-    components: { CheckoutPage },
     props: {
         cartItems: { type: Array, default: () => [] },
-        isCheckout: { type: Boolean, default: false } // Receive isCheckout prop
+        isCheckoutVisible: { type: Boolean, default: false }
     },
     setup(props, { emit }) {
         const collapsed = ref(false);
-        const isCheckoutPageVisible = ref(false);
-
         const cartWidth = computed(() => (collapsed.value ? '265px' : '450px'));
         const total = computed(() => props.cartItems.reduce((sum, item) => sum + item.price, 0));
 
         const toggleCart = () => { collapsed.value = !collapsed.value };
         const removeFromCart = (index) => { emit('removeItem', index) };
         const clearOrder = () => { emit('clearOrder') };
-        const showCheckout = () => {
-            isCheckoutPageVisible.value = true;
-            emit('hideMainContent'); // Notify the parent to hide MainContent and Cart
-        };
-        const finalizeOrder = () => { emit('finalizeOrder'); isCheckoutPageVisible.value = false };
+        const showCheckout = () => { emit('showCheckout') };
 
         return {
-            collapsed, 
-            cartWidth, 
-            total, 
-            toggleCart, 
-            removeFromCart, 
-            clearOrder, 
-            showCheckout, 
-            isCheckoutPageVisible, 
-            finalizeOrder
+            collapsed,
+            cartWidth,
+            total,
+            toggleCart,
+            removeFromCart,
+            clearOrder,
+            showCheckout
         };
     }
-};
+}
 </script>
 
 <style scoped>

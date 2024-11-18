@@ -16,24 +16,18 @@
 </template>
 
 <script>
-import axios from 'axios';
-
 export default {
+    props: {
+        transactionId: {
+            type: String,
+            required: true,  // Ensure transactionId is passed as a prop
+        }
+    },
     data() {
         return {
             name: '',
             phone: '',
-            transactionId: null,
         };
-    },
-    async mounted() {
-        try {
-            const response = await axios.get(import.meta.env.VITE_API_ENDPOINT + 'transactions/latestID');
-            this.transactionId = `${response.data.transactionID}`;
-        } catch (error) {
-            console.error("Failed to fetch transaction ID:", error);
-            alert("Could not retrieve transaction ID.");
-        }
     },
     methods: {
         formatPhone() {
@@ -49,26 +43,23 @@ export default {
             }
         },
         cancel() {
-            this.$emit("cancelOrder");
+            this.$emit('cancelUserInfo');
         },
         confirm() {
             if (!this.name || !this.phone) {
-                alert("Please fill in both fields.");
+                alert('Please fill in both fields.');
                 return;
             }
+
             const readyTime = this.calculateReadyTime();
-            this.$emit("confirm", {
-                name: this.name,
-                phone: this.phone,
-                transactionId: this.transactionId,
-                readyTime,
-            });
+            // Emit order details to parent, including transactionId from props
+            this.$emit('completeOrder');
         },
         calculateReadyTime() {
             const now = new Date();
             now.setMinutes(now.getMinutes() + 5 + Math.floor(Math.random() * 6));
-            return now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-        },
+            return now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
     },
 };
 </script>

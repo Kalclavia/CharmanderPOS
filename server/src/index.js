@@ -509,6 +509,83 @@ app.get("/transactions/latestID", async (req, res) => {
   }
 });
 
+app.post("/transactions/push", async (req, res) => {
+  const { transactionID, employeeID, totalPrice, transactionItems, paymentMethod } = req.body;
+
+  try {
+    const client = await pool.connect();
+
+    // Start a transaction
+    await client.query("BEGIN");
+
+    // Insert into transactions table
+    const date = new Date();
+    const timestamp = date.toISOString();
+    await client.query(
+      "INSERT INTO transactions (transactionid, employeeid, totalprice, timestamp, payment_method) VALUES ($1, $2, $3, $4, $5);",
+      [transactionID, employeeID, totalPrice, timestamp, paymentMethod]
+    );
+
+    // Loop through transaction items
+    for (const item of transactionItems) {
+      const [itemType, foodOne, foodTwo, foodThree, foodFour] = item.split(",");
+
+      // Insert into transaction_items table
+      await client.query(
+        "INSERT INTO transaction_items (transactionid, itemtype, food_one, food_two, food_three, food_four) VALUES ($1, $2, $3, $4, $5, $6);",
+        [
+          transactionID,
+          parseInt(itemType),
+          parseInt(foodOne),
+          parseInt(foodTwo),
+          parseInt(foodThree),
+          parseInt(foodFour),
+        ]
+      );
+
+      // Update inventory based on item type
+      switch (parseInt(itemType)) {
+        case 1: // Bowl
+          await client.query(
+            "UPDATE inventory SET stock = stock - 1 WHERE ingredientid = $1;",
+            [1]
+          );
+          break;
+        // Add more cases for other item types...
+        default:
+          break;
+      }
+
+      // Handle specific food items (recipes)
+      for (const food of [foodOne, foodTwo, foodThree, foodFour]) {
+        if (parseInt(food) > 0) {
+          const recipeItems = await client.query(
+            "SELECT ingredientid, quantity FROM recipes WHERE foodid = $1;",
+            [parseInt(food)]
+          );
+
+          for (const recipeItem of recipeItems.rows) {
+            await client.query(
+              "UPDATE inventory SET stock = stock - $1 WHERE ingredientid = $2;",
+              [recipeItem.quantity, recipeItem.ingredientid]
+            );
+          }
+        }
+      }
+    }
+
+    // Commit transaction
+    await client.query("COMMIT");
+    res.status(200).send({ message: "Transaction pushed successfully." });
+  } catch (error) {
+    console.error("Error pushing transaction:", error);
+    res.status(500).send({ error: error.message });
+
+    // Rollback in case of error
+    if (client) await client.query("ROLLBACK");
+  }
+});
+
 var port = 3000;
 console.log(`Server is listening on localhost:${port}`);
 app.listen(3000);
