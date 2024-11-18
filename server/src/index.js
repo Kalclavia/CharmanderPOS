@@ -511,7 +511,7 @@ app.get("/report/itemsByDateRange", (req, res) => {
 
   pool
     .query(
-      "SELECT COALESCE(f.name, it.type) AS food_name, COALESCE(f.type, 'Drink') AS food_type FROM transactionitems ti LEFT JOIN foods f ON f.foodid = ANY (ARRAY[ti.food1, ti.food2, ti.food3, ti.food4]) JOIN itemtypes it ON ti.itemtype = it.itemid JOIN transactions t ON t.transactionid = ti.transactionid WHERE t.date >= CAST($1 AS TIMESTAMP) AND t.date <= CAST($2 AS TIMESTAMP) AND f.name NOT IN ('Bowl', 'Plate', 'Bigger Plate') ORDER BY food_name ASC;",
+      "SELECT COALESCE(f.name, it.type) AS food_name, COALESCE(f.type, 'Drink') AS food_type FROM transactionitems ti LEFT JOIN foods f ON f.foodid = ANY (ARRAY[ti.food1, ti.food2, ti.food3, ti.food4]) JOIN itemtypes it ON ti.itemtype = it.itemid JOIN transactions t ON t.transactionid = ti.transactionid WHERE t.date >= CAST($1 AS TIMESTAMP) AND t.date <= CAST($2 AS TIMESTAMP) AND f.name NOT IN ('Bowl', 'Plate', 'Bigger Plate') AND COALESCE(f.name, it.type) != 'Default' ORDER BY food_name ASC;",
       [startDate, endDate]
     )
     .then((query_res) => res.json(query_res.rows))
