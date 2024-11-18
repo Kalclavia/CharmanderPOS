@@ -25,6 +25,15 @@
                 <span v-if="getSelectedSize(entree, 'entree')" class="size-tag">
                     {{ getSelectedSize(entree, 'entree') }}
                 </span>
+                <span>
+                    <!-- {{ getEntreeName(entree) }} -->
+                    <img
+                        v-if="isPremium(entree)"
+                        src="/src/assets/star.png"
+                        alt="Premium"
+                        class="star-icon"
+                    />
+                </span>
             </button>
         </div>
 
@@ -38,10 +47,11 @@
                 </button>
             </div>
             <div v-else>
-                <button v-for="size in sizeOptions.entree" :key="size.name" @click="selectSize(size, 'entree')">
+                <button v-for="size in getEntreeSizeOptions(currentItem)" :key="size.name" @click="selectSize(size, 'entree')">
                     {{ size.name }} - ${{ size.price.toFixed(2) }}
                 </button>
             </div>
+            
             <button @click="cancelSizeSelection" class="close-button">✖</button>
         </div>
 
@@ -76,7 +86,16 @@ export default {
                     { name: 'Medium', price: 8.50 },
                     { name: 'Large', price: 11.20 }
                 ]
-            }
+            },
+            premiumEntrees: ["Black Pepper Sirloin Steak", "Honey Walnut Shrimp"], // Add premium entrees
+            premiumPrices: { // Define premium item prices by size
+                
+                Small: 6.70,
+                Medium: 11.50,
+                Large: 15.70
+                
+            },
+
         };
     },
     computed: {
@@ -105,6 +124,17 @@ export default {
             this.currentItemType = 'entree';
             this.showSizeModal = true;
         },
+        getEntreeSizeOptions(entree) {
+            if (this.isPremium(entree)) {
+                const entreeName = this.getEntreeName(entree);
+                // Directly map premium size options to return the price from the premiumPrices object
+                return Object.keys(this.premiumPrices).map(size => ({
+                    name: size,
+                    price: this.premiumPrices[size]
+                }));
+            }
+            return this.sizeOptions.entree; // Return default size options for non-premium items
+        },
         getSelectedSize(item, type) {
             const selectedList = type === 'side' ? this.selectedSides : this.selectedEntrees;
             const selectedItem = selectedList.find(selected => 
@@ -117,47 +147,75 @@ export default {
             return selectedList.some(selected => selected.name.includes(this.getSideName(item) || this.getEntreeName(item)));
         },
         selectSize(size, type) {
-            // Ensure only one selected item for each entree/side
             const selectedList = type === 'side' ? this.selectedSides : this.selectedEntrees;
             const existingItemIndex = selectedList.findIndex(item => item.name.includes(
                 type === 'side' ? this.getSideName(this.currentItem) : this.getEntreeName(this.currentItem)
             ));
 
-            // If an item of the same type exists, replace it with the new size, otherwise add a new one
+            let price = size.price;
+            if (type === 'entree' && this.isPremium(this.currentItem)) {
+                price = this.premiumPrices[size.name]; // Use premium price for premium entrees
+            }
+
+            // Check if the item already exists in the selected list and update its size/price
             if (existingItemIndex !== -1) {
                 selectedList[existingItemIndex] = {
                     name: `${type === 'side' ? 'Side' : 'Entree'}: ${type === 'side' ? this.getSideName(this.currentItem) : this.getEntreeName(this.currentItem)} (${size.name})`,
-                    price: size.price,
-                    size: size.name
+                    price: price,
+                    size: size.name,
+                    isPremium: this.isPremium(this.currentItem) // Add premium flag
                 };
             } else {
                 const itemToAdd = {
                     name: `${type === 'side' ? 'Side' : 'Entree'}: ${type === 'side' ? this.getSideName(this.currentItem) : this.getEntreeName(this.currentItem)} (${size.name})`,
-                    price: size.price,
-                    size: size.name
+                    price: price,
+                    size: size.name,
+                    isPremium: this.isPremium(this.currentItem) // Add premium flag
                 };
-                selectedList.push(itemToAdd); // Adds the selected item with size to selectedSides or selectedEntrees
+                selectedList.push(itemToAdd);
             }
 
+            // Close the modal after selection
             this.showSizeModal = false;
             this.currentItem = null;
-            this.currentItemType = null; // Reset currentItemType after selection
+            this.currentItemType = null;
         },
         cancelSizeSelection() {
             this.showSizeModal = false;
             this.currentItem = null;
         },
+        isPremium(entree) {
+            return this.premiumEntrees.includes(this.getEntreeName(entree));
+        },
+
         addToCart() {
             if (this.canAddToCart) {
-                const itemsToAdd = [...this.selectedSides, ...this.selectedEntrees];
+            const itemsToAdd = [...this.selectedSides, ...this.selectedEntrees];
+            
+            // Format items to add a label for premium items
+            const formattedItems = itemsToAdd.map(item => {
+                // Construct the label to include premium status and size
+                let label = `${item.name} (${item.size})`;
+                
+                // If it's a premium item, add "(Premium)" to the label
+                if (item.isPremium) {
+                    label = `${label} (Premium)`;
+                }
 
-                // Emit the itemsToAdd array to the cart
-                this.$emit('addToCart', itemsToAdd);
+                return {
+                    ...item,
+                    label: label // Add the formatted label to each item
+                };
+            });
 
-                // Clear selections after adding to cart
-                this.selectedSides = [];
-                this.selectedEntrees = [];
-            }
+            // Emit the formatted items to the cart
+            this.$emit('addToCart', formattedItems);
+
+            // Clear selections after adding to cart
+            this.selectedSides = [];
+            this.selectedEntrees = [];
+        }
+
         },
         getSideName(side) {
             return typeof side === 'string' ? side : (side && side.name ? side.name : 'Unknown Side');
@@ -181,6 +239,7 @@ export default {
             console.error('Image failed to load:', event.target.src);
             event.target.style.display = 'none';
         }
+    
     },
     mounted() {
         this.fetchMenuItems(); // Fetch menu items when the component mounts
@@ -328,5 +387,14 @@ button:hover {
     color: white;
     font-size: 12px;
     border-radius: 12px;
+}
+.star-icon {
+    width: 30px;
+    height: 30px;
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    /* Ensure it's above the content */
+    z-index: 1;
 }
 </style>

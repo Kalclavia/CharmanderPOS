@@ -9,7 +9,9 @@
                 <ul>
                     <li v-for="(item, index) in cartItems" :key="index">
                         <button v-if="!isCheckoutVisible" class="remove-btn" @click="removeFromCart(index)">×</button>
-                        <div class="item-name">{{ item.name }}</div>
+                        <div class="item-name">{{ item.name }} <!-- Use label instead of name -->
+                        <span v-if="item.isPremium" class="premium-label">*Premium</span>
+                        </div>
                         <div class="item-price">${{ item.price.toFixed(2) }}</div>
                     </li>
                 </ul>
@@ -195,5 +197,10 @@ li:first-child {
 
 .place-order-btn:hover {
     background-color: #45a049;
+}
+.premium-label {
+    color: #af0202;
+    font-weight: bold;
+    margin-left: 5px;
 }
 </style>
