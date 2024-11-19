@@ -1,5 +1,5 @@
 <template>
-  <div class="plate">
+  <div class="biggerplate">
     <h2>Pick 1 Side</h2>
     <div class="grid">
       <button v-for="side in sides" :key="side" @click="selectSide(side)" :class="{ selected: selectedSide === side }">
@@ -140,8 +140,6 @@ export default {
 <style scoped>
 .biggerplate {
   padding: 20px;
-  position: relative;
-  min-height: 100vh;
 }
 
 .grid {

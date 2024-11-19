@@ -129,10 +129,8 @@ export default {
 </script>
 
 <style scoped>
-.bowl {
+.plate {
   padding: 20px;
-  position: relative;
-  min-height: 100vh;
 }
 
 .grid {

@@ -129,8 +129,6 @@ export default {
 <style scoped>
 .bowl {
   padding: 20px;
-  position: relative;
-  min-height: 100vh;
 }
 
 .grid {

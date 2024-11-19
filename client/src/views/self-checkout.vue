@@ -85,37 +85,6 @@ export default {
     };
   },
   methods: {
-    /**
-     * Store the user's selected items in the cart.
-     * This method can save the cart data locally or send it to a backend.
-     */
-    // async storeOrder(orderDetails) {
-    //   // Prepare the order object
-    //   const order = {
-    //     employeeID: this.employeeID,
-    //     cartItems: this.cartItems,
-    //     total: this.cartItems.reduce((total, item) => total + item.price * item.quantity, 0), // Calculate total price
-    //     timestamp: new Date().toISOString(), // Add timestamp
-    //     ...orderDetails, // Include additional order details (e.g., payment method, user info)
-    //   };
-
-    // try {
-    //   // Send the order to the backend API
-    //   const response = await axios.post(
-    //     `${import.meta.env.VITE_API_ENDPOINT}/orders/store`, // Replace with your actual endpoint
-    //     order
-    //   );
-
-    //   console.log('Order stored successfully:', response.data);
-    //   // Handle post-order actions (e.g., show confirmation, reset cart)
-    //   this.isOrderComplete = true;
-    //   this.transactionId = response.data.transactionId;
-    //   this.readyTime = response.data.readyTime;
-    // } catch (error) {
-    //   console.error('Error storing the order:', error);
-    //   alert('There was an issue storing your order. Please try again.');
-    // }
-    // },
     startOrder() {
       this.isOnLaunchPage = false;
     },

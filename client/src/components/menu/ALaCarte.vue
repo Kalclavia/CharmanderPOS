@@ -191,7 +191,6 @@ export default {
 <style scoped>
 .alacarte {
     padding: 20px;
-
 }
 
 .grid {
