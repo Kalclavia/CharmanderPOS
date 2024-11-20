@@ -1,12 +1,17 @@
 <template>
   <div class="translate">
-    <div id="google_translate_element"></div>
+    <div id="google_translate_element" @click="handleClick"></div>
   </div>
 </template>
 
 <script>
 export default {
   name: 'TranslateModel',
+  methods: {
+    handleClick(event) {
+      event.stopPropagation()
+    },
+  },
   mounted() {
     if (!document.getElementById('google-translate-script')) {
       const translateScript = document.createElement('script')
