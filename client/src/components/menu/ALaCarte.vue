@@ -1,6 +1,6 @@
 <template>
     <div class="alacarte">
-        <h2>Sides</h2>
+        <h2>Pick 1 or more Sides</h2>
         <div class="grid">
             <button v-for="side in sides" :key="side.name" @click="toggleSides(side)"
                 :class="{ selected: isSelected(side, 'side') }">
@@ -14,7 +14,7 @@
             </button>
         </div>
 
-        <h2>Entrees</h2>
+        <h2>Pick 1 or more Entrees</h2>
         <div class="grid">
             <button v-for="entree in entrees" :key="entree.name" @click="toggleEntrees(entree)"
                 :class="{ selected: isSelected(entree, 'entree') }">
@@ -27,12 +27,7 @@
                 </span>
                 <span>
                     <!-- {{ getEntreeName(entree) }} -->
-                    <img
-                        v-if="isPremium(entree)"
-                        src="/src/assets/star.png"
-                        alt="Premium"
-                        class="star-icon"
-                    />
+                    <img v-if="isPremium(entree)" src="/src/assets/star.png" alt="Premium" class="star-icon" />
                 </span>
             </button>
         </div>
@@ -43,15 +38,15 @@
                 getEntreeName(currentItem) }}</h3>
             <div v-if="currentItemType === 'side'">
                 <button v-for="size in sizeOptions.side" :key="size.name" @click="selectSize(size, 'side')">
-                    {{ size.name }} - ${{ size.price.toFixed(2) }}
+                    {{ size.name }} - ${{ size.price ? size.price.toFixed(2) : 'Loading...'}}
                 </button>
             </div>
             <div v-else>
-                <button v-for="size in getEntreeSizeOptions(currentItem)" :key="size.name" @click="selectSize(size, 'entree')">
-                    {{ size.name }} - ${{ size.price.toFixed(2) }}
+                <button v-for="size in sizeOptions.entree" :key="size.name" @click="selectSize(size, 'entree')">
+                    {{ size.name }} - ${{ size.price ? size.price.toFixed(2) : 'Loading...'}}
                 </button>
             </div>
-            
+
             <button @click="cancelSizeSelection" class="close-button">✖</button>
         </div>
 
@@ -78,22 +73,22 @@ export default {
             currentItemType: null,
             sizeOptions: {
                 side: [
-                    { name: 'Medium', price: 4.40 },
-                    { name: 'Large', price: 5.40 }
+                    { name: "Medium", price: null },
+                    { name: "Large", price: null }
                 ],
                 entree: [
-                    { name: 'Small', price: 5.20 },
-                    { name: 'Medium', price: 8.50 },
-                    { name: 'Large', price: 11.20 }
+                    { name: "Small", price: null },
+                    { name: "Medium", price: null },
+                    { name: "Large", price: null }
                 ]
             },
             premiumEntrees: ["Black Pepper Sirloin Steak", "Honey Walnut Shrimp"], // Add premium entrees
             premiumPrices: { // Define premium item prices by size
-                
+
                 Small: 6.70,
                 Medium: 11.50,
                 Large: 15.70
-                
+
             },
 
         };
@@ -112,6 +107,22 @@ export default {
                 this.entrees = entreeResponse.data;
             } catch (error) {
                 console.error('Error fetching menu items:', error);
+            }
+        },
+        async fetchItemPrices() {
+            try {
+                const sizeTypes = ["side", "entree"];
+                for (const type of sizeTypes) {
+                    const sizes = this.sizeOptions[type];
+
+                    for (const size of sizes) {
+                        const itemName = `${size.name} ${type.charAt(0).toUpperCase() + type.slice(1)}`;
+                        const response = await axios.get(import.meta.env.VITE_API_ENDPOINT + `price/${encodeURIComponent(itemName)}`);
+                        size.price = response.data.price; // Assign price directly to the size object
+                    }
+                }
+            } catch (error) {
+                console.error("Error fetching item prices:", error);
             }
         },
         toggleSides(side) {
@@ -137,7 +148,7 @@ export default {
         },
         getSelectedSize(item, type) {
             const selectedList = type === 'side' ? this.selectedSides : this.selectedEntrees;
-            const selectedItem = selectedList.find(selected => 
+            const selectedItem = selectedList.find(selected =>
                 selected.name.includes(type === 'side' ? this.getSideName(item) : this.getEntreeName(item))
             );
             return selectedItem ? selectedItem.size : null;
@@ -190,31 +201,31 @@ export default {
 
         addToCart() {
             if (this.canAddToCart) {
-            const itemsToAdd = [...this.selectedSides, ...this.selectedEntrees];
-            
-            // Format items to add a label for premium items
-            const formattedItems = itemsToAdd.map(item => {
-                // Construct the label to include premium status and size
-                let label = `${item.name} (${item.size})`;
-                
-                // If it's a premium item, add "(Premium)" to the label
-                if (item.isPremium) {
-                    label = `${label} (Premium)`;
-                }
+                const itemsToAdd = [...this.selectedSides, ...this.selectedEntrees];
 
-                return {
-                    ...item,
-                    label: label // Add the formatted label to each item
-                };
-            });
+                // Format items to add a label for premium items
+                const formattedItems = itemsToAdd.map(item => {
+                    // Construct the label to include premium status and size
+                    let label = `${item.name} (${item.size})`;
 
-            // Emit the formatted items to the cart
-            this.$emit('addToCart', formattedItems);
+                    // If it's a premium item, add "(Premium)" to the label
+                    if (item.isPremium) {
+                        label = `${label} (Premium)`;
+                    }
 
-            // Clear selections after adding to cart
-            this.selectedSides = [];
-            this.selectedEntrees = [];
-        }
+                    return {
+                        ...item,
+                        label: label // Add the formatted label to each item
+                    };
+                });
+
+                // Emit the formatted items to the cart
+                this.$emit('addToCart', formattedItems);
+
+                // Clear selections after adding to cart
+                this.selectedSides = [];
+                this.selectedEntrees = [];
+            }
 
         },
         getSideName(side) {
@@ -224,7 +235,7 @@ export default {
             let name = this.getSideName(side);
             if (!name) return null;
             const fileName = `${name.toLowerCase().replace(/\s+/g, '')}.png`;
-            return new URL(`/src/assets/${fileName}`,import.meta.url).href;
+            return new URL(`/src/assets/${fileName}`, import.meta.url).href;
         },
         getEntreeName(entree) {
             return typeof entree === 'string' ? entree : (entree && entree.name ? entree.name : 'Unknown Entree');
@@ -233,16 +244,17 @@ export default {
             let name = this.getEntreeName(entree);
             if (!name) return null;
             const fileName = `${name.toLowerCase().replace(/\s+/g, '')}.png`;
-            return new URL(`/src/assets/${fileName}`,import.meta.url).href;
+            return new URL(`/src/assets/${fileName}`, import.meta.url).href;
         },
         handleImageError(event) {
             console.error('Image failed to load:', event.target.src);
             event.target.style.display = 'none';
         }
-    
+
     },
     mounted() {
         this.fetchMenuItems(); // Fetch menu items when the component mounts
+        this.fetchItemPrices();
     }
 };
 </script>
@@ -388,6 +400,7 @@ button:hover {
     font-size: 12px;
     border-radius: 12px;
 }
+
 .star-icon {
     width: 30px;
     height: 30px;

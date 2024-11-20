@@ -36,6 +36,7 @@ export default {
     return {
       sides: [],
       entrees: [],
+      price: null,
       selectedSide: null,
       selectedEntree: null,
     }
@@ -60,6 +61,14 @@ export default {
         console.error('Error fetching menu items:', error)
       }
     },
+    async fetchPrice() {
+      try {
+        const response = await axios.get(import.meta.env.VITE_API_ENDPOINT + 'price/Bowl');
+        this.price = response.data.price; // Assign the price
+      } catch (error) {
+        console.error('Error fetching price:', error);
+      }
+    },
     toggleSide(side) {
       this.selectedSide = this.selectedSide === side ? null : side
     },
@@ -70,7 +79,7 @@ export default {
       if (this.canAddToCart) {
         const item = {
           name: `Bowl (${this.getSideName(this.selectedSide)} + ${this.getEntreeName(this.selectedEntree)})`,
-          price: 8.3, // Assuming a fixed price for a bowl
+          price: this.price,
         }
         this.$emit('addToCart', item)
         this.selectedSide = null
@@ -121,7 +130,8 @@ export default {
     },
   },
   mounted() {
-    this.fetchMenuItems() // Fetch menu items when the component mounts
+    this.fetchMenuItems(); // Fetch menu items when the component mounts
+    this.fetchPrice();
   },
 }
 </script>

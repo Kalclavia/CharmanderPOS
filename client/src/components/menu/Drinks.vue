@@ -1,6 +1,6 @@
 <template>
   <div class="drink">
-    <h2>Drinks</h2>
+    <h2>Pick 1 or more Drinks</h2>
     <div class="grid">
       <button v-for="drink in drinks" :key="drink" @click="toggleDrinks(drink)"
         :class="{ selected: isSelected(drink) }">
@@ -19,8 +19,10 @@
         Select Size for {{ getDrinkName(currentItem) }}
       </h3>
       <div>
-        <button v-for="size in sizeOptions.drink" :key="size.name" @click="selectSize(size)">
-          {{ size.name }} - ${{ size.price.toFixed(2) }}
+        <button
+          v-for="size in sizeOptions.drink.filter(size => size.name !== 'Aquafina' && size.name !== 'Gatorade Lemon Lime')"
+          :key="size.name" @click="selectSize(size)">
+          {{ size.name }} - ${{ size.price ? size.price.toFixed(2) : 'Loading...' }}
         </button>
       </div>
       <!-- Red X Button -->
@@ -47,9 +49,9 @@ export default {
       currentItemType: null,
       sizeOptions: {
         drink: [
-          { name: 'Small', price: 2.1 },
-          { name: 'Medium', price: 2.3 },
-          { name: 'Large', price: 2.5 },
+          { name: 'Small', price: null },
+          { name: 'Medium', price: null },
+          { name: 'Large', price: null },
         ],
       },
     }
@@ -71,31 +73,55 @@ export default {
         console.error('Error fetching menu items:', error)
       }
     },
-    toggleDrinks(drink) {
-      // if (this.selectedDrinks.includes(drink)) {
-      //   this.selectedDrinks = this.selectedDrinks.filter(selected => selected !== drink);
-      // } else {
-      //   this.selectedDrinks.push(drink);
-      // }
-      if (
-        this.getDrinkName(drink).toLowerCase() === 'aquafina' ||
-        this.getDrinkName(drink).toLowerCase() === 'gatorade lemon lime'
-      ) {
-        // For Aquafina and Gatorade, add directly to selectedDrinks without showing size modal
-        const itemToAdd = {
-          name: `Drink: ${this.getDrinkName(drink)}`,
-          price:
-            this.getDrinkName(drink).toLowerCase() === 'aquafina' ? 2.3 : 2.7, // Aquafina: $1.50, Gatorade: $2.00
+    async fetchItemPrices() {
+      try {
+        // Fetch prices for regular drinks with sizes
+        const sizeType = ["drink"];
+        for (const type of sizeType) {
+          const sizes = this.sizeOptions[type];
+
+          for (const size of sizes) {
+            const itemName = `${size.name} ${type.charAt(0).toUpperCase() + type.slice(1)}`;
+            const response = await axios.get(import.meta.env.VITE_API_ENDPOINT + `price/${encodeURIComponent(itemName)}`);
+            size.price = response.data.price; // Assign price directly to the size object
+          }
         }
-        this.selectedDrinks.push(itemToAdd)
-      } else {
-        // For other drinks, show the size modal
-        this.currentItem = drink
-        this.currentItemType = 'drink'
-        this.showSizeModal = true
+
+        // Fetch prices for bottled drinks
+        const bottledDrinks = ["Aquafina", "Gatorade Lemon Lime"];
+        for (const drink of bottledDrinks) {
+          const response = await axios.get(
+            import.meta.env.VITE_API_ENDPOINT + `price/${encodeURIComponent(drink)}`
+          );
+          this.sizeOptions.drink.push({ name: drink, price: response.data.price });
+        }
+
+      } catch (error) {
+        console.error("Error fetching item prices:", error);
       }
     },
+    toggleDrinks(drink) {
+      const drinkName = this.getDrinkName(drink);
 
+      if (["aquafina", "gatorade lemon lime"].includes(drinkName.toLowerCase())) {
+        // Add bottled drinks directly with their specific prices
+        const bottledDrink = this.sizeOptions.drink.find(option => option.name.toLowerCase() === drinkName.toLowerCase());
+        if (bottledDrink) {
+          const itemToAdd = {
+            name: `Drink: ${drinkName}`,
+            price: bottledDrink.price,
+          };
+          this.selectedDrinks.push(itemToAdd);
+        } else {
+          console.error("Bottled drink not found in sizeOptions:", drinkName);
+        }
+      } else {
+        // Show size modal for regular drinks
+        this.currentItem = drink;
+        this.currentItemType = "drink";
+        this.showSizeModal = true;
+      }
+    },
     isSelected(drink) {
       const drinkName = this.getDrinkName(drink)
       return this.selectedDrinks.some(
@@ -117,7 +143,7 @@ export default {
         size: size.name
       }
       // Remove any existing selection for this appetizer
-      this.selectedDrinks = this.selectedDrinks.filter(item => 
+      this.selectedDrinks = this.selectedDrinks.filter(item =>
         !item.name.startsWith(`Drink: ${this.getDrinkName(this.currentItem)}`)
       );
       this.selectedDrinks.push(itemToAdd)
@@ -156,7 +182,8 @@ export default {
     },
   },
   mounted() {
-    this.fetchMenuItems() // Fetch menu items when the component mounts
+    this.fetchMenuItems(); // Fetch menu items when the component mounts
+    this.fetchItemPrices();
   },
 }
 </script>
@@ -297,11 +324,11 @@ button:hover {
 }
 
 .size-tag {
-    margin-left: 5px;
-    padding: 2px 6px;
-    background-color: #4CAF50;
-    color: white;
-    font-size: 12px;
-    border-radius: 12px;
+  margin-left: 5px;
+  padding: 2px 6px;
+  background-color: #4CAF50;
+  color: white;
+  font-size: 12px;
+  border-radius: 12px;
 }
 </style>

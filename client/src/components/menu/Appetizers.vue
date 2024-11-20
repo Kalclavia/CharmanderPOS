@@ -1,6 +1,6 @@
 <template>
   <div class="appetizer">
-    <h2>Appetizers</h2>
+    <h2>Pick 1 or more Appetizers</h2>
     <div class="grid">
       <button v-for="appetizer in appetizers" :key="appetizer" @click="toggleAppetizers(appetizer)"
         :class="{ selected: isSelected(appetizer) }">
