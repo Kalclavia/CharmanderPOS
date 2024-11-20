@@ -17,6 +17,12 @@
           class="entree-image" @error="handleImageError" />
         <span>{{ getEntreeName(entree) }}</span>
         <span v-if="selectedEntree === entree" class="checkmark">✓</span>
+
+        <span class="premium-label-container">
+            <img v-if="isPremium(entree)" src="/src/assets/star.png" alt="Premium" class="star-icon" />
+            <span class="premium-label">Premium Item + $1.50</span>
+        </span>
+
       </button>
     </div>
 
@@ -39,6 +45,7 @@ export default {
       price: null,
       selectedSide: null,
       selectedEntree: null,
+      premiumEntrees: ["Black Pepper Sirloin Steak", "Honey Walnut Shrimp"], // Add premium entrees
     }
   },
   computed: {
@@ -75,17 +82,47 @@ export default {
     toggleEntree(entree) {
       this.selectedEntree = this.selectedEntree === entree ? null : entree
     },
+    isPremium(entree) {
+    // Ensure we are checking if the entree name matches one in the premiumEntrees list.
+      return this.premiumEntrees.includes(this.getEntreeName(entree));
+    },
+
     addToCart() {
-      if (this.canAddToCart) {
-        const item = {
-          name: `Bowl (${this.getSideName(this.selectedSide)} + ${this.getEntreeName(this.selectedEntree)})`,
-          price: this.price,
-        }
-        this.$emit('addToCart', item)
-        this.selectedSide = null
-        this.selectedEntree = null
+    if (this.canAddToCart) {
+      let price = this.price;
+
+      // Check if the selected entree is premium, adjust the price and label
+      const isPremiumItem = this.isPremium(this.selectedEntree);
+
+      if (isPremiumItem) {
+        price += 1.50; // Add $1.50 for premium items
+      }
+
+      // Build the item name
+      const itemName = `Bowl (${this.getSideName(this.selectedSide)} + ${this.getEntreeName(this.selectedEntree)})`;
+
+      // Build the label with premium item check
+      //const itemLabel = `${itemName}${isPremiumItem ? ' (Premium)' : ''}`;
+
+      // Create the item object
+      const item = {
+        name: itemName,
+        price: price,
+        //label: itemLabel,
+        isPremium: this.isPremium(this.selectedEntree)
+        
+      };
+
+      // Emit the item to the parent (cart)
+      this.$emit('addToCart', item);
+
+      // Reset selections
+      this.selectedSide = null;
+      this.selectedEntree = null;
+    
       }
     },
+    
     selectItem(item) {
       console.log(item)
       this.$emit('selectItem', item) // Emit selected item to the parent
@@ -226,5 +263,47 @@ button:hover {
   background-color: #e7e4d7;
   box-shadow: 0 4px 3px #080808;
   cursor: not-allowed;
+}
+
+.star-icon {
+    width: 30px;
+    height: 30px;
+    /* position: absolute; */
+    /* top: 1px;
+    left: 3px;
+    /* Ensure it's above the content */
+    /* z-index: 1; */ 
+}
+.premium-label-container {
+    position: absolute; /* Keep it absolute to retain original positioning */
+    top: 5px; /* Adjust as per your original design */
+    left: 5px; /* Adjust as per your original design */
+    z-index: 1; /* Ensure it's above other content */
+    display: flex; /* Align content inside properly */
+    align-items: center; /* Center the icon and label vertically */
+    justify-content: center; /* Center the icon and label horizontally */
+}
+
+
+
+.premium-label {
+    visibility: hidden;
+    background-color: black;
+    color: white;
+    text-align: center;
+    border-radius: 5px;
+    padding: 5px;
+    position: absolute;
+    bottom: 30px; /* Reduced distance to bring it closer to the star icon */
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    z-index: 10;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    font-size: 12px;
+}
+
+.premium-label-container:hover .premium-label {
+    visibility: visible;
 }
 </style>
