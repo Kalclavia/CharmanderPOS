@@ -18,6 +18,10 @@
           class="entree-image" @error="handleImageError" />
         <span>{{ getEntreeName(entree) }}</span>
         <span v-if="selectedEntrees.includes(entree)" class="checkmark">✓</span>
+        <span class="premium-label-container">
+            <img v-if="isPremium(entree)" src="/src/assets/star.png" alt="Premium" class="star-icon" />
+            <span class="premium-label">Premium Item + $1.50</span>
+        </span>
       </button>
     </div>
 
@@ -40,6 +44,7 @@ export default {
       price: null,
       selectedSide: null,
       selectedEntrees: [], // Track selected entrees as an array
+      premiumEntrees: ["Black Pepper Sirloin Steak", "Honey Walnut Shrimp"], // Add premium entrees
     }
   },
   computed: {
@@ -85,17 +90,38 @@ export default {
         this.selectedEntrees.push(entree)
       }
     },
-    addToCart() {
-      if (this.canAddToCart) {
-        const item = {
-          name: `Plate (${this.getSideName(this.selectedSide)} + ${this.selectedEntrees.map(entree => this.getEntreeName(entree)).join(', ')})`,
-          price: this.price, // Assuming a fixed price for a plate
-        }
-        this.$emit('addToCart', item)
-        this.selectedSide = null
-        this.selectedEntrees = []
+    isPremium(entree) {
+  return this.premiumEntrees.includes(this.getEntreeName(entree));
+},
+
+addToCart() {
+  if (this.canAddToCart) {
+    let price = this.price;
+    let premiumCount = 0;
+
+    // Check if any of the selected entrees are premium
+    this.selectedEntrees.forEach(entree => {
+      if (this.isPremium(entree)) {
+        premiumCount++;
       }
-    },
+    });
+
+    // Add $1.50 for each premium entree
+    price += premiumCount * 1.50;
+
+    const itemName = `Plate (${this.getSideName(this.selectedSide)} + ${this.selectedEntrees.map(entree => this.getEntreeName(entree)).join(', ')})`;
+
+    const item = {
+      name: itemName,
+      price: price,
+      isPremium: premiumCount > 0
+    };
+
+    this.$emit('addToCart', item);
+    this.selectedSide = null;
+    this.selectedEntrees = [];
+  }
+},
     getSideName(side) {
       if (typeof side === 'string') {
         return side
@@ -228,5 +254,45 @@ button:hover {
   background-color: #e7e4d7;
   box-shadow: 0 4px 3px #080808;
   cursor: not-allowed;
+}
+
+.star-icon {
+    width: 30px;
+    height: 30px;
+    /* position: absolute; */
+    /* top: 1px;
+    left: 3px;
+    /* Ensure it's above the content */
+    /* z-index: 1; */ 
+}
+.premium-label-container {
+    position: absolute; /* Keep it absolute to retain original positioning */
+    top: 5px; /* Adjust as per your original design */
+    left: 5px; /* Adjust as per your original design */
+    z-index: 1; /* Ensure it's above other content */
+    display: flex; /* Align content inside properly */
+    align-items: center; /* Center the icon and label vertically */
+    justify-content: center; /* Center the icon and label horizontally */
+}
+
+.premium-label {
+    visibility: hidden;
+    background-color: black;
+    color: white;
+    text-align: center;
+    border-radius: 5px;
+    padding: 5px;
+    position: absolute;
+    bottom: 30px; /* Reduced distance to bring it closer to the star icon */
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    z-index: 10;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    font-size: 12px;
+}
+
+.premium-label-container:hover .premium-label {
+    visibility: visible;
 }
 </style>
