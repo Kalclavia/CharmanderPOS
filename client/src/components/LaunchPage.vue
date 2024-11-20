@@ -1,5 +1,5 @@
 <template>
-  <div class="launch-page" @click="$emit('startOrder')"> 
+  <div class="launch-page" @click="$emit('startOrder')">
     <img src="@/assets/panda-logo.png" alt="Panda Express Logo" class="logo" />
     <button @click="$emit('startOrder')" class="tap-to-order">
       TAP TO ORDER
@@ -25,6 +25,7 @@ export default {
 
 <style scoped>
 .translate {
+  text-align: center;
   position: fixed;
   bottom: 0;
   width: 100%;
@@ -32,18 +33,18 @@ export default {
 }
 
 .launch-page {
-    position: fixed;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background-color: #9b150b;
-    color: white;
-    cursor: pointer;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  /* background-color: #9b150b; */
+  color: white;
+  cursor: pointer;
 }
 
 .logo {
