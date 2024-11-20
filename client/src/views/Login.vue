@@ -36,10 +36,12 @@ export default {
       for (var i = 0; i < this.employeeData.length; i++) {
         if (this.inputID == this.employeeData[i].employeeid) {
           if (this.employeeData[i].role == 'manager') {
-            $cookies.set('manager', 'true', null, '/')
+            $cookies.set('role', 'manager', null, '/')
+            $cookies.set('ID', this.employeeData[i].employeeid, null, '/')
             this.$router.push('/manager')
           } else {
-            $cookies.set('manager', 'false', null, '/')
+            $cookies.set('role', 'cashier', null, '/')
+            $cookies.set('ID', this.employeeData[i].employeeid, null, '/')
             this.$router.push('/cashier')
           }
         }
