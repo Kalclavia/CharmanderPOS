@@ -1,5 +1,6 @@
 <template>
-    <div class="main-content" v-if="!isCheckoutVisible">
+    <div class="main-content" :class="{ 'menu-collapsed': isMenuBarCollapsed }" v-if="!isCheckoutVisible">
+        <MenuBar :is-collapsed="isMenuBarCollapsed" @toggle="toggleMenuBar"@selectItem="handleItemSelection"/>
         <h2>
             {{ item }} Menu
             <span v-if="prices[item] !== undefined" class="price">
@@ -35,6 +36,8 @@ export default {
                 Plate: null,
                 BiggerPlate: null,
             },
+            isMenuBarCollapsed: false
+
         };
     },
     components: {
@@ -65,6 +68,14 @@ export default {
         formatPrice(price) {
             return price !== null ? `$${price.toFixed(2)}` : 'Loading...';
         },
+        toggleMenuBar() {
+            this.isMenuBarCollapsed = !this.isMenuBarCollapsed;
+        },
+        handleItemSelection(item) {
+            this.item = item;
+            // Optional: collapse menu when an item is selected
+            this.isMenuBarCollapsed = true;
+        }
     },
     mounted() {
         this.fetchPrices();
@@ -84,11 +95,17 @@ export default {
     padding: 40px;
     overflow-y: auto;
     z-index: 1;
+    transition: left 0.3s ease;
+
 }
 .price {
   font-size: 0.9em;
   font-weight: normal;
   margin-left: 10px;
   color: #ffd700;
+  
+}
+.main-content.menu-collapsed {
+    left: 50px;
 }
 </style>
