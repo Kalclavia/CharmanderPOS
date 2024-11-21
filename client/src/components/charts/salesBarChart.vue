@@ -2,12 +2,18 @@
   <div v-if="showChart">
     <Bar id="my-chart-id" :options="chartOptions" :data="chartData" />
   </div>
-  <div>
-    <label for="from">From:</label>
-    <input type="date" v-model="fromDate" />
-    <label for="to">To:</label>
-    <input type="date" v-model="toDate" />
-    <button @click="fetchData()">Load Data</button>
+  <div class="buttons">
+  <div><label for="from">From:</label>
+    <input type="date" v-model="fromDate" /></div>
+    <div><label for="to">To:</label>
+      <input type="date" v-model="toDate" /></div>
+    <button style="button" @click="fetchData()">Load Data</button>
+  </div>
+  <div class = "buttons">
+    <button style="button" @click="setEntree()">Entree</button>
+    <button style="button" @click="setSide()">Side</button>
+    <button style="button" @click="setApp()">Appetizer</button>
+    <button style="button" @click="setDrinks()">Drinks</button>
   </div>
 </template>
 
@@ -35,7 +41,7 @@ export default {
       toDate: '',
       showChart: true,
       food_side: [],
-      food_entree: {},
+      food_entree: [],
       food_drink: [],
       food_appetizer: [],
       food_desert: [],
@@ -88,7 +94,7 @@ export default {
   methods: {
     fetchData() {
       this.showChart = false
-      // console.log(this.chartData.labels,this.chartData.datasets[0].data)
+      console.log("Fetching Data...")
       console.log('From', this.fromDate, 'End:', this.toDate)
       const config = {
         headers: {
@@ -104,14 +110,6 @@ export default {
         .then(response => {
           if (Array.isArray(response.data) && response.data.length > 0) {
             // Extract ingredient names and total_used for chart data
-            // this.chartData.labels = response.data.map(
-            //   item => item.ingredient_name,
-            // )
-            // this.chartData.datasets[0].data = response.data.map(
-            //   item => item.total_used,
-            // )
-            // console.log(this.chartData.labels, this.chartData.datasets[0].data)
-            // this.chartData = { ...this.chartData }
             for (let i = 0; i < response.data.length; i++) {
               if (response.data[i].food_type === 'Entree') {
                 if (!this.food_entree[response.data[i].food_name]) {
@@ -119,8 +117,30 @@ export default {
                 }
                 this.food_entree[response.data[i].food_name] += 1
               }
+              if (response.data[i].food_type === 'Appetizer') {
+                if (!this.food_appetizer[response.data[i].food_name]) {
+                  this.food_appetizer[response.data[i].food_name] = 0
+                }
+                this.food_appetizer[response.data[i].food_name] += 1
+              }
+              if (response.data[i].food_type === 'Side') {
+                if (!this.food_side[response.data[i].food_name]) {
+                  this.food_side[response.data[i].food_name] = 0
+                }
+                this.food_side[response.data[i].food_name] += 1
+              }
+              if (response.data[i].food_type === 'Drink') {
+                if (!this.food_drink[response.data[i].food_name]) {
+                  this.food_drink[response.data[i].food_name] = 0
+                }
+                this.food_drink[response.data[i].food_name] += 1
+              }
             }
-            console.log(this.food_entree)
+            // const foodNames = Object.keys(this.food_entree);
+            // const foodCounts = Object.values(this.food_entree);
+
+            // console.log("Food Names:", foodNames);
+            // console.log("Food Counts:", foodCounts);
           } else {
             console.warn('No data available for the selected date range.')
             this.chartData.labels = []
@@ -130,17 +150,63 @@ export default {
           this.showChart = true
         })
         .catch(error => {
-          console.error('Error fetching employee transaction:', error)
+          console.error('Error fetching sales transactions:', error)
         })
     },
+    setEntree(){
+      this.chartData.labels = Object.keys(this.food_entree);
+      this.chartData.datasets[0].data = Object.values(this.food_entree);
+      console.log("Food Names:", this.chartData.labels);
+      console.log("Food Counts:", this.chartData.datasets[0].data);
+    },
+    setDrinks(){
+      this.chartData.labels = Object.keys(this.food_drink);
+      this.chartData.datasets[0].data = Object.values(this.food_drink);
+    },
+    setApp(){
+      this.chartData.labels = Object.keys(this.food_appetizer);
+      this.chartData.datasets[0].data = Object.values(this.food_appetizer);
+    },
+    setSide(){
+      this.chartData.labels = Object.keys(this.food_side);
+      this.chartData.datasets[0].data = Object.values(this.food_side);
+    }
   },
   mounted() {},
 }
 </script>
 
-<style>
+<style scoped>
 /* Chart container style */
 #my-chart-id {
   background-color: #e7e4d7; /* Background color of the chart */
+}
+button {
+  font-size: medium;
+  border: 2px solid #080808;
+  border-radius: 30px;
+  background-color: #e7e4d7;
+  color: #080808;
+  font: Arial;
+  padding: 10px;
+  margin-bottom: 5px;
+  cursor: pointer;
+  transition:
+    background-color 0.3s,
+    box-shadow 0.3s;
+  box-shadow: 0 4px 3px #080808;
+  min-width: 100px;
+}
+
+.buttons {
+  display: flex;
+  justify-content: space-around;
+  padding-top: 15px;
+  padding-right: 55px;
+}
+
+button:hover {
+  background-color: #d2ceb8;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 </style>
