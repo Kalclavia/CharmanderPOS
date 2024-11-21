@@ -2,12 +2,12 @@
   <div v-if="showChart">
     <Bar id="my-chart-id" :options="chartOptions" :data="chartData" />
   </div>
-  <div>
-    <label for="from">From:</label>
-    <input type="date" v-model="fromDate" />
-    <label for="to">To:</label>
-    <input type="date" v-model="toDate" />
-    <button @click="fetchIngredientsByDateRange()">Load Data</button>
+  <div class="buttons">
+  <div><label for="from">From:</label>
+    <input type="date" v-model="fromDate" /></div>
+    <div><label for="to">To:</label>
+      <input type="date" v-model="toDate" /></div>
+    <button style="button" @click="fetchIngredientsByDateRange()">Load Data</button>
   </div>
 </template>
 
@@ -123,9 +123,37 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 /* Chart container style */
 #my-chart-id {
   background-color: #e7e4d7; /* Background color of the chart */
+}
+
+button {
+  font-size: medium;
+  border: 2px solid #080808;
+  border-radius: 30px;
+  background-color: #e7e4d7;
+  color: #080808;
+  font: Arial;
+  padding: 10px;
+  margin-bottom: 5px;
+  cursor: pointer;
+  transition:
+    background-color 0.3s,
+    box-shadow 0.3s;
+  box-shadow: 0 4px 3px #080808;
+}
+
+.buttons {
+  display: flex;
+  justify-content: space-around;
+  padding-top: 15px;
+  padding-right: 55px;
+}
+
+button:hover {
+  background-color: #d2ceb8;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 </style>
