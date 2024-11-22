@@ -93,8 +93,8 @@ export default {
   },
   methods: {
     fetchData() {
-      this.showChart = false
-      console.log("Fetching Data...")
+      this.showChart = true
+      console.log('Fetching Data...')
       console.log('From', this.fromDate, 'End:', this.toDate)
       const config = {
         headers: {
@@ -147,30 +147,65 @@ export default {
             this.chartData.datasets[0].data = []
             this.chartData = { ...this.chartData }
           }
-          this.showChart = true
+
+          console.log(this.food_appetizer)
         })
         .catch(error => {
           console.error('Error fetching sales transactions:', error)
         })
     },
-    setEntree(){
-      this.chartData.labels = Object.keys(this.food_entree);
-      this.chartData.datasets[0].data = Object.values(this.food_entree);
-      console.log("Food Names:", this.chartData.labels);
-      console.log("Food Counts:", this.chartData.datasets[0].data);
+    setEntree() {
+      this.chartData = {
+        ...this.chartData,
+        labels: Object.keys(this.food_entree),
+        datasets: [
+          {
+            ...this.chartData.datasets[0],
+            data: Object.values(this.food_entree),
+          },
+        ],
+      }
+      this.showChart = true
     },
-    setDrinks(){
-      this.chartData.labels = Object.keys(this.food_drink);
-      this.chartData.datasets[0].data = Object.values(this.food_drink);
+    setDrinks() {
+      this.chartData = {
+        ...this.chartData,
+        labels: Object.keys(this.food_drink),
+        datasets: [
+          {
+            ...this.chartData.datasets[0],
+            data: Object.values(this.food_drink),
+          },
+        ],
+      }
+      this.showChart = true
     },
-    setApp(){
-      this.chartData.labels = Object.keys(this.food_appetizer);
-      this.chartData.datasets[0].data = Object.values(this.food_appetizer);
+    setApp() {
+      this.chartData = {
+        ...this.chartData,
+        labels: Object.keys(this.food_appetizer),
+        datasets: [
+          {
+            ...this.chartData.datasets[0],
+            data: Object.values(this.food_appetizer),
+          },
+        ],
+      }
+      this.showChart = true
     },
-    setSide(){
-      this.chartData.labels = Object.keys(this.food_side);
-      this.chartData.datasets[0].data = Object.values(this.food_side);
-    }
+    setSide() {
+      this.chartData = {
+        ...this.chartData,
+        labels: Object.keys(this.food_side),
+        datasets: [
+          {
+            ...this.chartData.datasets[0],
+            data: Object.values(this.food_side),
+          },
+        ],
+      }
+      this.showChart = true
+    },
   },
   mounted() {},
 }
