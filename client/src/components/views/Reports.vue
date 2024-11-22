@@ -1,7 +1,11 @@
 <template>
   <div class="buttons">
-    <button  @click="this.productBool = false, this.salesBool =true" >Sales Report</button>
-    <button @click="this.productBool = true, this.salesBool =false" >Product Usage Report</button>
+    <button @click="(this.productBool = false), (this.salesBool = true)">
+      Sales Report
+    </button>
+    <button @click="(this.productBool = true), (this.salesBool = false)">
+      Product Usage Report
+    </button>
     <button>X-Report</button>
     <button>Z-Report</button>
   </div>
@@ -17,23 +21,23 @@
 <script>
 import axios from 'axios'
 import productBarChartbarchart from '../charts/productBarChart.vue'
-import salesBarChart from '../charts/salesBarChart.vue';
+import salesBarChart from '../charts/salesBarChart.vue'
 export default {
   name: 'Reports',
   components: {
     productBarChartbarchart,
-    salesBarChart
+    salesBarChart,
   },
   data() {
     return {
-      productBool : false,
-      salesBool : false,
-      employeeTransaction: [], 
+      productBool: false,
+      salesBool: false,
+      employeeTransaction: [],
       ingredientsByDateRange: [],
       salesByDateRange: [],
     }
   },
-  methods: {  
+  methods: {
     fetchEmployeeTransaction() {
       const config = {
         headers: {
@@ -74,7 +78,7 @@ export default {
           console.error('Error fetching employee transaction:', error)
         })
     },
-    fetchSalesByDateRange(){
+    fetchSalesByDateRange() {
       const config = {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
