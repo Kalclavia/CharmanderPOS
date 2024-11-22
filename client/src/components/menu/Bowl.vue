@@ -19,8 +19,8 @@
         <span v-if="selectedEntree === entree" class="checkmark">✓</span>
 
         <span class="premium-label-container">
-            <img v-if="isPremium(entree)" src="/src/assets/star.png" alt="Premium" class="star-icon" />
-            <span class="premium-label">Premium Item + $1.50</span>
+          <img v-if="isPremium(entree)" src="/src/assets/star.png" alt="Premium" class="star-icon" />
+          <span class="premium-label">Premium Item + $1.50</span>
         </span>
 
       </button>
@@ -83,46 +83,66 @@ export default {
       this.selectedEntree = this.selectedEntree === entree ? null : entree
     },
     isPremium(entree) {
-    // Ensure we are checking if the entree name matches one in the premiumEntrees list.
+      // Ensure we are checking if the entree name matches one in the premiumEntrees list.
       return this.premiumEntrees.includes(this.getEntreeName(entree));
     },
-
     addToCart() {
-    if (this.canAddToCart) {
-      let price = this.price;
+      if (this.canAddToCart) {
+        // Fetch the base item ID for "Bowl" dynamically
+        axios
+          .get(import.meta.env.VITE_API_ENDPOINT + `itemid/Bowl`)
+          .then((response) => {
+            const baseItemID = response.data.itemID; // Dynamically fetched base item ID
+            let price = this.price;
 
-      // Check if the selected entree is premium, adjust the price and label
-      const isPremiumItem = this.isPremium(this.selectedEntree);
+            // Check if the selected entree is premium, adjust the price
+            if (this.isPremium(this.selectedEntree)) {
+              price += 1.50; // Add $1.50 for premium items
+            }
 
-      if (isPremiumItem) {
-        price += 1.50; // Add $1.50 for premium items
-      }
+            // Get the item names
+            const sideName = this.getSideName(this.selectedSide);
+            const entreeName = this.getEntreeName(this.selectedEntree);
 
-      // Build the item name
-      const itemName = `Bowl (${this.getSideName(this.selectedSide)} + ${this.getEntreeName(this.selectedEntree)})`;
+            // Fetch foodIDs from the database and push to transactionCart
+            Promise.all([
+              axios.get(import.meta.env.VITE_API_ENDPOINT + `foodid/${encodeURIComponent(sideName)}`),
+              axios.get(import.meta.env.VITE_API_ENDPOINT + `foodid/${encodeURIComponent(entreeName)}`),
+            ])
+              .then(([sideResponse, entreeResponse]) => {
+                const sideFoodID = sideResponse.data.foodID;
+                const entreeFoodID = entreeResponse.data.foodID;
 
-      // Build the label with premium item check
-      //const itemLabel = `${itemName}${isPremiumItem ? ' (Premium)' : ''}`;
+                // Construct the transactionCart entry
+                const transactionEntry = [baseItemID, sideFoodID, entreeFoodID, 0, 0];
 
-      // Create the item object
-      const item = {
-        name: itemName,
-        price: price,
-        //label: itemLabel,
-        isPremium: this.isPremium(this.selectedEntree)
-        
-      };
+                // Emit the item to the parent (cart)
+                const item = {
+                  name: `Bowl (${sideName} + ${entreeName})`,
+                  price: price,
+                  transactionEntry: transactionEntry, // Include for further use
+                  isPremium: this.isPremium(this.selectedEntree),
+                };
 
-      // Emit the item to the parent (cart)
-      this.$emit('addToCart', item);
+                this.$emit('addToCart', item); // Emit the item to the parent
+                this.$emit('addToTransactionCart', transactionEntry);
+                console.log('Transaction Added: ', transactionEntry);
 
-      // Reset selections
-      this.selectedSide = null;
-      this.selectedEntree = null;
-    
+                // Reset selections
+                this.selectedSide = null;
+                this.selectedEntree = null;
+              })
+              .catch((error) => {
+                console.error('Error fetching food IDs:', error);
+                alert('Cannot add to transaction cart.');
+              });
+          })
+          .catch((error) => {
+            console.error('Error fetching base item ID:', error);
+            alert('Cannot fetch base item ID.');
+          });
       }
     },
-    
     selectItem(item) {
       console.log(item)
       this.$emit('selectItem', item) // Emit selected item to the parent
@@ -141,7 +161,7 @@ export default {
       if (!name) return null
       const fileName = `${name.toLowerCase().replace(/\s+/g, '')}.png`
       const imagePath = `/src/assets/${fileName}`
-      console.log('Image path:', imagePath)
+      // console.log('Image path:', imagePath)
       return new URL(`/src/assets/${fileName}`, import.meta.url).href;
     },
     getEntreeName(entree) {
@@ -158,7 +178,7 @@ export default {
       if (!name) return null
       const fileName = `${name.toLowerCase().replace(/\s+/g, '')}.png`
       const imagePath = `/src/assets/${fileName}`
-      console.log('Image path:', imagePath)
+      // console.log('Image path:', imagePath)
       return new URL(`/src/assets/${fileName}`, import.meta.url).href;
     },
     handleImageError(event) {
@@ -266,44 +286,53 @@ button:hover {
 }
 
 .star-icon {
-    width: 30px;
-    height: 30px;
-    /* position: absolute; */
-    /* top: 1px;
+  width: 30px;
+  height: 30px;
+  /* position: absolute; */
+  /* top: 1px;
     left: 3px;
     /* Ensure it's above the content */
-    /* z-index: 1; */ 
+  /* z-index: 1; */
 }
+
 .premium-label-container {
-    position: absolute; /* Keep it absolute to retain original positioning */
-    top: 5px; /* Adjust as per your original design */
-    left: 5px; /* Adjust as per your original design */
-    z-index: 1; /* Ensure it's above other content */
-    display: flex; /* Align content inside properly */
-    align-items: center; /* Center the icon and label vertically */
-    justify-content: center; /* Center the icon and label horizontally */
+  position: absolute;
+  /* Keep it absolute to retain original positioning */
+  top: 5px;
+  /* Adjust as per your original design */
+  left: 5px;
+  /* Adjust as per your original design */
+  z-index: 1;
+  /* Ensure it's above other content */
+  display: flex;
+  /* Align content inside properly */
+  align-items: center;
+  /* Center the icon and label vertically */
+  justify-content: center;
+  /* Center the icon and label horizontally */
 }
 
 
 
 .premium-label {
-    visibility: hidden;
-    background-color: black;
-    color: white;
-    text-align: center;
-    border-radius: 5px;
-    padding: 5px;
-    position: absolute;
-    bottom: 30px; /* Reduced distance to bring it closer to the star icon */
-    left: 50%;
-    transform: translateX(-50%);
-    white-space: nowrap;
-    z-index: 10;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-    font-size: 12px;
+  visibility: hidden;
+  background-color: black;
+  color: white;
+  text-align: center;
+  border-radius: 5px;
+  padding: 5px;
+  position: absolute;
+  bottom: 30px;
+  /* Reduced distance to bring it closer to the star icon */
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  z-index: 10;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  font-size: 12px;
 }
 
 .premium-label-container:hover .premium-label {
-    visibility: visible;
+  visibility: visible;
 }
 </style>

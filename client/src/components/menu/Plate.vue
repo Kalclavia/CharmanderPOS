@@ -96,30 +96,68 @@ export default {
 
 addToCart() {
   if (this.canAddToCart) {
-    let price = this.price;
-    let premiumCount = 0;
+    // Fetch the base item ID for "Plate" dynamically
+    axios
+      .get(import.meta.env.VITE_API_ENDPOINT + `itemid/Plate`)
+      .then((response) => {
+        const baseItemID = response.data.itemID; // Dynamically fetched base item ID
+        let price = this.price;
+        let premiumCount = 0;
 
-    // Check if any of the selected entrees are premium
-    this.selectedEntrees.forEach(entree => {
-      if (this.isPremium(entree)) {
-        premiumCount++;
-      }
-    });
+        // Check if any of the selected entrees are premium
+        this.selectedEntrees.forEach((entree) => {
+          if (this.isPremium(entree)) {
+            premiumCount++;
+          }
+        });
 
-    // Add $1.50 for each premium entree
-    price += premiumCount * 1.50;
+        // Add $1.50 for each premium entree
+        price += premiumCount * 1.50;
 
-    const itemName = `Plate (${this.getSideName(this.selectedSide)} + ${this.selectedEntrees.map(entree => this.getEntreeName(entree)).join(', ')})`;
+        // Get the side and entree names
+        const sideName = this.getSideName(this.selectedSide);
+        const entreeNames = this.selectedEntrees.map((entree) => this.getEntreeName(entree));
 
-    const item = {
-      name: itemName,
-      price: price,
-      isPremium: premiumCount > 0
-    };
+        // Fetch foodIDs for the selected side and entrees
+        Promise.all([
+          axios.get(import.meta.env.VITE_API_ENDPOINT + `foodid/${encodeURIComponent(sideName)}`),
+          ...this.selectedEntrees.map((entree) =>
+            axios.get(import.meta.env.VITE_API_ENDPOINT + `foodid/${encodeURIComponent(this.getEntreeName(entree))}`)
+          ),
+        ])
+          .then(([sideResponse, entreeResponse1, entreeResponse2]) => {
+            const sideFoodID = sideResponse.data.foodID;
+            const entreeFoodID1 = entreeResponse1.data.foodID;
+            const entreeFoodID2 = entreeResponse2.data.foodID;
 
-    this.$emit('addToCart', item);
-    this.selectedSide = null;
-    this.selectedEntrees = [];
+            // Construct the transactionEntry array
+            const transactionEntry = [baseItemID, sideFoodID, entreeFoodID1, entreeFoodID2, 0];
+
+            // Construct the item to emit
+            const item = {
+              name: `Plate (${sideName} + ${entreeNames.join(", ")})`,
+              price: price,
+              transactionEntry: transactionEntry, // Include for further use
+              isPremium: premiumCount > 0,
+            };
+
+            this.$emit('addToCart', item); // Emit the item to the parent
+            this.$emit('addToTransactionCart', transactionEntry);
+            console.log('Transaction Added:', transactionEntry);
+
+            // Reset selections
+            this.selectedSide = null;
+            this.selectedEntrees = [];
+          })
+          .catch((error) => {
+            console.error('Error fetching food IDs:', error);
+            alert('Cannot add to transaction cart.');
+          });
+      })
+      .catch((error) => {
+        console.error('Error fetching base item ID:', error);
+        alert('Cannot fetch base item ID.');
+      });
   }
 },
     getSideName(side) {

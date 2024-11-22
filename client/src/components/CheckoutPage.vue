@@ -1,5 +1,5 @@
 <template>
-    <div class="checkout-page" v-if="!showUserInfo && !orderConfirmed">
+    <div class="checkout-page" v-if="!orderConfirmed">
         <h2>Choose a payment method</h2>
         <div class="payment-options">
             <!-- Payment option buttons -->
@@ -47,6 +47,7 @@ export default {
         togglePayment(paymentType) {
             // Toggle selection
             this.selectedPayment = this.selectedPayment === paymentType ? null : paymentType;
+            this.$emit('updatePayment', this.selectedPayment); // Emit selected payment to parent
         },
         placeOrder() {
             if (!this.selectedPayment) {
