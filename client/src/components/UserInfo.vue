@@ -45,7 +45,6 @@ export default {
                 return;
             }
 
-            const readyTime = this.calculateReadyTime();
             // Emit order details to parent, including transactionId from props
             this.$emit('completeOrder');
         },
