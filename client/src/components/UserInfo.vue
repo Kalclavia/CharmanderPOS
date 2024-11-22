@@ -17,12 +17,6 @@
 
 <script>
 export default {
-    props: {
-        transactionId: {
-            type: String,
-            required: true,  // Ensure transactionId is passed as a prop
-        }
-    },
     data() {
         return {
             name: '',
@@ -55,11 +49,6 @@ export default {
             // Emit order details to parent, including transactionId from props
             this.$emit('completeOrder');
         },
-        calculateReadyTime() {
-            const now = new Date();
-            now.setMinutes(now.getMinutes() + 5 + Math.floor(Math.random() * 6));
-            return now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        }
     },
 };
 </script>

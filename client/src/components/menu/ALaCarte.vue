@@ -408,16 +408,24 @@ button:hover {
     /* top: 1px;
     left: 3px;
     /* Ensure it's above the content */
-    /* z-index: 1; */ 
+    /* z-index: 1; */
 }
+
 .premium-label-container {
-    position: absolute; /* Keep it absolute to retain original positioning */
-    top: 5px; /* Adjust as per your original design */
-    left: 5px; /* Adjust as per your original design */
-    z-index: 1; /* Ensure it's above other content */
-    display: flex; /* Align content inside properly */
-    align-items: center; /* Center the icon and label vertically */
-    justify-content: center; /* Center the icon and label horizontally */
+    position: absolute;
+    /* Keep it absolute to retain original positioning */
+    top: 5px;
+    /* Adjust as per your original design */
+    left: 5px;
+    /* Adjust as per your original design */
+    z-index: 1;
+    /* Ensure it's above other content */
+    display: flex;
+    /* Align content inside properly */
+    align-items: center;
+    /* Center the icon and label vertically */
+    justify-content: center;
+    /* Center the icon and label horizontally */
 }
 
 
@@ -430,7 +438,8 @@ button:hover {
     border-radius: 5px;
     padding: 5px;
     position: absolute;
-    bottom: 30px; /* Reduced distance to bring it closer to the star icon */
+    bottom: 30px;
+    /* Reduced distance to bring it closer to the star icon */
     left: 50%;
     transform: translateX(-50%);
     white-space: nowrap;
@@ -442,6 +451,4 @@ button:hover {
 .premium-label-container:hover .premium-label {
     visibility: visible;
 }
-
-
 </style>
