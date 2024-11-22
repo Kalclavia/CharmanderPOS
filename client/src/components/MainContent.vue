@@ -88,7 +88,7 @@ export default {
     position: fixed;
     top: 0;
     left: 450px;
-    right: 0;
+    right: 450px;
     bottom: 0;
     background-color: #9b150b;
     color: #e7e4d7;
