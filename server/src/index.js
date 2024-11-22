@@ -1,4 +1,5 @@
 const express = require("express");
+const axios = require("axios");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const morgan = require("morgan");
@@ -604,6 +605,209 @@ app.get("/price/:itemName", (req, res) => {
         res.json({ price: query_res.rows[0].price });
       } else {
         res.status(404).json({ error: "Item not found" });
+      }
+    })
+    .catch((error) => res.status(500).json({ error: error.message }));
+});
+
+/**
+ * Get the recipe of a food item.
+ * @method GET /recipe/:itemName
+ * @param {string} itemName The name of the food.
+ * @returns {object[]} An array of ingredients with their names, quantities, and IDs.
+ */
+app.get("/recipe/:itemName", (req, res) => {
+  const itemName = req.params.itemName;
+  const sql = `
+    SELECT 
+      ingredients.name AS ingredient_name, 
+      quantity, 
+      ingredients.ingredientid
+    FROM 
+      foods
+      JOIN recipes ON foods.foodid = recipes.foodid
+      JOIN ingredients ON recipes.ingredientid = ingredients.ingredientid
+    WHERE 
+      foods.name = $1;
+  `;
+  
+  pool
+    .query(sql, [itemName])
+    .then((query_res) => {
+      if (query_res.rows.length > 0) {
+        const ingredients = query_res.rows.map((row) => ({
+          name: row.ingredient_name,
+          quantity: row.quantity,
+          ingredientID: row.ingredientid,
+        }));
+        res.json(ingredients);
+      } else {
+        res.status(404).json({ error: "Recipe not found for the specified item." });
+      }
+    })
+    .catch((error) => res.status(500).json({ error: error.message }));
+});
+
+/**
+ * Get the inventory quantity of a specific item.
+ * @method GET /inventory/:itemName
+ * @param {string} itemName The name of the item to check inventory for.
+ * @returns {object} The stock quantity of the given item.
+ */
+app.get("/inventory/:itemName", (req, res) => {
+  const itemName = req.params.itemName;
+  const sql = "SELECT stock FROM ingredients WHERE name = $1";
+  
+  pool
+    .query(sql, [itemName])
+    .then((query_res) => {
+      if (query_res.rows.length > 0) {
+        res.json({ stock: query_res.rows[0].stock });
+      } else {
+        res.status(404).json({ error: "Item not found" });
+      }
+    })
+    .catch((error) => res.status(500).json({ error: error.message }));
+});
+
+/**
+ * Update inventory by reducing the stock of an ingredient.
+ * @method PUT /inventory
+ * @param {number} ingredientID The ID of the ingredient.
+ * @param {number} usedIngredients The amount of the ingredient that was used.
+ * @returns {object} Success message or error details.
+ */
+app.put("/inventory", (req, res) => {
+  const { ingredientID, usedIngredients } = req.body;
+
+  if (!ingredientID || !usedIngredients || usedIngredients < 0) {
+    return res.status(400).json({ error: "Invalid input data." });
+  }
+
+  const sql = "UPDATE ingredients SET stock = stock - $1 WHERE ingredientID = $2";
+
+  pool
+    .query(sql, [usedIngredients, ingredientID])
+    .then((query_res) => {
+      if (query_res.rowCount > 0) {
+        res.json({ message: "Inventory updated successfully.", rowsUpdated: query_res.rowCount });
+      } else {
+        res.status(404).json({ error: "Ingredient not found or no rows updated." });
+      }
+    })
+    .catch((error) => res.status(500).json({ error: error.message }));
+});
+
+/**
+ * Adds a new transaction into the transactions table.
+ * @method POST /transaction
+ * @param {number} transactionID The ID of the transaction.
+ * @param {number} employeeID The ID of the employee.
+ * @param {number} total The total amount of the transaction.
+ * @param {string} date The date the transaction took place.
+ * @param {string} paymentMethod The method of payment.
+ * @returns {object} Success message or error details.
+ */
+app.post("/transaction", (req, res) => {
+  const { transactionID, employeeID, total, date, paymentMethod } = req.body;
+
+  if (!transactionID || !employeeID || !total || !date || !paymentMethod) {
+    return res.status(400).json({ error: "All fields are required." });
+  }
+
+  const sql = `
+    INSERT INTO transactions (TransactionID, EmployeeID, Total, Date, PaymentMethod) 
+    VALUES ($1, $2, $3, $4, $5)
+  `;
+
+  pool
+    .query(sql, [transactionID, employeeID, total, date, paymentMethod])
+    .then((query_res) => {
+      res.json({ message: "Transaction added successfully.", rowsUpdated: query_res.rowCount });
+    })
+    .catch((error) => res.status(500).json({ error: error.message }));
+});
+
+/**
+ * Adds items from a transaction to the transactionitems table.
+ * @method POST /transactionitems
+ * @param {number} transactionID The ID of the transaction.
+ * @param {number} itemid The ID of the item from the itemtypes table.
+ * @param {number} food1 The ID of the first food item from the foods table.
+ * @param {number} food2 The ID of the second food item from the foods table.
+ * @param {number} food3 The ID of the third food item from the foods table.
+ * @param {number} food4 The ID of the fourth food item from the foods table.
+ * @returns {object} Success message or error details.
+ */
+app.post("/transactionitems", (req, res) => {
+  const { transactionID, itemid, food1, food2, food3, food4 } = req.body;
+
+  if (!transactionID || !itemid || food1 == null || food2 == null || food3 == null || food4 == null) {
+    return res.status(400).json({ error: "All fields are required." });
+  }
+
+  const sql = `
+    INSERT INTO transactionitems (transactionid, itemtype, food1, food2, food3, food4) 
+    VALUES ($1, $2, $3, $4, $5, $6)
+  `;
+
+  pool
+    .query(sql, [transactionID, itemid, food1, food2, food3, food4])
+    .then((query_res) => {
+      res.json({ message: "Transaction items added successfully.", rowsUpdated: query_res.rowCount });
+    })
+    .catch((error) => res.status(500).json({ error: error.message }));
+});
+
+/**
+ * Gets the item ID from the itemtypes table based on the type name.
+ * @method GET /itemid/:type
+ * @param {string} type The name of the item type.
+ * @returns {number} The ID of the item type.
+ */
+app.get("/itemid/:type", (req, res) => {
+  const type = req.params.type;
+
+  if (!type) {
+    return res.status(400).json({ error: "Type name is required." });
+  }
+
+  const sql = "SELECT itemid FROM itemtypes WHERE type = $1";
+
+  pool
+    .query(sql, [type])
+    .then((query_res) => {
+      if (query_res.rows.length > 0) {
+        res.json({ itemID: query_res.rows[0].itemid });
+      } else {
+        res.status(404).json({ error: "Item type not found." });
+      }
+    })
+    .catch((error) => res.status(500).json({ error: error.message }));
+});
+
+/**
+ * Gets the food ID from the foods table based on the item name.
+ * @method GET /foodid/:name
+ * @param {string} name The name of the food item.
+ * @returns {number} The ID of the food item.
+ */
+app.get("/foodid/:name", (req, res) => {
+  const itemName = req.params.name;
+
+  if (!itemName) {
+    return res.status(400).json({ error: "Item name is required." });
+  }
+
+  const sql = "SELECT foodid FROM foods WHERE name = $1";
+
+  pool
+    .query(sql, [itemName])
+    .then((query_res) => {
+      if (query_res.rows.length > 0) {
+        res.json({ foodID: query_res.rows[0].foodid });
+      } else {
+        res.status(404).json({ error: "Food item not found." });
       }
     })
     .catch((error) => res.status(500).json({ error: error.message }));
