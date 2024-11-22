@@ -55,7 +55,7 @@ export default {
             },
           },
           tooltip: {
-            bodyColor: 'black',
+            bodyColor: 'white',
           },
         },
         scales: {
