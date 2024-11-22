@@ -1,5 +1,5 @@
 <template>
-    <div class="main-content" :class="{ 'menu-collapsed': isMenuBarCollapsed }" v-if="!isCheckoutVisible">
+    <div class="main-content" :class="{ 'menu-collapsed': isMenuBarCollapsed }">
         <MenuBar :is-collapsed="isMenuBarCollapsed" @toggle="toggleMenuBar"@selectItem="handleItemSelection"/>
         <h2>
             {{ item }} Menu

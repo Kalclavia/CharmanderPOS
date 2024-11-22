@@ -19,8 +19,8 @@
         <span>{{ getEntreeName(entree) }}</span>
         <span v-if="selectedEntrees.includes(entree)" class="checkmark">✓</span>
         <span class="premium-label-container">
-            <img v-if="isPremium(entree)" src="/src/assets/star.png" alt="Premium" class="star-icon" />
-            <span class="premium-label">Premium Item + $1.50</span>
+          <img v-if="isPremium(entree)" src="/src/assets/star.png" alt="Premium" class="star-icon" />
+          <span class="premium-label">Premium Item + $1.50</span>
         </span>
       </button>
     </div>
@@ -63,8 +63,8 @@ export default {
         )
         this.sides = sideResponse.data
         this.entrees = entreeResponse.data
-        console.log(this.sides)
-        console.log(this.entrees)
+        // console.log(this.sides)
+        // console.log(this.entrees)
       } catch (error) {
         console.error('Error fetching menu items:', error)
       }
@@ -97,43 +97,72 @@ export default {
 
     addToCart() {
       if (this.canAddToCart) {
-        let price = this.price;
-        let premiumCount = 0;
+        // Fetch the base item ID for "Bigger Plate" dynamically
+        axios
+          .get(import.meta.env.VITE_API_ENDPOINT + `itemid/Bigger Plate`)
+          .then((response) => {
+            const baseItemID = response.data.itemID; // Dynamically fetched base item ID
+            let price = this.price;
+            let premiumCount = 0;
 
-        // Check if any of the selected entrees are premium
-        this.selectedEntrees.forEach(entree => {
-          if (this.isPremium(entree)) {
-            premiumCount++;
-          }
-        });
+            // Check if any of the selected entrees are premium
+            this.selectedEntrees.forEach((entree) => {
+              if (this.isPremium(entree)) {
+                premiumCount++;
+              }
+            });
 
-        // Add $1.50 for each premium entree
-        price += premiumCount * 1.50;
+            // Add $1.50 for each premium entree
+            price += premiumCount * 1.50;
 
-        const itemName = `Bigger Plate (${this.getSideName(this.selectedSide)} + ${this.selectedEntrees.map(entree => this.getEntreeName(entree)).join(', ')})`;
+            // Get the side and entree names
+            const sideName = this.getSideName(this.selectedSide);
+            const entreeNames = this.selectedEntrees.map((entree) => this.getEntreeName(entree));
 
-        const item = {
-          name: itemName,
-          price: price,
-          isPremium: premiumCount > 0
-        };
+            // Fetch foodIDs for the selected side and entrees
+            Promise.all([
+              axios.get(import.meta.env.VITE_API_ENDPOINT + `foodid/${encodeURIComponent(sideName)}`),
+              ...this.selectedEntrees.map((entree) =>
+                axios.get(import.meta.env.VITE_API_ENDPOINT + `foodid/${encodeURIComponent(this.getEntreeName(entree))}`)
+              ),
+            ])
+              .then(([sideResponse, entreeResponse1, entreeResponse2, entreeResponse3]) => {
+                const sideFoodID = sideResponse.data.foodID;
+                const entreeFoodID1 = entreeResponse1.data.foodID;
+                const entreeFoodID2 = entreeResponse2.data.foodID;
+                const entreeFoodID3 = entreeResponse3.data.foodID;
 
-        this.$emit('addToCart', item);
-        this.selectedSide = null;
-        this.selectedEntrees = [];
+                // Construct the transactionEntry array
+                const transactionEntry = [baseItemID, sideFoodID, entreeFoodID1, entreeFoodID2, entreeFoodID3];
+
+                // Construct the item to emit
+                const item = {
+                  name: `Bigger Plate (${sideName} + ${entreeNames.join(", ")})`,
+                  price: price,
+                  transactionEntry: transactionEntry, // Include for further use
+                  isPremium: premiumCount > 0,
+                };
+
+                this.$emit('addToCart', item); // Emit the item to the parent
+                this.$emit('addToTransactionCart', transactionEntry); // Emit transaction entry
+                console.log('Transaction Added:', transactionEntry);
+
+                // Reset selections
+                this.selectedSide = null;
+                this.selectedEntrees = [];
+              })
+              .catch((error) => {
+                console.error('Error fetching food IDs:', error);
+                alert('Cannot add to transaction cart.');
+              });
+          })
+          .catch((error) => {
+            console.error('Error fetching base item ID:', error);
+            alert('Cannot fetch base item ID.');
+          });
       }
     },
-    // addToCart() {
-    //   if (this.canAddToCart) {
-    //     const item = {
-    //       name: `Bigger Plate (${this.getSideName(this.selectedSide)} + ${this.selectedEntrees.map(entree => this.getEntreeName(entree)).join(', ')})`,
-    //       price: this.price, // Assuming a fixed price for a plate
-    //     }
-    //     this.$emit('addToCart', item)
-    //     this.selectedSide = null
-    //     this.selectedEntrees = []
-    //   }
-    // },
+
     selectItem(item) {
       console.log(item)
       this.$emit('selectItem', item) // Emit selected item to the parent
@@ -152,7 +181,7 @@ export default {
       if (!name) return null
       const fileName = `${name.toLowerCase().replace(/\s+/g, '')}.png`
       const imagePath = `/src/assets/${fileName}`
-      console.log('Image path:', imagePath)
+      // console.log('Image path:', imagePath)
       return new URL(`/src/assets/${fileName}`, import.meta.url).href;
     },
     getEntreeName(entree) {
@@ -169,7 +198,7 @@ export default {
       if (!name) return null
       const fileName = `${name.toLowerCase().replace(/\s+/g, '')}.png`
       const imagePath = `/src/assets/${fileName}`
-      console.log('Image path:', imagePath)
+      // console.log('Image path:', imagePath)
       return new URL(`/src/assets/${fileName}`, import.meta.url).href;
     },
     handleImageError(event) {
@@ -277,44 +306,51 @@ button:hover {
 }
 
 .star-icon {
-    width: 30px;
-    height: 30px;
-    /* position: absolute; */
-    /* top: 1px;
+  width: 30px;
+  height: 30px;
+  /* position: absolute; */
+  /* top: 1px;
     left: 3px;
     /* Ensure it's above the content */
-    /* z-index: 1; */ 
+  /* z-index: 1; */
 }
+
 .premium-label-container {
-    position: absolute; /* Keep it absolute to retain original positioning */
-    top: 5px; /* Adjust as per your original design */
-    left: 5px; /* Adjust as per your original design */
-    z-index: 1; /* Ensure it's above other content */
-    display: flex; /* Align content inside properly */
-    align-items: center; /* Center the icon and label vertically */
-    justify-content: center; /* Center the icon and label horizontally */
+  position: absolute;
+  /* Keep it absolute to retain original positioning */
+  top: 5px;
+  /* Adjust as per your original design */
+  left: 5px;
+  /* Adjust as per your original design */
+  z-index: 1;
+  /* Ensure it's above other content */
+  display: flex;
+  /* Align content inside properly */
+  align-items: center;
+  /* Center the icon and label vertically */
+  justify-content: center;
+  /* Center the icon and label horizontally */
 }
 
 .premium-label {
-    visibility: hidden;
-    background-color: black;
-    color: white;
-    text-align: center;
-    border-radius: 5px;
-    padding: 5px;
-    position: absolute;
-    bottom: 30px; /* Reduced distance to bring it closer to the star icon */
-    left: 50%;
-    transform: translateX(-50%);
-    white-space: nowrap;
-    z-index: 10;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-    font-size: 12px;
+  visibility: hidden;
+  background-color: black;
+  color: white;
+  text-align: center;
+  border-radius: 5px;
+  padding: 5px;
+  position: absolute;
+  bottom: 30px;
+  /* Reduced distance to bring it closer to the star icon */
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  z-index: 10;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  font-size: 12px;
 }
 
 .premium-label-container:hover .premium-label {
-    visibility: visible;
+  visibility: visible;
 }
 </style>
-
-
