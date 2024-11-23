@@ -79,7 +79,7 @@ export default {
       selectedMenu: null,
       name: '',
       phone: '',
-      transactionId: '',
+      transactionId: null,
       readyTime: '',
       isCartVisible: false,
       showUserInfo: false,
@@ -119,6 +119,7 @@ export default {
     },
     addToTransactionCart(entry) {
       this.transactionCart.push(entry); // Add to transaction cart data
+      console.log('Updated transactionCart:', this.transactionCart);
     },
     clearOrder() {
       this.cartItems = [];
@@ -156,7 +157,7 @@ export default {
       this.isOrderComplete = false; // Reset order completion status
       this.cartItems = []; // Clear the cart items
       this.transactionCart = [];
-      this.transactionId = ''; // Reset transaction ID
+      this.transactionId = null; // Reset transaction ID
       this.readyTime = ''; // Reset ready time
       this.isCheckoutVisible = false; // Hide the checkout page
       this.isCartVisible = false; // Hide the cart panel
@@ -169,24 +170,34 @@ export default {
         const transactionIDResponse = await axios.get(import.meta.env.VITE_API_ENDPOINT + 'transactions/latestID');
         this.transactionId = transactionIDResponse.data.transactionID; // Increment to get a new ID
 
-        // Get the current date
-        const date = new Date().toISOString(); // Format: YYYY-MM-DDTHH:mm:ss.sssZ
+        if (!this.selectedPayment) {
+          throw new Error('Payment method is not selected.');
+        }
+
+        // Prepare the payload
+        const transactionPayload = {
+          transactionID: this.transactionId,
+          employeeID: parseInt(this.employeeID, 10),
+          total: parseFloat(this.cartTotal),
+          date: new Date().toISOString(),
+          paymentMethod: String(this.selectedPayment),
+        };
+        console.log('Transaction Payload:', transactionPayload);
 
         // Post the transaction
-        const transactionResponse = await axios.post(import.meta.env.VITE_API_ENDPOINT + 'transaction', {
-          transactionID: this.transactionId,
-          employeeID: this.employeeID, // Use a default or dynamically fetched employee ID
-          total: this.cartTotal,
-          date: date,
-          paymentMethod: this.selectedPayment, // Ensure this is set by the user
-        });
+        const transactionResponse = await axios.post(import.meta.env.VITE_API_ENDPOINT + 'transaction', transactionPayload);
         console.log('Transaction response:', transactionResponse.data);
 
+        if (!this.transactionCart.length) {
+          throw new Error('Transaction cart is empty.');
+        }
+
         // Insert transactionID into each transaction item in the cart
-        const transactionItemsWithID = transactionCart.map(item => {
+        const transactionItemsWithID = this.transactionCart.map(item => {
           // Prepend the transactionID before the itemID and food IDs
           return [this.transactionId, ...item];
         });
+        console.log('transactionItems: ', transactionItemsWithID);
 
         // Post to transactionitems
         const transactionItemsResponse = await axios.post(

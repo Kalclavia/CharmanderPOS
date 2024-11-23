@@ -7,12 +7,12 @@
                 ({{ formatPrice(prices[item]) }})
             </span>
         </h2>
-        <component v-if="item === 'Appetizers'" :is="'Appetizer'" @addToCart="$emit('addToCart', $event)" />
-        <component v-if="item === 'Bowl'" :is="'Bowl'" @addToCart="$emit('addToCart', $event)" />
-        <component v-if="item === 'Plate'" :is="'Plate'" @addToCart="$emit('addToCart', $event)" />
-        <component v-if="item === 'Bigger Plate'" :is="'BiggerPlate'" @addToCart="$emit('addToCart', $event)" />
-        <component v-if="item === 'Drinks'" :is="'Drink'" @addToCart="$emit('addToCart', $event)" />
-        <component v-if="item === 'A La Carte'" :is="'ALaCarte'" @addToCart="$emit('addToCart', $event)" />
+        <component v-if="item === 'Appetizers'" :is="'Appetizer'" @addToCart="$emit('addToCart', $event)" @addToTransactionCart="$emit('addToTransactionCart', $event)" />
+        <component v-if="item === 'Bowl'" :is="'Bowl'" @addToCart="$emit('addToCart', $event)" @addToTransactionCart="$emit('addToTransactionCart', $event)" />
+        <component v-if="item === 'Plate'" :is="'Plate'" @addToCart="$emit('addToCart', $event)" @addToTransactionCart="$emit('addToTransactionCart', $event)" />
+        <component v-if="item === 'Bigger Plate'" :is="'BiggerPlate'" @addToCart="$emit('addToCart', $event)" @addToTransactionCart="$emit('addToTransactionCart', $event)" />
+        <component v-if="item === 'Drinks'" :is="'Drink'" @addToCart="$emit('addToCart', $event)" @addToTransactionCart="$emit('addToTransactionCart', $event)" />
+        <component v-if="item === 'A La Carte'" :is="'ALaCarte'" @addToCart="$emit('addToCart', $event)" @addToTransactionCart="$emit('addToTransactionCart', $event)" />
     </div>
 </template>
 

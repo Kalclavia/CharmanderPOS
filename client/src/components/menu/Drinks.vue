@@ -49,12 +49,16 @@ export default {
       currentItemType: null,
       sizeOptions: {
         drink: [
-          { name: 'Small', price: null },
-          { name: 'Medium', price: null },
-          { name: 'Large', price: null },
+          { name: 'Small', price: null, baseItemID: null },
+          { name: 'Medium', price: null, baseItemID: null },
+          { name: 'Large', price: null, baseItemID: null },
         ],
       },
-    }
+      specialDrinks: [
+        { name: 'Aquafina', price: null, baseItemID: null },
+        { name: 'Gatorade Lemon Lime', price: null, baseItemID: null },
+      ],
+    };
   },
   computed: {
     canAddToCart() {
@@ -64,91 +68,129 @@ export default {
   methods: {
     async fetchMenuItems() {
       try {
-        const drinkResponse = await axios.get(
-          import.meta.env.VITE_API_ENDPOINT + 'menu/Drink',
-        )
+        const drinkResponse = await axios.get(import.meta.env.VITE_API_ENDPOINT + 'menu/Drink')
         this.drinks = drinkResponse.data
-        console.log(this.drinks)
+        // console.log(this.drinks)
+
+        // Fetch base item IDs for sizes
+        for (const size of this.sizeOptions.drink) {
+          const response = await axios.get(
+            import.meta.env.VITE_API_ENDPOINT + `itemid/${encodeURIComponent(size.name + ' Drink')}`
+          );
+          size.baseItemID = response.data.itemID;
+        }
+
+        // Fetch base item IDs for special drinks
+        for (const specialDrink of this.specialDrinks) {
+          const response = await axios.get(
+            import.meta.env.VITE_API_ENDPOINT + `itemid/${encodeURIComponent(specialDrink.name)}`
+          );
+          specialDrink.baseItemID = response.data.itemID;
+        }
       } catch (error) {
         console.error('Error fetching menu items:', error)
       }
     },
     async fetchItemPrices() {
       try {
-        // Fetch prices for regular drinks with sizes
-        const sizeType = ["drink"];
-        for (const type of sizeType) {
-          const sizes = this.sizeOptions[type];
-
-          for (const size of sizes) {
-            const itemName = `${size.name} ${type.charAt(0).toUpperCase() + type.slice(1)}`;
-            const response = await axios.get(import.meta.env.VITE_API_ENDPOINT + `price/${encodeURIComponent(itemName)}`);
-            size.price = response.data.price; // Assign price directly to the size object
-          }
+        // Fetch prices for regular drinks
+        for (const size of this.sizeOptions.drink) {
+          const response = await axios.get(
+            import.meta.env.VITE_API_ENDPOINT + `price/${encodeURIComponent(size.name + ' Drink')}`
+          );
+          size.price = response.data.price;
         }
 
-        // Fetch prices for bottled drinks
-        const bottledDrinks = ["Aquafina", "Gatorade Lemon Lime"];
-        for (const drink of bottledDrinks) {
+        // Fetch prices for special drinks
+        for (const specialDrink of this.specialDrinks) {
           const response = await axios.get(
-            import.meta.env.VITE_API_ENDPOINT + `price/${encodeURIComponent(drink)}`
+            import.meta.env.VITE_API_ENDPOINT + `price/${encodeURIComponent(specialDrink.name)}`
           );
-          this.sizeOptions.drink.push({ name: drink, price: response.data.price });
+          specialDrink.price = response.data.price;
         }
 
       } catch (error) {
         console.error("Error fetching item prices:", error);
       }
     },
-    toggleDrinks(drink) {
-      const drinkName = this.getDrinkName(drink);
+    async toggleDrinks(drink) {
+      try {
+        const drinkName = this.getDrinkName(drink);
 
-      if (["aquafina", "gatorade lemon lime"].includes(drinkName.toLowerCase())) {
-        // Add bottled drinks directly with their specific prices
-        const bottledDrink = this.sizeOptions.drink.find(option => option.name.toLowerCase() === drinkName.toLowerCase());
-        if (bottledDrink) {
+        const specialDrink = this.specialDrinks.find(
+          (d) => d.name.toLowerCase() === drinkName.toLowerCase(),
+        );
+
+        if (specialDrink) {
+          // Handle special bottled drinks
+          const drinkID = await this.getDrinkID(drink); // Await the drinkID resolution
+
+          const transactionEntry = [
+            specialDrink.baseItemID,
+            drinkID,
+            0, 0, 0,
+          ];
           const itemToAdd = {
-            name: `Drink: ${drinkName}`,
-            price: bottledDrink.price,
+            name: drinkName,
+            price: specialDrink.price,
+            transactionEntry,
           };
           this.selectedDrinks.push(itemToAdd);
         } else {
-          console.error("Bottled drink not found in sizeOptions:", drinkName);
+          // Show size modal for regular drinks
+          this.currentItem = drink;
+          this.showSizeModal = true;
         }
-      } else {
-        // Show size modal for regular drinks
-        this.currentItem = drink;
-        this.currentItemType = "drink";
-        this.showSizeModal = true;
+      } catch (error) {
+        console.error('Error toggling drink selection:', error);
       }
     },
     isSelected(drink) {
-      const drinkName = this.getDrinkName(drink)
-      return this.selectedDrinks.some(
-        selectedDrink =>
-          selectedDrink.name === `Drink: ${drinkName}` ||
-          selectedDrink.name.startsWith(`Drink: ${drinkName} (`),
-      )
+      const drinkID = this.getDrinkID(drink); // Fetch the unique drink ID
+      return this.selectedDrinks.some(selectedDrink => selectedDrink.id === drinkID);
     },
     getSelectedSize(drink) {
+      const drinkName = this.getDrinkName(drink);
       const selectedDrink = this.selectedDrinks.find(item =>
-        item.name.startsWith(`Drink: ${this.getDrinkName(drink)}`)
+        item.name.includes(drinkName)
       );
       return selectedDrink ? selectedDrink.size : null;
     },
-    selectSize(size) {
-      const itemToAdd = {
-        name: `Drink: ${this.getDrinkName(this.currentItem)} (${size.name})`,
-        price: size.price,
-        size: size.name
+    async selectSize(size) {
+      try {
+        // Fetch drinkID for the current drink
+        const drinkID = await this.getDrinkID(this.currentItem); // Await the drinkID resolution
+        const drinkName = this.getDrinkName(this.currentItem); // Get the base name
+        const fullName = `${drinkName} (${size.name})`; // Add size to the name
+
+        // Construct transaction entry
+        const transactionEntry = [
+          size.baseItemID, // Base item ID depends on size
+          drinkID, 0, 0, 0,
+        ];
+
+        // Add the drink with size to the cart
+        const itemToAdd = {
+          id: await this.getDrinkID(this.currentItem), // Use unique drink ID
+          name: fullName,
+          price: size.price,
+          size: size.name,
+          transactionEntry,
+        };
+
+        // Remove duplicates for the same drink
+        this.selectedDrinks = this.selectedDrinks.filter(item => item.id !== itemToAdd.id);
+        this.selectedDrinks.push(itemToAdd);
+
+        console.log("Selected Drinks Array:", this.selectedDrinks);
+        console.log('Drink Name:', this.getDrinkName(this.currentItem));
+
+        // Close modal and reset current item
+        this.showSizeModal = false;
+        this.currentItem = null;
+      } catch (error) {
+        console.error('Error selecting size:', error);
       }
-      // Remove any existing selection for this appetizer
-      this.selectedDrinks = this.selectedDrinks.filter(item =>
-        !item.name.startsWith(`Drink: ${this.getDrinkName(this.currentItem)}`)
-      );
-      this.selectedDrinks.push(itemToAdd)
-      this.showSizeModal = false
-      this.currentItem = null
     },
     cancelSizeSelection() {
       this.showSizeModal = false
@@ -156,11 +198,31 @@ export default {
     },
     addToCart() {
       if (this.canAddToCart) {
-        // Emit the selected drinks array to the cart
-        this.$emit('addToCart', this.selectedDrinks)
+        // Emit selected drinks to the cart
+        this.selectedDrinks.forEach((drink) => {
+          this.$emit('addToCart', drink);
+          this.$emit('addToTransactionCart', drink.transactionEntry);
+          console.log('Added Transaction: ', drink.transactionEntry);
+        });
 
-        // Clear selections after adding to cart
-        this.selectedDrinks = []
+        // Clear selections
+        this.selectedDrinks = [];
+      }
+    },
+    async getDrinkID(drink) {
+      try {
+        // Fetch drinkID for a given drink name from the database
+        const drinkName = this.getDrinkName(drink);
+        const response = await axios.get(import.meta.env.VITE_API_ENDPOINT + `foodid/${encodeURIComponent(drinkName)}`);
+
+        if (response.data && response.data.foodID) {
+          return response.data.foodID; // Return the resolved foodID
+        } else {
+          throw new Error(`No foodID found for drink: ${drinkName}`);
+        }
+      } catch (error) {
+        console.error(`Error fetching foodID for drink "${drinkName}":`, error);
+        throw error; // Re-throw to allow handling in calling code
       }
     },
     getDrinkName(drink) {
@@ -169,7 +231,6 @@ export default {
       } else if (drink && drink.name) {
         return drink.name
       }
-
       return 'Unknown Drink'
     },
     getDrinkImage(drink) {
@@ -177,7 +238,7 @@ export default {
       if (!name) return null
       const fileName = `${name.toLowerCase().replace(/\s+/g, '')}.png`
       const imagePath = `/src/assets/${fileName}`
-      console.log('Image path:', imagePath)
+      // console.log('Image path:', imagePath)
       return new URL(`/src/assets/${fileName}`, import.meta.url).href;
     },
   },

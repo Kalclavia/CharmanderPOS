@@ -38,12 +38,12 @@
                 getEntreeName(currentItem) }}</h3>
             <div v-if="currentItemType === 'side'">
                 <button v-for="size in sizeOptions.side" :key="size.name" @click="selectSize(size, 'side')">
-                    {{ size.name }} - ${{ size.price ? size.price.toFixed(2) : 'Loading...'}}
+                    {{ size.name }} - ${{ size.price ? size.price.toFixed(2) : 'Loading...' }}
                 </button>
             </div>
             <div v-else>
                 <button v-for="size in sizeOptions.entree" :key="size.name" @click="selectSize(size, 'entree')">
-                    {{ size.name }} - ${{ size.price ? size.price.toFixed(2) : 'Loading...'}}
+                    {{ size.name }} - ${{ size.price ? size.price.toFixed(2) : 'Loading...' }}
                 </button>
             </div>
 
@@ -73,13 +73,13 @@ export default {
             currentItemType: null,
             sizeOptions: {
                 side: [
-                    { name: "Medium", price: null },
-                    { name: "Large", price: null }
+                    { name: "Medium", price: null, baseItemID: null },
+                    { name: "Large", price: null, baseItemID: null }
                 ],
                 entree: [
-                    { name: "Small", price: null },
-                    { name: "Medium", price: null },
-                    { name: "Large", price: null }
+                    { name: "Small", price: null, baseItemID: null },
+                    { name: "Medium", price: null, baseItemID: null },
+                    { name: "Large", price: null, baseItemID: null }
                 ]
             },
             premiumEntrees: ["Black Pepper Sirloin Steak", "Honey Walnut Shrimp"], // Add premium entrees
@@ -105,6 +105,16 @@ export default {
                 const entreeResponse = await axios.get(import.meta.env.VITE_API_ENDPOINT + 'menu/Entree');
                 this.sides = sideResponse.data;
                 this.entrees = entreeResponse.data;
+
+                // Fetch base item IDs for sizes
+                for (const type of ["side", "entree"]) {
+                    for (const size of this.sizeOptions[type]) {
+                        const response = await axios.get(
+                            import.meta.env.VITE_API_ENDPOINT + `itemid/${encodeURIComponent(size.name + ' ' + type.charAt(0).toUpperCase() + type.slice(1))}`
+                        );
+                        size.baseItemID = response.data.itemID;
+                    }
+                }
             } catch (error) {
                 console.error('Error fetching menu items:', error);
             }
@@ -125,6 +135,17 @@ export default {
                 console.error("Error fetching item prices:", error);
             }
         },
+        async getFoodID(item) {
+            try {
+                const itemName = this.currentItemType === "side" ? this.getSideName(item) : this.getEntreeName(item);
+                const response = await axios.get(import.meta.env.VITE_API_ENDPOINT + `foodid/${encodeURIComponent(itemName)}`);
+                return response.data.foodID;
+            } catch (error) {
+                console.error("Error fetching foodID for item:", error);
+                throw error;
+            }
+        },
+
         toggleSides(side) {
             this.currentItem = side;
             this.currentItemType = 'side';
@@ -157,39 +178,48 @@ export default {
             const selectedList = type === 'side' ? this.selectedSides : this.selectedEntrees;
             return selectedList.some(selected => selected.name.includes(this.getSideName(item) || this.getEntreeName(item)));
         },
-        selectSize(size, type) {
-            const selectedList = type === 'side' ? this.selectedSides : this.selectedEntrees;
-            const existingItemIndex = selectedList.findIndex(item => item.name.includes(
-                type === 'side' ? this.getSideName(this.currentItem) : this.getEntreeName(this.currentItem)
-            ));
+        async selectSize(size, type) {
+            try {
+                const selectedList = type === 'side' ? this.selectedSides : this.selectedEntrees;
+                const existingItemIndex = selectedList.findIndex(item =>
+                    item.name.includes(type === 'side' ? this.getSideName(this.currentItem) : this.getEntreeName(this.currentItem))
+                );
 
-            let price = size.price;
-            if (type === 'entree' && this.isPremium(this.currentItem)) {
-                price = this.premiumPrices[size.name]; // Use premium price for premium entrees
+                const foodID = await this.getFoodID(this.currentItem);
+                const baseItemID = size.baseItemID;
+
+                let price = size.price;
+                if (type === 'entree' && this.isPremium(this.currentItem)) {
+                    price = this.premiumPrices[size.name];
+                }
+
+                const transactionEntry = [baseItemID, foodID, 0, 0, 0];
+
+                if (existingItemIndex !== -1) {
+                    selectedList[existingItemIndex] = {
+                        name: `${type === 'side' ? 'Side' : 'Entree'}: ${type === 'side' ? this.getSideName(this.currentItem) : this.getEntreeName(this.currentItem)} (${size.name})`,
+                        price,
+                        size: size.name,
+                        isPremium: this.isPremium(this.currentItem),
+                        transactionEntry
+                    };
+                } else {
+                    const itemToAdd = {
+                        name: `${type === 'side' ? 'Side' : 'Entree'}: ${type === 'side' ? this.getSideName(this.currentItem) : this.getEntreeName(this.currentItem)} (${size.name})`,
+                        price,
+                        size: size.name,
+                        isPremium: this.isPremium(this.currentItem),
+                        transactionEntry
+                    };
+                    selectedList.push(itemToAdd);
+                }
+
+                this.showSizeModal = false;
+                this.currentItem = null;
+                this.currentItemType = null;
+            } catch (error) {
+                console.error("Error selecting size:", error);
             }
-
-            // Check if the item already exists in the selected list and update its size/price
-            if (existingItemIndex !== -1) {
-                selectedList[existingItemIndex] = {
-                    name: `${type === 'side' ? 'Side' : 'Entree'}: ${type === 'side' ? this.getSideName(this.currentItem) : this.getEntreeName(this.currentItem)} (${size.name})`,
-                    price: price,
-                    size: size.name,
-                    isPremium: this.isPremium(this.currentItem) // Add premium flag
-                };
-            } else {
-                const itemToAdd = {
-                    name: `${type === 'side' ? 'Side' : 'Entree'}: ${type === 'side' ? this.getSideName(this.currentItem) : this.getEntreeName(this.currentItem)} (${size.name})`,
-                    price: price,
-                    size: size.name,
-                    isPremium: this.isPremium(this.currentItem) // Add premium flag
-                };
-                selectedList.push(itemToAdd);
-            }
-
-            // Close the modal after selection
-            this.showSizeModal = false;
-            this.currentItem = null;
-            this.currentItemType = null;
         },
         cancelSizeSelection() {
             this.showSizeModal = false;
@@ -219,8 +249,10 @@ export default {
                     };
                 });
 
-                // Emit the formatted items to the cart
-                this.$emit('addToCart', formattedItems);
+                itemsToAdd.forEach((item) => {
+                    this.$emit('addToCart', item);
+                    this.$emit('addToTransactionCart', item.transactionEntry);
+                });
 
                 // Clear selections after adding to cart
                 this.selectedSides = [];
