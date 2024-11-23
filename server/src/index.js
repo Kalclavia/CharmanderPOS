@@ -630,7 +630,7 @@ app.get("/recipe/:itemName", (req, res) => {
     WHERE 
       foods.name = $1;
   `;
-  
+
   pool
     .query(sql, [itemName])
     .then((query_res) => {
@@ -642,7 +642,9 @@ app.get("/recipe/:itemName", (req, res) => {
         }));
         res.json(ingredients);
       } else {
-        res.status(404).json({ error: "Recipe not found for the specified item." });
+        res
+          .status(404)
+          .json({ error: "Recipe not found for the specified item." });
       }
     })
     .catch((error) => res.status(500).json({ error: error.message }));
@@ -657,7 +659,7 @@ app.get("/recipe/:itemName", (req, res) => {
 app.get("/inventory/:itemName", (req, res) => {
   const itemName = req.params.itemName;
   const sql = "SELECT stock FROM ingredients WHERE name = $1";
-  
+
   pool
     .query(sql, [itemName])
     .then((query_res) => {
@@ -684,15 +686,21 @@ app.put("/inventory", (req, res) => {
     return res.status(400).json({ error: "Invalid input data." });
   }
 
-  const sql = "UPDATE ingredients SET stock = stock - $1 WHERE ingredientID = $2";
+  const sql =
+    "UPDATE ingredients SET stock = stock - $1 WHERE ingredientID = $2";
 
   pool
     .query(sql, [usedIngredients, ingredientID])
     .then((query_res) => {
       if (query_res.rowCount > 0) {
-        res.json({ message: "Inventory updated successfully.", rowsUpdated: query_res.rowCount });
+        res.json({
+          message: "Inventory updated successfully.",
+          rowsUpdated: query_res.rowCount,
+        });
       } else {
-        res.status(404).json({ error: "Ingredient not found or no rows updated." });
+        res
+          .status(404)
+          .json({ error: "Ingredient not found or no rows updated." });
       }
     })
     .catch((error) => res.status(500).json({ error: error.message }));
@@ -714,16 +722,19 @@ app.post("/transaction", (req, res) => {
   if (!transactionID || !employeeID || !total || !date || !paymentMethod) {
     return res.status(400).json({ error: "All fields are required." });
   }
-
+  console.log(transactionID, employeeID, total, date, paymentMethod);
   const sql = `
-    INSERT INTO transactions (TransactionID, EmployeeID, Total, Date, PaymentMethod) 
+    INSERT INTO transactions (transactionid, employeeid, total, date, paymentmethod) 
     VALUES ($1, $2, $3, $4, $5)
   `;
 
   pool
     .query(sql, [transactionID, employeeID, total, date, paymentMethod])
     .then((query_res) => {
-      res.json({ message: "Transaction added successfully.", rowsUpdated: query_res.rowCount });
+      res.json({
+        message: "Transaction added successfully.",
+        rowsUpdated: query_res.rowCount,
+      });
     })
     .catch((error) => res.status(500).json({ error: error.message }));
 });
@@ -742,7 +753,14 @@ app.post("/transaction", (req, res) => {
 app.post("/transactionitems", (req, res) => {
   const { transactionID, itemid, food1, food2, food3, food4 } = req.body;
 
-  if (!transactionID || !itemid || food1 == null || food2 == null || food3 == null || food4 == null) {
+  if (
+    !transactionID ||
+    !itemid ||
+    food1 == null ||
+    food2 == null ||
+    food3 == null ||
+    food4 == null
+  ) {
     return res.status(400).json({ error: "All fields are required." });
   }
 
@@ -754,7 +772,10 @@ app.post("/transactionitems", (req, res) => {
   pool
     .query(sql, [transactionID, itemid, food1, food2, food3, food4])
     .then((query_res) => {
-      res.json({ message: "Transaction items added successfully.", rowsUpdated: query_res.rowCount });
+      res.json({
+        message: "Transaction items added successfully.",
+        rowsUpdated: query_res.rowCount,
+      });
     })
     .catch((error) => res.status(500).json({ error: error.message }));
 });
