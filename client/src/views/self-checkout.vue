@@ -185,12 +185,8 @@ export default {
         console.log('Transaction Payload:', transactionPayload);
 
         // Post the transaction
-        const transactionResponse = await axios.post(import.meta.env.VITE_API_ENDPOINT + 'transaction', transactionPayload);
-        console.log('Transaction response:', transactionResponse.data);
-
-        if (!this.transactionCart.length) {
-          throw new Error('Transaction cart is empty.');
-        }
+        // const transactionResponse = await axios.post(import.meta.env.VITE_API_ENDPOINT + 'transaction', transactionPayload);
+        // console.log('Transaction response:', transactionResponse.data);
 
         // Insert transactionID into each transaction item in the cart
         const transactionItemsWithID = this.transactionCart.map(item => {
@@ -200,11 +196,11 @@ export default {
         console.log('transactionItems: ', transactionItemsWithID);
 
         // Post to transactionitems
-        const transactionItemsResponse = await axios.post(
-          import.meta.env.VITE_API_ENDPOINT + 'transactionitems',
-          transactionItemsWithID
-        );
-        console.log('Transaction item response:', transactionItemsResponse.data);
+        // const transactionItemsResponse = await axios.post(
+        //   import.meta.env.VITE_API_ENDPOINT + 'transactionitems',
+        //   transactionItemsWithID
+        // );
+        // console.log('Transaction item response:', transactionItemsResponse.data);
 
         // Generate the ready time
         this.readyTime = this.calculateReadyTime();
