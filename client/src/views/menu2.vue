@@ -36,7 +36,7 @@ export default {
   bottom: 0;
   background-color: #000000e3;
   color: #e7e4d7;
-  padding: 0px;
+  padding: 0zpx;
   overflow-y: auto;
 }
 
