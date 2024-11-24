@@ -368,13 +368,12 @@ app.get("/menu/item/total", (req, res) => {
  * @returns {objects} Newly added food item.
  */
 app.post("/menu/item/add", (req, res) => {
-  const { foodid, name, type } = req.body;
+  const { foodid, name, type, isPremium, allergens } = req.body;
   pool
-    .query("INSERT INTO foods (foodid, name, type) VALUES($1,$2,$3);", [
-      foodid,
-      name,
-      type,
-    ])
+    .query(
+      "INSERT INTO foods (foodid, name, type,premium, isremoved,allergens) VALUES($1,$2,$3,$4,$5, $6);",
+      [foodid, name, type, isPremium, false, allergens]
+    )
     .then((query_res) => res.json(query_res.rows[0]))
     .catch((error) => res.status(500).json({ error: error.message }));
 });
@@ -431,11 +430,12 @@ app.get("/menu/item/view/ingredients", (req, res) => {
  * @returns {objects} The updated food item.
  */
 app.patch("/menu/item/update/type", (req, res) => {
-  const { type, name, isRemoved, foodid } = req.body;
+  const { type, name, isRemoved, foodid, premium, allergens } = req.body;
+  console.log(req.body);
   pool
     .query(
-      "UPDATE foods SET type = $1, name = $2, isremoved = $3 WHERE foodid = $4;",
-      [type, name, isRemoved, foodid]
+      "UPDATE foods SET type = $1, name = $2, isremoved = $3, premium = $4, allergens = $5 WHERE foodid = $6;",
+      [type, name, isRemoved, premium, allergens, foodid]
     )
     .then((query_res) => res.json(query_res.rows))
     .catch((error) => res.status(500).json({ error: error.message }));
@@ -535,9 +535,15 @@ app.get("/report/transactionBreakDown", (req, res) => {
   // let startDate = "2023-01-01";
   // let endDate = "2023-01-02";
   const today = new Date();
-  let startDate = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+(today.getDate());
-  let endDate = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+(today.getDate()+1);
-  console.log(startDate,endDate)
+  let startDate =
+    today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + today.getDate();
+  let endDate =
+    today.getFullYear() +
+    "-" +
+    (today.getMonth() + 1) +
+    "-" +
+    (today.getDate() + 1);
+  console.log(startDate, endDate);
   pool
     .query(
       "SELECT COUNT(t.transactionid) AS num_orders, EXTRACT(HOUR FROM t.date) AS order_hour, SUM(t.total) AS order_total, t.employeeid, e.name AS employee_name FROM transactions t JOIN employees e ON t.employeeid = e.employeeid WHERE t.date >= CAST($1 AS TIMESTAMP) AND t.date < CAST($2 AS TIMESTAMP) GROUP BY order_hour, t.employeeid, e.name ORDER BY order_hour ASC;",
@@ -630,7 +636,7 @@ app.get("/recipe/:itemName", (req, res) => {
     WHERE 
       foods.name = $1;
   `;
-  
+
   pool
     .query(sql, [itemName])
     .then((query_res) => {
@@ -642,7 +648,9 @@ app.get("/recipe/:itemName", (req, res) => {
         }));
         res.json(ingredients);
       } else {
-        res.status(404).json({ error: "Recipe not found for the specified item." });
+        res
+          .status(404)
+          .json({ error: "Recipe not found for the specified item." });
       }
     })
     .catch((error) => res.status(500).json({ error: error.message }));
@@ -657,7 +665,7 @@ app.get("/recipe/:itemName", (req, res) => {
 app.get("/inventory/:itemName", (req, res) => {
   const itemName = req.params.itemName;
   const sql = "SELECT stock FROM ingredients WHERE name = $1";
-  
+
   pool
     .query(sql, [itemName])
     .then((query_res) => {
@@ -684,15 +692,21 @@ app.put("/inventory", (req, res) => {
     return res.status(400).json({ error: "Invalid input data." });
   }
 
-  const sql = "UPDATE ingredients SET stock = stock - $1 WHERE ingredientID = $2";
+  const sql =
+    "UPDATE ingredients SET stock = stock - $1 WHERE ingredientID = $2";
 
   pool
     .query(sql, [usedIngredients, ingredientID])
     .then((query_res) => {
       if (query_res.rowCount > 0) {
-        res.json({ message: "Inventory updated successfully.", rowsUpdated: query_res.rowCount });
+        res.json({
+          message: "Inventory updated successfully.",
+          rowsUpdated: query_res.rowCount,
+        });
       } else {
-        res.status(404).json({ error: "Ingredient not found or no rows updated." });
+        res
+          .status(404)
+          .json({ error: "Ingredient not found or no rows updated." });
       }
     })
     .catch((error) => res.status(500).json({ error: error.message }));
@@ -723,7 +737,10 @@ app.post("/transaction", (req, res) => {
   pool
     .query(sql, [transactionID, employeeID, total, date, paymentMethod])
     .then((query_res) => {
-      res.json({ message: "Transaction added successfully.", rowsUpdated: query_res.rowCount });
+      res.json({
+        message: "Transaction added successfully.",
+        rowsUpdated: query_res.rowCount,
+      });
     })
     .catch((error) => res.status(500).json({ error: error.message }));
 });
@@ -742,7 +759,14 @@ app.post("/transaction", (req, res) => {
 app.post("/transactionitems", (req, res) => {
   const { transactionID, itemid, food1, food2, food3, food4 } = req.body;
 
-  if (!transactionID || !itemid || food1 == null || food2 == null || food3 == null || food4 == null) {
+  if (
+    !transactionID ||
+    !itemid ||
+    food1 == null ||
+    food2 == null ||
+    food3 == null ||
+    food4 == null
+  ) {
     return res.status(400).json({ error: "All fields are required." });
   }
 
@@ -754,7 +778,10 @@ app.post("/transactionitems", (req, res) => {
   pool
     .query(sql, [transactionID, itemid, food1, food2, food3, food4])
     .then((query_res) => {
-      res.json({ message: "Transaction items added successfully.", rowsUpdated: query_res.rowCount });
+      res.json({
+        message: "Transaction items added successfully.",
+        rowsUpdated: query_res.rowCount,
+      });
     })
     .catch((error) => res.status(500).json({ error: error.message }));
 });

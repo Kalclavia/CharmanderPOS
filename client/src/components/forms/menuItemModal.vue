@@ -17,12 +17,25 @@
             <option>Drink</option>
           </select>
         </div>
+        <div class="form-group">
+          <label for="name">Allergens:</label>
+          <input type="text" v-model="form.allergens" />
+        </div>
         <div class="form-group-radio" v-if="IsDeletedItem">
           <label for="isDeleted">Deleted Food:</label>
           <input
             type="checkbox"
             value="true"
             v-model="form.isDeleted"
+            class="radio-group"
+          />
+        </div>
+        <div class="form-group-radio">
+          <label for="isPremium">Premium Item:</label>
+          <input
+            type="checkbox"
+            value="true"
+            v-model="form.isPremium"
             class="radio-group"
           />
         </div>
@@ -62,14 +75,13 @@
                 </tr>
               </tbody>
             </table>
+            <div class="modal-actions">
+              <button type="submit">
+                {{ isNewItem ? 'Add' : 'Update' }}
+              </button>
+              <button type="button" @click="closeModal">Cancel</button>
+            </div>
           </div>
-        </div>
-
-        <div class="modal-actions">
-          <button type="submit">
-            {{ isNewItem ? 'Add' : 'Update' }}
-          </button>
-          <button type="button" @click="closeModal">Cancel</button>
         </div>
       </form>
     </div>
@@ -100,6 +112,9 @@ export default {
         params.append('foodid', this.lastid)
         params.append('name', this.form.name)
         params.append('type', this.form.type)
+        params.append('isRemoved', this.form.isDeleted)
+        params.append('premium', this.form.isPremium)
+        params.append('allergens', this.form.allergens)
         const config = {
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
@@ -149,6 +164,9 @@ export default {
         params.append('type', this.form.type)
         params.append('foodid', this.form.foodid)
         params.append('isRemoved', this.form.isDeleted)
+        params.append('premium', this.form.isPremium)
+        params.append('allergens', this.form.allergens)
+
         console.log(params)
         const config = {
           headers: {
@@ -260,6 +278,8 @@ export default {
         this.form.name = this.food.name
         this.form.type = this.food.type
         this.form.isDeleted = this.IsDeletedItem
+        this.form.isPremium = this.food.premium
+        this.form.allergens = this.food.allergens
         for (let i = 0; i < this.IngredientList.length; i++) {
           this.form.quantity[this.IngredientList[i].ingredientid - 1] =
             this.IngredientList[i].quantity
@@ -295,6 +315,8 @@ export default {
     isNewItem: { type: Boolean, required: true },
     IngredientList: { type: Array, required: false, default: null },
     IsDeletedItem: { type: Boolean, required: true },
+    // isPremiumItem: { type: Boolean, required: true },
+    // allergens: { type: String, required: true },
   },
   data() {
     return {
@@ -305,6 +327,7 @@ export default {
         quantity: [],
         ingredientName: [],
         isDeleted: false,
+        isPremium: false,
       },
       ingredients: [],
       lastid: -1,
@@ -330,8 +353,6 @@ export default {
   align-items: flex-start;
   justify-content: center;
   z-index: 1000;
-  padding-top: 5px;
-  padding-bottom: 5px;
 }
 .radio-group {
   margin-left: auto;
@@ -351,13 +372,11 @@ h2 {
 }
 
 .form-group-radio {
-  margin-bottom: 15px;
 }
 
 .form-group-radio label {
   display: block;
   font-weight: bold;
-  margin-bottom: 5px;
 }
 
 .form-group-radio input {
@@ -372,7 +391,6 @@ h2 {
 .form-group label {
   display: block;
   font-weight: bold;
-  margin-bottom: 5px;
 }
 
 .form-group input {

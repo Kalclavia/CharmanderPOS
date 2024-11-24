@@ -18,6 +18,7 @@
       :isNewItem="newItem"
       :IngredientList="ingredientList"
       :IsDeletedItem="isDeletedItem"
+      :isPremiumItem="isPremiumItem"
     />
     <MenuItemDeleteModel
       v-if="showDeleteMenuItem"
@@ -55,6 +56,7 @@ export default {
       ingredientList: [],
       showDeleteMenuItem: false,
       isDeletedItem: false,
+      isPremiumItem: false,
     }
   },
   methods: {
@@ -97,6 +99,7 @@ export default {
       this.selectedFood = null
       this.showAddMenuItem = !this.showAddMenuItem
       this.isDeletedItem = false
+      this.isPremiumItem = false
     },
     updateItem(food, deleteditem) {
       this.fetchIngredientList(food)
