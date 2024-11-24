@@ -2,7 +2,7 @@
   <div class="biggerplate">
     <h2>Pick 1 Side</h2>
     <div class="grid">
-      <button v-for="side in sides" :key="side" @click="toggleSide(side)" :disabled="isOutOfStock(side, 'Side')"
+      <button v-for="side in sides" :key="side" @click="selectSide(side)" :disabled="isOutOfStock(side, 'Side')"
         :class="{ selected: selectedSide === side, 'out-of-stock': isOutOfStock(side, 'Side') }">
         <img v-if="getSideImage(side)" :src="getSideImage(side)" :alt="getSideName(side)" class="side-image"
           @error="handleImageError" />
@@ -14,14 +14,14 @@
 
     <h2>Pick 3 Entrees</h2>
     <div class="grid">
-      <button v-for="entree in entrees" :key="entree" @click="toggleEntree(entree)"
+      <button v-for="entree in entrees" :key="entree" @click="selectEntree(entree)"
         :disabled="isOutOfStock(entree, 'Entree')"
-        :class="{ selected: selectedEntrees === entree, 'out-of-stock': isOutOfStock(entree, 'Entree') }">
+        :class="{ selected: selectedEntrees.includes(entree), 'out-of-stock': isOutOfStock(entree, 'Entree') }">
         <img v-if="getEntreeImage(entree)" :src="getEntreeImage(entree)" :alt="getEntreeName(entree)"
           class="entree-image" @error="handleImageError" />
         <span>{{ getEntreeName(entree) }}</span>
         <span v-if="isOutOfStock(entree, 'Entree')" class="out-of-stock-label">Out of Stock</span>
-        <span v-if="selectedEntrees === entree" class="checkmark">✓</span>
+        <span v-if="selectedEntrees.includes(entree)" class="checkmark">✓</span>
         <span class="premium-label-container">
           <img v-if="isPremium(entree)" src="/src/assets/star.png" alt="Premium" class="star-icon" />
           <span class="premium-label">Premium Item + $1.50</span>
