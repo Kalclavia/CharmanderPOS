@@ -12,7 +12,7 @@
     <salesBarChart />
   </div>
   <div v-if="XZBool" style="padding-top: 20px">
-    <XZChart  :datasetLabel="chartLabel" />
+    <XZChart  :datasetLabel="chartLabel" :key="chartLabel"/>
   </div>
   <!-- <div class="buttons"><button>Toggle Chart Style</button></div> -->
 </template>
@@ -107,7 +107,6 @@ export default {
     },
     setLabelZ(){
       const hour =new Date().getHours();
-      console.log(hour)
       if(hour>=22){
         this.chartLabel = 'Z-Report';
         this.XZBool = true;
