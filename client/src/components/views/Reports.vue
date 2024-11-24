@@ -1,13 +1,9 @@
 <template>
   <div class="buttons">
-    <button @click="(this.productBool = false), (this.salesBool = true)">
-      Sales Report
-    </button>
-    <button @click="(this.productBool = true), (this.salesBool = false)">
-      Product Usage Report
-    </button>
-    <button>X-Report</button>
-    <button>Z-Report</button>
+    <button  @click="this.productBool = false, this.salesBool =true, this.XZBool = false" >Sales Report</button>
+    <button @click="this.productBool = true, this.salesBool =false,  this.XZBool = false" >Product Usage Report</button>
+    <button @click="this.productBool = false, this.salesBool =false,  this.XZBool = true" >X-Report</button>
+    <button @click="this.productBool = false, this.salesBool =false,  this.XZBool = true" >Z-Report</button>
   </div>
   <div v-if="productBool" style="padding-top: 20px">
     <productBarChartbarchart />
@@ -15,24 +11,32 @@
   <div v-if="salesBool" style="padding-top: 20px">
     <salesBarChart />
   </div>
-  <div class="buttons"><button>Toggle Chart Style</button></div>
+  <div v-if="XZBool" style="padding-top: 20px">
+    <XZChart
+    
+    />
+  </div>
+  <!-- <div class="buttons"><button>Toggle Chart Style</button></div> -->
 </template>
 
 <script>
 import axios from 'axios'
 import productBarChartbarchart from '../charts/productBarChart.vue'
-import salesBarChart from '../charts/salesBarChart.vue'
+import salesBarChart from '../charts/salesBarChart.vue';
+import XZChart from '../charts/XZChart.vue';
 export default {
   name: 'Reports',
   components: {
     productBarChartbarchart,
     salesBarChart,
+    XZChart
   },
   data() {
     return {
-      productBool: false,
-      salesBool: false,
-      employeeTransaction: [],
+      productBool : false,
+      salesBool : false,
+      XZBool : false,
+      employeeTransaction: [], 
       ingredientsByDateRange: [],
       salesByDateRange: [],
     }
@@ -98,6 +102,12 @@ export default {
           console.error('Error fetching sales:', error)
         })
     },
+    setLabelX(){
+      this.XZChart
+    },
+    setLabelZ(){
+
+    }
   },
   mounted() {},
 }

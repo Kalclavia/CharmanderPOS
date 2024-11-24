@@ -3,15 +3,11 @@
     <Bar id="my-chart-id" :options="chartOptions" :data="chartData" />
   </div>
   <div class="buttons">
-    <div>
-      <label for="from">From:</label> <input type="date" v-model="fromDate" />
-    </div>
-    <div>
-      <label for="to">To:</label> <input type="date" v-model="toDate" />
-    </div>
-    <button style="button" @click="fetchIngredientsByDateRange()">
-      Load Data
-    </button>
+  <div><label for="from">From:</label>
+    <input type="date" v-model="fromDate" /></div>
+    <div><label for="to">To:</label>
+      <input type="date" v-model="toDate" /></div>
+    <button style="button" @click="fetchIngredientsByDateRange()">Load Data</button>
   </div>
 </template>
 
@@ -59,7 +55,7 @@ export default {
             },
           },
           tooltip: {
-            bodyColor: 'black',
+            bodyColor: 'white',
           },
         },
         scales: {

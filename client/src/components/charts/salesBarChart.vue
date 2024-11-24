@@ -3,15 +3,13 @@
     <Bar id="my-chart-id" :options="chartOptions" :data="chartData" />
   </div>
   <div class="buttons">
-    <div>
-      <label for="from">From:</label> <input type="date" v-model="fromDate" />
-    </div>
-    <div>
-      <label for="to">To:</label> <input type="date" v-model="toDate" />
-    </div>
+  <div><label for="from">From:</label>
+    <input type="date" v-model="fromDate" /></div>
+    <div><label for="to">To:</label>
+      <input type="date" v-model="toDate" /></div>
     <button style="button" @click="fetchData()">Load Data</button>
   </div>
-  <div class="buttons">
+  <div class = "buttons">
     <button style="button" @click="setEntree()">Entree</button>
     <button style="button" @click="setSide()">Side</button>
     <button style="button" @click="setApp()">Appetizer</button>
@@ -69,7 +67,7 @@ export default {
             },
           },
           tooltip: {
-            bodyColor: 'black',
+            bodyColor: 'white',
           },
         },
         scales: {
@@ -96,7 +94,6 @@ export default {
   methods: {
     fetchData() {
       this.showChart = true
-      console.log('Fetching Data...')
       console.log('From', this.fromDate, 'End:', this.toDate)
       const config = {
         headers: {
@@ -209,7 +206,9 @@ export default {
       this.showChart = true
     },
   },
-  mounted() {},
+  mounted() {
+    
+  },
 }
 </script>
 
