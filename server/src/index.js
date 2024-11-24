@@ -72,7 +72,7 @@ app.post("/employees/add", (req, res) => {
   const { employeeid, name, role, isfired } = req.body;
   pool
     .query(
-      "INSERT INTO employees (employeeid, name, role, isfired) VALUES ($1, $2, $3, $4) RETURNING *;",
+      "INSERT INTO employees (employeeid, name, role, isfired, email) VALUES ($1, $2, $3, $4, 'none') RETURNING *;",
       [employeeid, name, role, isfired]
     )
     .then((query_res) => res.json(query_res.rows))
@@ -576,11 +576,11 @@ app.get("/menu/price", async (req, res) => {
  */
 app.get("/transactions/latestID", async (req, res) => {
   const sql = "SELECT MAX(transactionid) FROM transactions";
-  
+
   try {
     const query_res = await pool.query(sql);
     const transactionID = query_res.rows[0].max; // Get the max transaction ID
-    const nextTransactionID = (transactionID !== null) ? transactionID + 1 : 1; // Increment by 1, default to 1 if null
+    const nextTransactionID = transactionID !== null ? transactionID + 1 : 1; // Increment by 1, default to 1 if null
     res.json({ transactionID: nextTransactionID });
   } catch (error) {
     console.error("Error fetching transaction ID:", error);
