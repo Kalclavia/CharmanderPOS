@@ -7,9 +7,20 @@
                 ({{ formatPrice(prices[item]) }})
             </span>
         </h2>
-        <div v-if="item">
-            <component :is="getComponentName(item)" @addToCart="$emit('addToCart', $event)"
-                @addToTransactionCart="$emit('addToTransactionCart', $event)" :outOfStockItems="outOfStockItems" />
+
+        <!-- Wait for loading to finish before rendering components -->
+        <div v-if="!loading">
+            <component 
+                :is="getComponentName(item)" 
+                @addToCart="$emit('addToCart', $event)"
+                @addToTransactionCart="$emit('addToTransactionCart', $event)" 
+                :outOfStockItems="outOfStockItems" 
+            />
+        </div>
+        
+        <!-- Show a loading spinner or message while data is being fetched -->
+        <div v-else class="loading-spinner">
+            <!-- <p>Loading data, please wait...</p> -->
         </div>
 
         <button @click="showAllergenModal" class="allergen-button">Allergens</button>
@@ -60,7 +71,8 @@ export default {
             isMenuBarCollapsed: false,
             showAllergenList: false,
             allergenList: {},
-            outOfStockItems: {}, // Stores out-of-stock status for each menu item
+            outOfStockItems: {},
+            loading: true, // New loading state
         };
     },
     components: {
@@ -167,6 +179,14 @@ export default {
         formatPrice(price) {
             return price !== null ? `$${price.toFixed(2)}` : 'Loading...';
         },
+        async fetchData() {
+            await Promise.all([
+                this.fetchPrices(),
+                this.fetchAllAllergens(),
+                this.validateInventory(),
+            ]);
+            this.loading = false; // Set loading to false after all data is fetched
+        },
         toggleMenuBar() {
             this.isMenuBarCollapsed = !this.isMenuBarCollapsed;
         },
@@ -175,10 +195,8 @@ export default {
             this.isMenuBarCollapsed = true;
         }
     },
-    mounted() {
-        this.fetchPrices();
-        this.fetchAllAllergens();
-        this.validateInventory();
+    async mounted() {
+        await this.fetchData(); // Fetch all required data
     },
 };
 </script>
@@ -269,4 +287,29 @@ th {
     border-radius: 5px;
     cursor: pointer;
 }
+
+.loading-spinner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Full page height */
+    position: relative;
+}
+
+.loading-spinner::after {
+    content: '';
+    width: 50px;
+    height: 50px;
+    border: 5px solid #ada88d;
+    border-top-color: #e7e4d7; /* Primary color */
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
 </style>
