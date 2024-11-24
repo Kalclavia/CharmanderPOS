@@ -18,8 +18,8 @@
         <span>{{ getEntreeName(entree) }}</span>
         <span v-if="selectedEntree === entree" class="checkmark">✓</span>
 
-        <span class="premium-label-container">
-          <img v-if="isPremium(entree)" src="/src/assets/star.png" alt="Premium" class="star-icon" />
+        <span v-if="isPremium(entree)" class="premium-label-container">
+          <img src="/src/assets/star.png" alt="Premium" class="star-icon" />
           <span class="premium-label">Premium Item + $1.50</span>
         </span>
 
@@ -45,7 +45,7 @@ export default {
       price: null,
       selectedSide: null,
       selectedEntree: null,
-      premiumEntrees: ["Black Pepper Sirloin Steak", "Honey Walnut Shrimp"], // Add premium entrees
+      premiumEntrees: [], // Will be populated dynamically
     }
   },
   computed: {
@@ -81,10 +81,39 @@ export default {
     },
     toggleEntree(entree) {
       this.selectedEntree = this.selectedEntree === entree ? null : entree
+      // Check if this entree is premium when toggled
+      this.checkPremiumStatus(entree)
+    },
+    async checkPremiumStatus(entree) {
+      try {
+        const entreeName = this.getEntreeName(entree);  // Get the entree name
+        const encodedEntreeName = encodeURIComponent(entreeName);  // Encode the name
+
+        // Remove trailing slash from the endpoint if it exists
+        const apiUrl = import.meta.env.VITE_API_ENDPOINT.replace(/\/$/, '');  // Ensures no trailing slash
+        const url = `${apiUrl}/ispremium/${encodedEntreeName}`;
+        
+        console.log(`Requesting URL: ${url}`);  // Log the constructed URL
+
+        const response = await axios.get(url);
+        console.log(response.data);  // Log the response
+
+        const isPremium = response.data.premium;
+
+        if (isPremium) {
+          this.premiumEntrees.push(entreeName);
+        } else {
+          const index = this.premiumEntrees.indexOf(entreeName);
+          if (index > -1) {
+            this.premiumEntrees.splice(index, 1);
+          }
+        }
+      } catch (error) {
+        console.error('Error checking premium status:', error.response ? error.response.data : error.message);
+      }
     },
     isPremium(entree) {
-      // Ensure we are checking if the entree name matches one in the premiumEntrees list.
-      return this.premiumEntrees.includes(this.getEntreeName(entree));
+      return this.premiumEntrees.includes(this.getEntreeName(entree)); // Check if the entree is in the premium list
     },
     addToCart() {
       if (this.canAddToCart) {
@@ -96,7 +125,7 @@ export default {
             let price = this.price;
 
             // Check if the selected entree is premium, adjust the price
-            if (this.isPremium(this.selectedEntree)) {
+            if (this.premiumEntrees.includes(this.getEntreeName(this.selectedEntree))) {
               price += 1.50; // Add $1.50 for premium items
             }
 
@@ -121,7 +150,7 @@ export default {
                   name: `Bowl (${sideName} + ${entreeName})`,
                   price: price,
                   transactionEntry: transactionEntry, // Include for further use
-                  isPremium: this.isPremium(this.selectedEntree),
+                  isPremium: this.premiumEntrees.includes(this.getEntreeName(this.selectedEntree)),
                 };
 
                 this.$emit('addToCart', item); // Emit the item to the parent
@@ -160,8 +189,6 @@ export default {
       let name = this.getSideName(side)
       if (!name) return null
       const fileName = `${name.toLowerCase().replace(/\s+/g, '')}.png`
-      const imagePath = `/src/assets/${fileName}`
-      // console.log('Image path:', imagePath)
       return new URL(`/src/assets/${fileName}`, import.meta.url).href;
     },
     getEntreeName(entree) {
@@ -177,8 +204,6 @@ export default {
       let name = this.getEntreeName(entree)
       if (!name) return null
       const fileName = `${name.toLowerCase().replace(/\s+/g, '')}.png`
-      const imagePath = `/src/assets/${fileName}`
-      // console.log('Image path:', imagePath)
       return new URL(`/src/assets/${fileName}`, import.meta.url).href;
     },
     handleImageError(event) {
@@ -192,6 +217,7 @@ export default {
   },
 }
 </script>
+
 
 <style scoped>
 .bowl {
