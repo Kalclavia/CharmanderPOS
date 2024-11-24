@@ -865,6 +865,33 @@ app.get("/ispremium/", (req, res) => {
     .catch((error) => res.status(500).json({ error: error.message }));
 });
 
+
+
+/**
+ * Gets the allergens for a specific food item by its name.
+ * @method GET /allergens/:name
+ * @param {string} name The name of the food item.
+ * @returns {string} The allergens associated with the food item.
+ */
+app.get("/allergens", (req, res) => {
+  const sql = "SELECT name, allergens FROM foods WHERE name != 'Default'";
+  
+  pool
+    .query(sql)
+    .then((query_res) => {
+      if (query_res.rows.length > 0) {
+        const allergens = query_res.rows.map(row => ({
+          name: row.name,
+          allergens: row.allergens || "No allergens specified"
+        }));
+        res.json(allergens); // Send all items with allergens
+      } else {
+        res.status(404).json({ error: "No food items found." });
+      }
+    })
+    .catch((error) => res.status(500).json({ error: error.message }));
+});
+
 var port = 3000;
 console.log(`Server is listening on localhost:${port}`);
 app.listen(3000);
