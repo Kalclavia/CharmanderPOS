@@ -44,7 +44,7 @@ export default {
       price: null,
       selectedSide: null,
       selectedEntrees: [], // Track selected entrees as an array
-      premiumEntrees: ["Black Pepper Sirloin Steak", "Honey Walnut Shrimp"], // Add premium entrees
+      premiumEntrees: [], // Add premium entrees
     }
   },
   computed: {
@@ -90,9 +90,35 @@ export default {
         this.selectedEntrees.push(entree)
       }
     },
+    async checkPremiumStatus() {
+      try {
+        
+
+        // Remove trailing slash from the endpoint if it exists
+        const apiUrl = import.meta.env.VITE_API_ENDPOINT.replace(/\/$/, '') // Ensures no trailing slash
+        const url = `${apiUrl}/ispremium/`
+
+        console.log(`Requesting URL: ${url}`) // Log the constructed URL
+
+        const response = await axios.get(url)
+        console.log(response.data) // Log the response
+        console.log('hello')
+        const isPremium = response.data.premium
+        for (let i = 0; i < response.data.length; i++) {
+          console.log(response.data[i])
+          this.premiumEntrees.push(response.data[i].name)
+        }
+       
+      } catch (error) {
+        console.error(
+          'Error checking premium status:',
+          error.response ? error.response.data : error.message,
+        )
+      }
+    },
     isPremium(entree) {
-  return this.premiumEntrees.includes(this.getEntreeName(entree));
-},
+      return this.premiumEntrees.includes(this.getEntreeName(entree)) // Check if the entree is in the premium list
+    },
 
 addToCart() {
   if (this.canAddToCart) {
@@ -198,6 +224,8 @@ addToCart() {
   mounted() {
     this.fetchMenuItems() // Fetch menu items when the component mounts
     this.fetchPrice()
+    this.checkPremiumStatus()
+
   },
 }
 </script>
