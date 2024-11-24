@@ -244,6 +244,7 @@ export default {
             'Content-Type': 'application/x-www-form-urlencoded',
           },
         }
+
         axios
           .post(
             import.meta.env.VITE_API_ENDPOINT + 'transaction',
@@ -286,6 +287,43 @@ export default {
                 parseInt(transactionCartItems[i][5]),
               )
               console.log(paramsTransactions)
+
+              let foodids = []
+
+              if (parseInt(transactionCartItems[i][2]) != 0) {
+                foodids.push(parseInt(transactionCartItems[i][2]))
+              }
+              if (parseInt(transactionCartItems[i][3]) != 0) {
+                foodids.push(parseInt(transactionCartItems[i][3]))
+              }
+              if (parseInt(transactionCartItems[i][4]) != 0) {
+                foodids.push(parseInt(transactionCartItems[i][4]))
+              }
+              if (parseInt(transactionCartItems[i][5]) != 0) {
+                foodids.push(parseInt(transactionCartItems[i][5]))
+              }
+
+              const paramsItemType = new URLSearchParams()
+              const configItemType = {
+                headers: {
+                  'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                params: paramsItemType,
+              }
+              paramsItemType.append(
+                'itemid',
+                parseInt(transactionCartItems[i][1]),
+              )
+              axios
+                .get(
+                  import.meta.env.VITE_API_ENDPOINT +
+                    'inventory/subtract/itemtypes',
+                  configItemType,
+                )
+                .then(res => {
+                  console.log(res.data)
+                })
+
               const configTransaction = {
                 headers: {
                   'Content-Type': 'application/x-www-form-urlencoded',
@@ -297,6 +335,30 @@ export default {
                   paramsTransactions,
                   configTransaction,
                 )
+                .then(() => {
+                  for (let i = 0; i < foodids.length; i++) {
+                    const paramsFoods = new URLSearchParams()
+                    paramsFoods.append('foodid', foodids[i])
+
+                    const configRecipe = {
+                      headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                      },
+                      params: paramsFoods,
+                    }
+                    console.log(paramsFoods)
+                    axios
+                      .get(
+                        import.meta.env.VITE_API_ENDPOINT +
+                          'inventory/subtract',
+                        configRecipe,
+                      )
+                      .then(res => {
+                        console.log(res.data)
+                      })
+                      .then(() => {})
+                  }
+                })
                 .then(res => {
                   this.readyTime = this.calculateReadyTime()
 

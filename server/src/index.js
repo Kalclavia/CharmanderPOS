@@ -148,6 +148,183 @@ app.get("/inventory", (req, res) => {
     .catch((error) => res.status(500).json({ error: error.message }));
 });
 
+app.get("/inventory/subtract", (req, res) => {
+  const { foodid } = req.query;
+  console.log(foodid);
+  pool
+    .query("SELECT ingredientid, quantity FROM recipes WHERE foodid = $1", [
+      foodid,
+    ])
+    .then((query_res) => {
+      let array = [];
+      for (let i = 0; i < query_res.rows.length; i++) {
+        console.log(query_res.rows[i]);
+        array.push(query_res.rows[i]);
+      }
+      return array;
+    })
+    .then((data) => {
+      for (let i = 0; i < data.length; i++) {
+        console.log(data[i].ingredientid);
+        console.log(data[i].quantity);
+        pool.query(
+          "UPDATE ingredients SET stock = stock - $1 WHERE ingredientid = $2",
+          [data[i].quantity, data[i].ingredientid]
+        );
+      }
+    })
+    .then(() => res.json("Updated the stock"))
+    .catch((error) => res.status(500).json({ error: error.message }));
+});
+
+app.get("/inventory/subtract/itemtypes", (req, res) => {
+  const { itemid } = req.query;
+  if (itemid == 1) {
+    // bowl
+    pool
+      .query(
+        "UPDATE ingredients SET stock = stock - 1 WHERE ingredientid = $1",
+        [itemid]
+      )
+      .then((query_res) => {
+        res.json("Updated the stock from an itemid");
+      })
+      .catch((error) => res.status(500).json({ error: error.message }));
+  }
+  if (itemid == 2) {
+    //plate gets takout tray
+    pool
+      .query(
+        "UPDATE ingredients SET stock = stock - 1 WHERE ingredientid = $1",
+        [itemid]
+      )
+      .then((query_res) => {
+        res.json("Updated the stock from an itemid");
+      })
+      .catch((error) => res.status(500).json({ error: error.message }));
+  }
+  if (itemid == 3) {
+    //bigger plate gets takout tray
+    pool
+      .query(
+        "UPDATE ingredients SET stock = stock - 1 WHERE ingredientid = $1",
+        [2]
+      )
+      .then((query_res) => {
+        res.json("Updated the stock from an itemid");
+      })
+      .catch((error) => res.status(500).json({ error: error.message }));
+  }
+  if (itemid == 10) {
+    //small
+    pool
+      .query(
+        "UPDATE ingredients SET stock = stock - 1 WHERE ingredientid = $1",
+        [7]
+      )
+      .query(
+        "UPDATE ingredients SET stock = stock - 1 WHERE ingredientid = $1",
+        [10]
+      )
+      .then((query_res) => {
+        res.json("Updated the stock from an itemid");
+      })
+      .catch((error) => res.status(500).json({ error: error.message }));
+  }
+  if (itemid == 11) {
+    //medium
+    pool
+      .query(
+        "UPDATE ingredients SET stock = stock - 1 WHERE ingredientid = $1",
+        [8]
+      )
+      .query(
+        "UPDATE ingredients SET stock = stock - 1 WHERE ingredientid = $1",
+        [10]
+      )
+      .then((query_res) => {
+        res.json("Updated the stock from an itemid");
+      })
+      .catch((error) => res.status(500).json({ error: error.message }));
+  }
+  if (itemid == 12) {
+    //large
+    pool
+      .query(
+        "UPDATE ingredients SET stock = stock - 1 WHERE ingredientid = $1",
+        [9]
+      )
+      .query(
+        "UPDATE ingredients SET stock = stock - 1 WHERE ingredientid = $1",
+        [10]
+      )
+      .then((query_res) => {
+        res.json("Updated the stock from an itemid");
+      })
+      .catch((error) => res.status(500).json({ error: error.message }));
+  }
+  if (itemid == 4) {
+    //small entree small box
+    pool
+      .query(
+        "UPDATE ingredients SET stock = stock - 1 WHERE ingredientid = $1",
+        [4]
+      )
+      .then((query_res) => {
+        res.json("Updated the stock from an itemid");
+      })
+      .catch((error) => res.status(500).json({ error: error.message }));
+  }
+  if (itemid == 5) {
+    //medium entree
+    pool
+      .query(
+        "UPDATE ingredients SET stock = stock - 1 WHERE ingredientid = $1",
+        [5]
+      )
+      .then((query_res) => {
+        res.json("Updated the stock from an itemid");
+      })
+      .catch((error) => res.status(500).json({ error: error.message }));
+  }
+  if (itemid == 6) {
+    //large entree
+    pool
+      .query(
+        "UPDATE ingredients SET stock = stock - 1 WHERE ingredientid = $1",
+        [6]
+      )
+      .then((query_res) => {
+        res.json("Updated the stock from an itemid");
+      })
+      .catch((error) => res.status(500).json({ error: error.message }));
+  }
+  if (itemid == 7) {
+    //medium side
+    pool
+      .query(
+        "UPDATE ingredients SET stock = stock - 1 WHERE ingredientid = $1",
+        [5]
+      )
+      .then((query_res) => {
+        res.json("Updated the stock from an itemid");
+      })
+      .catch((error) => res.status(500).json({ error: error.message }));
+  }
+  if (itemid == 8) {
+    //large side
+    pool
+      .query(
+        "UPDATE ingredients SET stock = stock - 1 WHERE ingredientid = $1",
+        [6]
+      )
+      .then((query_res) => {
+        res.json("Updated the stock from an itemid");
+      })
+      .catch((error) => res.status(500).json({ error: error.message }));
+  }
+});
+
 /**
  * Add new inventory item endpoint
  * @method POST /inventory/add
@@ -865,8 +1042,6 @@ app.get("/ispremium/", (req, res) => {
     .catch((error) => res.status(500).json({ error: error.message }));
 });
 
-
-
 /**
  * Gets the allergens for a specific food item by its name.
  * @method GET /allergens/:name
@@ -875,14 +1050,14 @@ app.get("/ispremium/", (req, res) => {
  */
 app.get("/allergens", (req, res) => {
   const sql = "SELECT name, allergens FROM foods WHERE name != 'Default'";
-  
+
   pool
     .query(sql)
     .then((query_res) => {
       if (query_res.rows.length > 0) {
-        const allergens = query_res.rows.map(row => ({
+        const allergens = query_res.rows.map((row) => ({
           name: row.name,
-          allergens: row.allergens || "No allergens specified"
+          allergens: row.allergens || "No allergens specified",
         }));
         res.json(allergens); // Send all items with allergens
       } else {
