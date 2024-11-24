@@ -12,9 +12,11 @@
     <salesBarChart />
   </div>
   <div v-if="XZBool" style="padding-top: 20px">
-    <XZChart/>
+    <XZChart
+    
+    />
   </div>
-  <div class="buttons"><button>Toggle Chart Style</button></div>
+  <!-- <div class="buttons"><button>Toggle Chart Style</button></div> -->
 </template>
 
 <script>
@@ -100,6 +102,12 @@ export default {
           console.error('Error fetching sales:', error)
         })
     },
+    setLabelX(){
+      this.XZChart
+    },
+    setLabelZ(){
+
+    }
   },
   mounted() {},
 }

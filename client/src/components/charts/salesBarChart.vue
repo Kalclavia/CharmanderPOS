@@ -94,7 +94,6 @@ export default {
   methods: {
     fetchData() {
       this.showChart = true
-      console.log('Fetching Data...')
       console.log('From', this.fromDate, 'End:', this.toDate)
       const config = {
         headers: {
@@ -207,7 +206,9 @@ export default {
       this.showChart = true
     },
   },
-  mounted() {},
+  mounted() {
+    
+  },
 }
 </script>
 

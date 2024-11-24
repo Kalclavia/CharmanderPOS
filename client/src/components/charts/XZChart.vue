@@ -2,13 +2,6 @@
     <div v-if="showChart">
       <Bar id="my-chart-id" :options="chartOptions" :data="chartData" />
     </div>
-    <div class="buttons">
-    <div><label for="from">From:</label>
-      <input type="date" v-model="fromDate" /></div>
-      <div><label for="to">To:</label>
-        <input type="date" v-model="toDate" /></div>
-      <button style="button" @click="fetchData()">Load Data</button>
-    </div>
     <div class = "buttons">
       <button style="button" @click="setEmployee()">By Employee</button>
       <button style="button" @click="setHour()">By Hour</button>
@@ -33,16 +26,16 @@
   export default {
     name: 'BarChart',
     components: { Bar },
+    props: {
+      titleLabel: 'Z-Report',
+    },
     data() {
       return {
         fromDate: '',
         toDate: '',
         showChart: true,
-        food_side: [],
-        food_entree: [],
-        food_drink: [],
-        food_appetizer: [],
-        food_desert: [],
+        enployee_sales: [],
+        hour_sales: [],
   
         chartData: {
           labels: [],
@@ -93,18 +86,45 @@
       fetchData() {
         this.showChart = false
       },
+      setDate(){
+        const today = new Date();
+        this.fromDate = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+(today.getDate());
+        this.toDate= today.getFullYear()+'-'+(today.getMonth()+1)+'-'+(today.getDate()+1);
+      },
+      fetchData() {
+      this.setDate()  
+      this.showChart = true
+      console.log('From', this.fromDate, 'End:', this.toDate)
+      const config = {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        params: { startDate: this.fromDate, endDate: this.toDate },
+      }
+      axios
+        .get(
+          import.meta.env.VITE_API_ENDPOINT + 'report/transactionBreakDown',
+          config,
+        )
+        .then(response => {
+          console.log(response.data)
+        })
+        .catch(error => {
+          console.error('Error fetching sales transactions:', error)
+        })
+    },
       setEmployee(){
-        this.chartData.labels = Object.keys(this.food_entree);
-        this.chartData.datasets[0].data = Object.values(this.food_entree);
-        console.log("Food Names:", this.chartData.labels);
-        console.log("Food Counts:", this.chartData.datasets[0].data);
+        //set labels to employeenames and data by sales of each employee today
+        
       },
       setHour(){
-        this.chartData.labels = Object.keys(this.food_drink);
-        this.chartData.datasets[0].data = Object.values(this.food_drink);
+        //set labels to each hour in data set ex. 10am - 12am
+        //set data set to sales in each hour
       },
     },
-    mounted() {},
+    mounted() {
+      this.fetchData()
+    },
   }
   </script>
   
