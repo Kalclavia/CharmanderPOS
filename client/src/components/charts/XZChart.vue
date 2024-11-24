@@ -27,7 +27,10 @@
     name: 'BarChart',
     components: { Bar },
     props: {
-      titleLabel: 'Z-Report',
+    datasetLabel: {
+      type: String,
+      default: 'X-Report',
+    },
     },
     data() {
       return {
@@ -41,7 +44,7 @@
           labels: [],
           datasets: [
             {
-              label: 'Daily Report',
+              label: this.datasetLabel,
               data: [],
               backgroundColor: '#6b140e',
               borderColor: 'black',
@@ -81,6 +84,12 @@
           },
         },
       }
+    },
+    watch: {
+    datasetLabel(newLabel) {
+      this.chartData.datasets[0].label = newLabel; 
+      this.chartData = { ...this.chartData }; 
+      },
     },
     methods: {
       fetchData() {

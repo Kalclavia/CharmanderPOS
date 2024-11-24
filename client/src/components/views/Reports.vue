@@ -12,9 +12,7 @@
     <salesBarChart />
   </div>
   <div v-if="XZBool" style="padding-top: 20px">
-    <XZChart
-    
-    />
+    <XZChart  :datasetLabel="chartLabel" />
   </div>
   <!-- <div class="buttons"><button>Toggle Chart Style</button></div> -->
 </template>
@@ -39,6 +37,7 @@ export default {
       employeeTransaction: [], 
       ingredientsByDateRange: [],
       salesByDateRange: [],
+      chartLabel: 'X-Report',
     }
   },
   methods: {
@@ -103,11 +102,14 @@ export default {
         })
     },
     setLabelX(){
+      this.chartLabel = 'X-Report';
       this.XZBool = true;
     },
     setLabelZ(){
       const hour =new Date().getHours();
+      console.log(hour)
       if(hour>=22){
+        this.chartLabel = 'Z-Report';
         this.XZBool = true;
       }
       else{
