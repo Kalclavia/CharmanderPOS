@@ -2,29 +2,32 @@
   <div class="menu-board">
     <component
       v-if="item === 'Sides'"
-      :is="'ALaCarte'"
+      :is="'Sides'"
       @selectItem="selectItem"
     />
     <component
       v-if="item === 'Entrees'"
-      :is="'ALaCarte'"
+      :is="'Entrees'"
       @selectItem="selectItem"
     />
     <component
       v-if="item === 'Appetizers'"
       :is="'Appetizers'"
       @selectItem="selectItem"
+      :showHeader="false"
     />
     <component
       v-if="item === 'Drinks'"
       :is="'Drinks'"
       @selectItem="selectItem"
+      :showHeader="false"
     />
   </div>
 </template>
 
 <script>
-import ALaCarte from './menu/ALaCarte.vue'
+import Sides from './menu/Sides.vue'
+import Entrees from './menu/Entrees.vue'
 import Appetizers from './menu/Appetizers.vue'
 import Drinks from './menu/Drinks.vue'
 
@@ -40,7 +43,8 @@ export default {
     },
   },
   components: {
-    ALaCarte,
+    Sides,
+    Entrees,
     Appetizers,
     Drinks,
   },

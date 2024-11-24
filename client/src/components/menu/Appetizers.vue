@@ -1,6 +1,6 @@
 <template>
   <div class="appetizer">
-    <h2>Pick 1 or more Appetizers</h2>
+    <h2 v-if="showHeader">Pick 1 or more Appetizers</h2>
     <div class="grid">
       <button
         v-for="appetizer in appetizers"
@@ -18,11 +18,11 @@
         />
         <span>{{ getAppetizerName(appetizer) }}</span>
         <span v-if="isOutOfStock(appetizer)" class="out-of-stock-label">Out of Stock</span>
-        <span v-if="isSelected(appetizer)" class="checkmark">✓</span>
+        <span v-if="isSelected(appetizer) && showHeader" class="checkmark">✓</span>
       </button>
     </div>
     <!-- Add to Cart Button -->
-    <button class="add-to-cart" @click="addToCart" :disabled="!canAddToCart">
+    <button v-if="showHeader" class="add-to-cart" @click="addToCart" :disabled="!canAddToCart">
       Add to Cart
     </button>
   </div>
@@ -34,6 +34,10 @@ import axios from 'axios'
 export default {
   name: 'Appetizer',
   props: {
+    showHeader: {
+      type: Boolean,
+      default: true
+    },
     outOfStockItems: {
       type: Object,
       default: () => ({}), // Out-of-stock data passed from parent

@@ -1,5 +1,6 @@
 <template>
     <div class="alacarte">
+        <h2 v-if="showHeader">Pick 1 or more Sides</h2>
         <div class="grid">
             <button v-for="side in sides" :key="side.name" 
                 @click="toggleSides(side)" 
@@ -15,29 +16,6 @@
                 <span v-if="isOutOfStock(side, 'Side')" class="out-of-stock-label">Out of Stock</span>
             </button>
         </div>
-
-        <!-- Size Selection Modal -->
-        <div v-if="showSizeModal" class="size-modal">
-            <h3 class="modal-title">Select Size for {{ currentItemType === 'side' ? getSideName(currentItem) :
-                getEntreeName(currentItem) }}</h3>
-            <div v-if="currentItemType === 'side'">
-                <button v-for="size in sizeOptions.side" :key="size.name" @click="selectSize(size, 'side')">
-                    {{ size.name }} - ${{ size.price ? size.price.toFixed(2) : 'Loading...' }}
-                </button>
-            </div>
-            <div v-else>
-                <button v-for="size in sizeOptions.entree" :key="size.name" @click="selectSize(size, 'entree')">
-                    {{ size.name }} - ${{ size.price ? size.price.toFixed(2) : 'Loading...' }}
-                </button>
-            </div>
-
-            <button @click="cancelSizeSelection" class="close-button">✖</button>
-        </div>
-
-        <!-- Add to Cart Button -->
-        <button v-if="showHeader" class="add-to-cart" @click="addToCart" :disabled="!canAddToCart">
-            Add to Cart
-        </button>
     </div>
 </template>
 
@@ -50,10 +28,6 @@ export default {
         outOfStockItems: {
             type: Object,
             default: () => ({}), // Out-of-stock data passed from MainContent.vue
-        },
-        showHeader: {
-            type: Boolean,
-            default: true
         },
     },
     data() {

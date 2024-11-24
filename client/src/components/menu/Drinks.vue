@@ -1,6 +1,6 @@
 <template>
   <div class="drink">
-    <h2>Pick 1 or more Drinks</h2>
+    <h2 v-if="showHeader">Pick 1 or more Drinks</h2>
     <div class="grid">
       <button v-for="drink in drinks" :key="drink" @click="toggleDrinks(drink)" :disabled="isOutOfStock(drink)"
         :class="{ selected: isSelected(drink), 'out-of-stock': isOutOfStock(drink) }">
@@ -15,7 +15,7 @@
       </button>
     </div>
     <!-- Size Selection Modal -->
-    <div v-if="showSizeModal" class="size-modal">
+    <div v-if="showSizeModal && showHeader" class="size-modal">
       <h3 class="modal-title">
         Select Size for {{ getDrinkName(currentItem) }}
       </h3>
@@ -33,7 +33,7 @@
       <button @click="cancelSizeSelection" class="close-button">✖</button>
     </div>
     <!-- Add to Cart Button -->
-    <button class="add-to-cart" @click="addToCart" :disabled="!canAddToCart">
+    <button v-if="showHeader" class="add-to-cart" @click="addToCart" :disabled="!canAddToCart">
       Add to Cart
     </button>
   </div>
@@ -45,6 +45,10 @@ import axios from 'axios'
 export default {
   name: 'Drink',
   props: {
+    showHeader: {
+      type: Boolean,
+      default: true
+    },
     outOfStockItems: {
       type: Object,
       default: () => ({}), // Out-of-stock data passed from MainContent.vue
