@@ -2,19 +2,38 @@
   <div class="bowl">
     <h2>Pick 1 Side</h2>
     <div class="grid">
-      <button v-for="side in sides" :key="side" @click="toggleSide(side)" :class="{ selected: selectedSide === side }">
-        <img v-if="getSideImage(side)" :src="getSideImage(side)" :alt="getSideName(side)" class="side-image"
-          @error="handleImageError" />
+      <button
+        v-for="side in sides"
+        :key="side"
+        @click="toggleSide(side)"
+        :class="{ selected: selectedSide === side }"
+      >
+        <img
+          v-if="getSideImage(side)"
+          :src="getSideImage(side)"
+          :alt="getSideName(side)"
+          class="side-image"
+          @error="handleImageError"
+        />
         <span>{{ getSideName(side) }}</span>
         <span v-if="selectedSide === side" class="checkmark">✓</span>
       </button>
     </div>
     <h2>Pick 1 Entree</h2>
     <div class="grid">
-      <button v-for="entree in entrees" :key="entree" @click="toggleEntree(entree)"
-        :class="{ selected: selectedEntree === entree }">
-        <img v-if="getEntreeImage(entree)" :src="getEntreeImage(entree)" :alt="getEntreeName(entree)"
-          class="entree-image" @error="handleImageError" />
+      <button
+        v-for="entree in entrees"
+        :key="entree"
+        @click="toggleEntree(entree)"
+        :class="{ selected: selectedEntree === entree }"
+      >
+        <img
+          v-if="getEntreeImage(entree)"
+          :src="getEntreeImage(entree)"
+          :alt="getEntreeName(entree)"
+          class="entree-image"
+          @error="handleImageError"
+        />
         <span>{{ getEntreeName(entree) }}</span>
         <span v-if="selectedEntree === entree" class="checkmark">✓</span>
 
@@ -22,7 +41,6 @@
           <img src="/src/assets/star.png" alt="Premium" class="star-icon" />
           <span class="premium-label">Premium Item + $1.50</span>
         </span>
-
       </button>
     </div>
 
@@ -70,10 +88,12 @@ export default {
     },
     async fetchPrice() {
       try {
-        const response = await axios.get(import.meta.env.VITE_API_ENDPOINT + 'price/Bowl');
-        this.price = response.data.price; // Assign the price
+        const response = await axios.get(
+          import.meta.env.VITE_API_ENDPOINT + 'price/Bowl',
+        )
+        this.price = response.data.price // Assign the price
       } catch (error) {
-        console.error('Error fetching price:', error);
+        console.error('Error fetching price:', error)
       }
     },
     toggleSide(side) {
@@ -82,94 +102,118 @@ export default {
     toggleEntree(entree) {
       this.selectedEntree = this.selectedEntree === entree ? null : entree
       // Check if this entree is premium when toggled
-      this.checkPremiumStatus(entree)
+      // this.checkPremiumStatus(entree)
     },
-    async checkPremiumStatus(entree) {
+    async checkPremiumStatus() {
       try {
-        const entreeName = this.getEntreeName(entree);  // Get the entree name
-        const encodedEntreeName = encodeURIComponent(entreeName);  // Encode the name
+        // const entreeName = this.getEntreeName(entree) // Get the entree name
+        // const encodedEntreeName = encodeURIComponent(entreeName) // Encode the name
 
         // Remove trailing slash from the endpoint if it exists
-        const apiUrl = import.meta.env.VITE_API_ENDPOINT.replace(/\/$/, '');  // Ensures no trailing slash
-        const url = `${apiUrl}/ispremium/${encodedEntreeName}`;
-        
-        console.log(`Requesting URL: ${url}`);  // Log the constructed URL
+        const apiUrl = import.meta.env.VITE_API_ENDPOINT.replace(/\/$/, '') // Ensures no trailing slash
+        const url = `${apiUrl}/ispremium/`
 
-        const response = await axios.get(url);
-        console.log(response.data);  // Log the response
+        console.log(`Requesting URL: ${url}`) // Log the constructed URL
 
-        const isPremium = response.data.premium;
-
-        if (isPremium) {
-          this.premiumEntrees.push(entreeName);
-        } else {
-          const index = this.premiumEntrees.indexOf(entreeName);
-          if (index > -1) {
-            this.premiumEntrees.splice(index, 1);
-          }
+        const response = await axios.get(url)
+        console.log(response.data) // Log the response
+        console.log('hello')
+        const isPremium = response.data.premium
+        for (let i = 0; i < response.data.length; i++) {
+          console.log(response.data[i])
+          this.premiumEntrees.push(response.data[i].name)
         }
+        // if (isPremium) {
+        //   this.premiumEntrees.push(entreeName)
+        // } else {
+        //   const index = this.premiumEntrees.indexOf(entreeName)
+        //   if (index > -1) {
+        //     this.premiumEntrees.splice(index, 1)
+        //   }
+        // }
       } catch (error) {
-        console.error('Error checking premium status:', error.response ? error.response.data : error.message);
+        console.error(
+          'Error checking premium status:',
+          error.response ? error.response.data : error.message,
+        )
       }
     },
     isPremium(entree) {
-      return this.premiumEntrees.includes(this.getEntreeName(entree)); // Check if the entree is in the premium list
+      return this.premiumEntrees.includes(this.getEntreeName(entree)) // Check if the entree is in the premium list
     },
     addToCart() {
       if (this.canAddToCart) {
         // Fetch the base item ID for "Bowl" dynamically
         axios
           .get(import.meta.env.VITE_API_ENDPOINT + `itemid/Bowl`)
-          .then((response) => {
-            const baseItemID = response.data.itemID; // Dynamically fetched base item ID
-            let price = this.price;
+          .then(response => {
+            const baseItemID = response.data.itemID // Dynamically fetched base item ID
+            let price = this.price
 
             // Check if the selected entree is premium, adjust the price
-            if (this.premiumEntrees.includes(this.getEntreeName(this.selectedEntree))) {
-              price += 1.50; // Add $1.50 for premium items
+            if (
+              this.premiumEntrees.includes(
+                this.getEntreeName(this.selectedEntree),
+              )
+            ) {
+              price += 1.5 // Add $1.50 for premium items
             }
 
             // Get the item names
-            const sideName = this.getSideName(this.selectedSide);
-            const entreeName = this.getEntreeName(this.selectedEntree);
+            const sideName = this.getSideName(this.selectedSide)
+            const entreeName = this.getEntreeName(this.selectedEntree)
 
             // Fetch foodIDs from the database and push to transactionCart
             Promise.all([
-              axios.get(import.meta.env.VITE_API_ENDPOINT + `foodid/${encodeURIComponent(sideName)}`),
-              axios.get(import.meta.env.VITE_API_ENDPOINT + `foodid/${encodeURIComponent(entreeName)}`),
+              axios.get(
+                import.meta.env.VITE_API_ENDPOINT +
+                  `foodid/${encodeURIComponent(sideName)}`,
+              ),
+              axios.get(
+                import.meta.env.VITE_API_ENDPOINT +
+                  `foodid/${encodeURIComponent(entreeName)}`,
+              ),
             ])
               .then(([sideResponse, entreeResponse]) => {
-                const sideFoodID = sideResponse.data.foodID;
-                const entreeFoodID = entreeResponse.data.foodID;
+                const sideFoodID = sideResponse.data.foodID
+                const entreeFoodID = entreeResponse.data.foodID
 
                 // Construct the transactionCart entry
-                const transactionEntry = [baseItemID, sideFoodID, entreeFoodID, 0, 0];
+                const transactionEntry = [
+                  baseItemID,
+                  sideFoodID,
+                  entreeFoodID,
+                  0,
+                  0,
+                ]
 
                 // Emit the item to the parent (cart)
                 const item = {
                   name: `Bowl (${sideName} + ${entreeName})`,
                   price: price,
                   transactionEntry: transactionEntry, // Include for further use
-                  isPremium: this.premiumEntrees.includes(this.getEntreeName(this.selectedEntree)),
-                };
+                  isPremium: this.premiumEntrees.includes(
+                    this.getEntreeName(this.selectedEntree),
+                  ),
+                }
 
-                this.$emit('addToCart', item); // Emit the item to the parent
-                this.$emit('addToTransactionCart', transactionEntry);
-                console.log('Transaction Added: ', transactionEntry);
+                this.$emit('addToCart', item) // Emit the item to the parent
+                this.$emit('addToTransactionCart', transactionEntry)
+                console.log('Transaction Added: ', transactionEntry)
 
                 // Reset selections
-                this.selectedSide = null;
-                this.selectedEntree = null;
+                this.selectedSide = null
+                this.selectedEntree = null
               })
-              .catch((error) => {
-                console.error('Error fetching food IDs:', error);
-                alert('Cannot add to transaction cart.');
-              });
+              .catch(error => {
+                console.error('Error fetching food IDs:', error)
+                alert('Cannot add to transaction cart.')
+              })
           })
-          .catch((error) => {
-            console.error('Error fetching base item ID:', error);
-            alert('Cannot fetch base item ID.');
-          });
+          .catch(error => {
+            console.error('Error fetching base item ID:', error)
+            alert('Cannot fetch base item ID.')
+          })
       }
     },
     selectItem(item) {
@@ -189,7 +233,7 @@ export default {
       let name = this.getSideName(side)
       if (!name) return null
       const fileName = `${name.toLowerCase().replace(/\s+/g, '')}.png`
-      return new URL(`/src/assets/${fileName}`, import.meta.url).href;
+      return new URL(`/src/assets/${fileName}`, import.meta.url).href
     },
     getEntreeName(entree) {
       if (typeof entree === 'string') {
@@ -204,7 +248,7 @@ export default {
       let name = this.getEntreeName(entree)
       if (!name) return null
       const fileName = `${name.toLowerCase().replace(/\s+/g, '')}.png`
-      return new URL(`/src/assets/${fileName}`, import.meta.url).href;
+      return new URL(`/src/assets/${fileName}`, import.meta.url).href
     },
     handleImageError(event) {
       console.error('Image failed to load:', event.target.src)
@@ -212,12 +256,12 @@ export default {
     },
   },
   mounted() {
-    this.fetchMenuItems(); // Fetch menu items when the component mounts
-    this.fetchPrice();
+    this.fetchMenuItems() // Fetch menu items when the component mounts
+    this.fetchPrice()
+    this.checkPremiumStatus()
   },
 }
 </script>
-
 
 <style scoped>
 .bowl {
@@ -337,8 +381,6 @@ button:hover {
   justify-content: center;
   /* Center the icon and label horizontally */
 }
-
-
 
 .premium-label {
   visibility: hidden;

@@ -834,33 +834,30 @@ app.get("/foodid/:name", (req, res) => {
     .catch((error) => res.status(500).json({ error: error.message }));
 });
 
-
 /**
  * Checks if a food item is premium based on its name.
  * @method GET /ispremium/:name
  * @param {string} name The name of the food item.
  * @returns {boolean} A response indicating whether the item is premium.
  */
-app.get("/ispremium/:name", (req, res) => {
-  const itemName = req.params.name;
-  if (!itemName) {
-    return res.status(400).json({ error: "Item name is required." });
-  }
-
-  const sql = "SELECT premium FROM foods WHERE name = $1";
-
-  pool.query(sql, [itemName])
+app.get("/ispremium/", (req, res) => {
+  // const itemName = req.params.name;
+  // if (!itemName) {
+  //   return res.status(400).json({ error: "Item name is required." });
+  // }
+  const sql =
+    "SELECT name FROM foods WHERE name != 'Default' AND premium = true";
+  pool
+    .query(sql)
     .then((query_res) => {
       if (query_res.rows.length > 0) {
-        const foodItem = query_res.rows[0];
-        res.json({ premium: foodItem.premium === "TRUE" });
+        res.json(query_res.rows);
       } else {
         res.status(404).json({ error: "Food item not found." });
       }
     })
     .catch((error) => res.status(500).json({ error: error.message }));
 });
-
 
 var port = 3000;
 console.log(`Server is listening on localhost:${port}`);
