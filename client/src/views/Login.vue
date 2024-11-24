@@ -1,9 +1,9 @@
 <!-- v-model: holds the variable, v-on: what to do when enter key is pressed -->
 <script setup>
-// import { decodeCredential } from 'vue3-google-login'
+import { decodeCredential } from 'vue3-google-login'
 import { ref } from 'vue'
 import axios from 'axios'
-// import VueCookies from 'vue-cookies'
+import VueCookies from 'vue-cookies'
 import router from '../router'
 
 const employeeData = ref([])
