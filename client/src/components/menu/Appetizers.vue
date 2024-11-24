@@ -5,8 +5,9 @@
       <button
         v-for="appetizer in appetizers"
         :key="appetizer"
-        @click="toggleAppetizer(appetizer)"
-        :class="{ selected: isSelected(appetizer) }"
+        :disabled="isOutOfStock(appetizer)"
+        @click="!isOutOfStock(appetizer) && toggleAppetizer(appetizer)"
+        :class="{ selected: isSelected(appetizer), 'out-of-stock': isOutOfStock(appetizer) }"
       >
         <img
           v-if="getAppetizerImage(appetizer)"
@@ -16,6 +17,7 @@
           @error="handleImageError"
         />
         <span>{{ getAppetizerName(appetizer) }}</span>
+        <span v-if="isOutOfStock(appetizer)" class="out-of-stock-label">Out of Stock</span>
         <span v-if="isSelected(appetizer)" class="checkmark">✓</span>
       </button>
     </div>
@@ -31,6 +33,12 @@ import axios from 'axios'
 
 export default {
   name: 'Appetizer',
+  props: {
+    outOfStockItems: {
+      type: Object,
+      default: () => ({}), // Out-of-stock data passed from parent
+    },
+  },
   data() {
     return {
       appetizers: [],
@@ -63,6 +71,10 @@ export default {
       } catch (error) {
         console.error('Error fetching price:', error)
       }
+    },
+    isOutOfStock(appetizer) {
+      const appetizerName = this.getAppetizerName(appetizer);
+      return this.outOfStockItems.Appetizer?.includes(appetizerName) || false;
     },
     toggleAppetizer(appetizer) {
       const index = this.selectedAppetizers.indexOf(appetizer)
@@ -284,5 +296,17 @@ button:hover {
   color: white;
   font-size: 12px;
   border-radius: 12px;
+}
+
+.out-of-stock {
+  background-color: #ccc;
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+.out-of-stock-label {
+  color: red;
+  font-size: 0.9em;
+  font-weight: bold;
 }
 </style>

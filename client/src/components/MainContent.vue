@@ -7,12 +7,10 @@
                 ({{ formatPrice(prices[item]) }})
             </span>
         </h2>
-        <component v-if="item === 'Appetizers'" :is="'Appetizer'" @addToCart="$emit('addToCart', $event)" @addToTransactionCart="$emit('addToTransactionCart', $event)" />
-        <component v-if="item === 'Bowl'" :is="'Bowl'" @addToCart="$emit('addToCart', $event)" @addToTransactionCart="$emit('addToTransactionCart', $event)" />
-        <component v-if="item === 'Plate'" :is="'Plate'" @addToCart="$emit('addToCart', $event)" @addToTransactionCart="$emit('addToTransactionCart', $event)" />
-        <component v-if="item === 'Bigger Plate'" :is="'BiggerPlate'" @addToCart="$emit('addToCart', $event)" @addToTransactionCart="$emit('addToTransactionCart', $event)" />
-        <component v-if="item === 'Drinks'" :is="'Drink'" @addToCart="$emit('addToCart', $event)" @addToTransactionCart="$emit('addToTransactionCart', $event)" />
-        <component v-if="item === 'A La Carte'" :is="'ALaCarte'" @addToCart="$emit('addToCart', $event)" @addToTransactionCart="$emit('addToTransactionCart', $event)" />
+        <div v-if="item">
+            <component :is="getComponentName(item)" @addToCart="$emit('addToCart', $event)"
+                @addToTransactionCart="$emit('addToTransactionCart', $event)" :outOfStockItems="outOfStockItems" />
+        </div>
 
         <button @click="showAllergenModal" class="allergen-button">Allergens</button>
 
@@ -61,7 +59,8 @@ export default {
             },
             isMenuBarCollapsed: false,
             showAllergenList: false,
-            allergenList: {}
+            allergenList: {},
+            outOfStockItems: {}, // Stores out-of-stock status for each menu item
         };
     },
     components: {
@@ -110,6 +109,61 @@ export default {
             }
             this.showAllergenList = true;
         },
+        async validateInventory() {
+            try {
+                const categories = ['Appetizer', 'Drink', 'Entree', 'Side'];
+                const outOfStock = {};
+
+                for (const category of categories) {
+                    // Fetch menu items for each category
+                    const response = await axios.get(import.meta.env.VITE_API_ENDPOINT + `menu/${encodeURIComponent(category)}`);
+                    const menuItems = response.data;
+
+                    outOfStock[category] = [];
+
+                    for (const item of menuItems) {
+                        const recipeResponse = await axios.get(import.meta.env.VITE_API_ENDPOINT + `recipe/${encodeURIComponent(item)}`);
+                        const recipe = recipeResponse.data;
+                        // console.log(`Recipe of ${item}: `, recipe);
+
+                        let isOutOfStock = false;
+
+                        // Check stock for each ingredient in the recipe
+                        for (const ingredient of recipe) {
+                            // console.log('Current Ingredient: ', ingredient);
+                            const inventoryResponse = await axios.get(import.meta.env.VITE_API_ENDPOINT + `inventory/${ingredient.name}`);
+                            // console.log('Inventory of Current Ingredient: ', inventoryResponse);
+                            const stock = inventoryResponse.data.stock;
+
+                            if (stock < ingredient.quantity) {
+                                isOutOfStock = true;
+                                break;
+                            }
+                        }
+
+                        if (isOutOfStock) {
+                            outOfStock[category].push(item);
+                        }
+                    }
+                }
+
+                this.outOfStockItems = outOfStock;
+                console.log('Out of stock items: ', this.outOfStockItems);
+            } catch (error) {
+                console.error('Error validating inventory:', error);
+            }
+        },
+        getComponentName(item) {
+            switch (item) {
+                case 'Appetizers': return 'Appetizer';
+                case 'Bowl': return 'Bowl';
+                case 'Plate': return 'Plate';
+                case 'Bigger Plate': return 'BiggerPlate';
+                case 'Drinks': return 'Drink';
+                case 'A La Carte': return 'ALaCarte';
+                default: return null;
+            }
+        },
         formatPrice(price) {
             return price !== null ? `$${price.toFixed(2)}` : 'Loading...';
         },
@@ -124,6 +178,7 @@ export default {
     mounted() {
         this.fetchPrices();
         this.fetchAllAllergens();
+        this.validateInventory();
     },
 };
 </script>

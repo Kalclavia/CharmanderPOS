@@ -2,22 +2,26 @@
   <div class="biggerplate">
     <h2>Pick 1 Side</h2>
     <div class="grid">
-      <button v-for="side in sides" :key="side" @click="selectSide(side)" :class="{ selected: selectedSide === side }">
+      <button v-for="side in sides" :key="side" @click="toggleSide(side)" :disabled="isOutOfStock(side, 'Side')"
+        :class="{ selected: selectedSide === side, 'out-of-stock': isOutOfStock(side, 'Side') }">
         <img v-if="getSideImage(side)" :src="getSideImage(side)" :alt="getSideName(side)" class="side-image"
           @error="handleImageError" />
         <span>{{ getSideName(side) }}</span>
+        <span v-if="isOutOfStock(side, 'Side')" class="out-of-stock-label">Out of Stock</span>
         <span v-if="selectedSide === side" class="checkmark">✓</span>
       </button>
     </div>
 
     <h2>Pick 3 Entrees</h2>
     <div class="grid">
-      <button v-for="entree in entrees" :key="entree" @click="selectEntree(entree)"
-        :class="{ selected: selectedEntrees.includes(entree) }">
+      <button v-for="entree in entrees" :key="entree" @click="toggleEntree(entree)"
+        :disabled="isOutOfStock(entree, 'Entree')"
+        :class="{ selected: selectedEntrees === entree, 'out-of-stock': isOutOfStock(entree, 'Entree') }">
         <img v-if="getEntreeImage(entree)" :src="getEntreeImage(entree)" :alt="getEntreeName(entree)"
           class="entree-image" @error="handleImageError" />
         <span>{{ getEntreeName(entree) }}</span>
-        <span v-if="selectedEntrees.includes(entree)" class="checkmark">✓</span>
+        <span v-if="isOutOfStock(entree, 'Entree')" class="out-of-stock-label">Out of Stock</span>
+        <span v-if="selectedEntrees === entree" class="checkmark">✓</span>
         <span class="premium-label-container">
           <img v-if="isPremium(entree)" src="/src/assets/star.png" alt="Premium" class="star-icon" />
           <span class="premium-label">Premium Item + $1.50</span>
@@ -36,6 +40,12 @@ import axios from 'axios' // Make sure to install axios if you haven't already
 
 export default {
   name: 'BiggerPlate',
+  props: {
+    outOfStockItems: {
+      type: Object,
+      default: () => ({}), // Out-of-stock data passed from MainContent.vue
+    },
+  },
   data() {
     return {
       sides: [],
@@ -76,6 +86,9 @@ export default {
       } catch (error) {
         console.error('Error fetching price:', error);
       }
+    },
+    isOutOfStock(item, category) {
+      return this.outOfStockItems[category]?.includes(this.getSideName(item) || this.getEntreeName(item));
     },
     selectSide(side) {
       // Select one side and deselect the others
@@ -387,5 +400,17 @@ button:hover {
 
 .premium-label-container:hover .premium-label {
   visibility: visible;
+}
+
+.out-of-stock {
+  background-color: #ccc;
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+.out-of-stock-label {
+  color: red;
+  font-size: 0.9em;
+  font-weight: bold;
 }
 </style>

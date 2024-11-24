@@ -2,8 +2,10 @@
     <div class="alacarte">
         <h2>Pick 1 or more Sides</h2>
         <div class="grid">
-            <button v-for="side in sides" :key="side.name" @click="toggleSides(side)"
-                :class="{ selected: isSelected(side, 'side') }">
+            <button v-for="side in sides" :key="side.name" 
+                @click="toggleSides(side)" 
+                :disabled="isOutOfStock(side, 'Side')" 
+                :class="{ 'out-of-stock': isOutOfStock(side, 'Side') }">
                 <img v-if="getSideImage(side)" :src="getSideImage(side)" :alt="getSideName(side)" class="side-image"
                     @error="handleImageError" />
                 <span>{{ getSideName(side) }}</span>
@@ -11,13 +13,16 @@
                 <span v-if="getSelectedSize(side, 'side')" class="size-tag">
                     {{ getSelectedSize(side, 'side') }}
                 </span>
+                <span v-if="isOutOfStock(side, 'Side')" class="out-of-stock-label">Out of Stock</span>
             </button>
         </div>
 
         <h2>Pick 1 or more Entrees</h2>
         <div class="grid">
-            <button v-for="entree in entrees" :key="entree.name" @click="toggleEntrees(entree)"
-                :class="{ selected: isSelected(entree, 'entree') }">
+            <button v-for="entree in entrees" :key="entree.name" 
+                @click="toggleEntrees(entree)" 
+                :disabled="isOutOfStock(entree, 'Entree')" 
+                :class="{ 'out-of-stock': isOutOfStock(entree, 'Entree') }">
                 <img v-if="getEntreeImage(entree)" :src="getEntreeImage(entree)" :alt="getEntreeName(entree)"
                     class="entree-image" @error="handleImageError" />
                 <span>{{ getEntreeName(entree) }}</span>
@@ -25,10 +30,7 @@
                 <span v-if="getSelectedSize(entree, 'entree')" class="size-tag">
                     {{ getSelectedSize(entree, 'entree') }}
                 </span>
-                <span class="premium-label-container">
-                    <img v-if="isPremium(entree)" src="/src/assets/star.png" alt="Premium" class="star-icon" />
-                    <span class="premium-label">Premium Item</span>
-                </span>
+                <span v-if="isOutOfStock(entree, 'Entree')" class="out-of-stock-label">Out of Stock</span>
             </button>
         </div>
 
@@ -62,6 +64,12 @@ import axios from 'axios';
 
 export default {
     name: 'ALaCarte',
+    props: {
+        outOfStockItems: {
+            type: Object,
+            default: () => ({}), // Out-of-stock data passed from MainContent.vue
+        },
+    },
     data() {
         return {
             sides: [],
@@ -145,7 +153,9 @@ export default {
                 throw error;
             }
         },
-
+        isOutOfStock(item, category) {
+            return this.outOfStockItems[category]?.includes(this.getSideName(item) || this.getEntreeName(item));
+        },
         toggleSides(side) {
             this.currentItem = side;
             this.currentItemType = 'side';
@@ -482,5 +492,17 @@ button:hover {
 
 .premium-label-container:hover .premium-label {
     visibility: visible;
+}
+
+.out-of-stock {
+  background-color: #ccc;
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+.out-of-stock-label {
+  color: red;
+  font-size: 0.9em;
+  font-weight: bold;
 }
 </style>

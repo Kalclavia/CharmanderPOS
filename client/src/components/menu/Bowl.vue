@@ -2,39 +2,24 @@
   <div class="bowl">
     <h2>Pick 1 Side</h2>
     <div class="grid">
-      <button
-        v-for="side in sides"
-        :key="side"
-        @click="toggleSide(side)"
-        :class="{ selected: selectedSide === side }"
-      >
-        <img
-          v-if="getSideImage(side)"
-          :src="getSideImage(side)"
-          :alt="getSideName(side)"
-          class="side-image"
-          @error="handleImageError"
-        />
+      <button v-for="side in sides" :key="side" @click="toggleSide(side)" :disabled="isOutOfStock(side, 'Side')"
+        :class="{ selected: selectedSide === side, 'out-of-stock': isOutOfStock(side, 'Side') }">
+        <img v-if="getSideImage(side)" :src="getSideImage(side)" :alt="getSideName(side)" class="side-image"
+          @error="handleImageError" />
         <span>{{ getSideName(side) }}</span>
+        <span v-if="isOutOfStock(side, 'Side')" class="out-of-stock-label">Out of Stock</span>
         <span v-if="selectedSide === side" class="checkmark">✓</span>
       </button>
     </div>
     <h2>Pick 1 Entree</h2>
     <div class="grid">
-      <button
-        v-for="entree in entrees"
-        :key="entree"
-        @click="toggleEntree(entree)"
-        :class="{ selected: selectedEntree === entree }"
-      >
-        <img
-          v-if="getEntreeImage(entree)"
-          :src="getEntreeImage(entree)"
-          :alt="getEntreeName(entree)"
-          class="entree-image"
-          @error="handleImageError"
-        />
+      <button v-for="entree in entrees" :key="entree" @click="toggleEntree(entree)"
+        :disabled="isOutOfStock(entree, 'Entree')"
+        :class="{ selected: selectedEntree === entree, 'out-of-stock': isOutOfStock(entree, 'Entree') }">
+        <img v-if="getEntreeImage(entree)" :src="getEntreeImage(entree)" :alt="getEntreeName(entree)"
+          class="entree-image" @error="handleImageError" />
         <span>{{ getEntreeName(entree) }}</span>
+        <span v-if="isOutOfStock(entree, 'Entree')" class="out-of-stock-label">Out of Stock</span>
         <span v-if="selectedEntree === entree" class="checkmark">✓</span>
 
         <span v-if="isPremium(entree)" class="premium-label-container">
@@ -56,6 +41,12 @@ import axios from 'axios'
 
 export default {
   name: 'Bowl',
+  props: {
+    outOfStockItems: {
+      type: Object,
+      default: () => ({}), // Out-of-stock data passed from MainContent.vue
+    },
+  },
   data() {
     return {
       sides: [],
@@ -95,6 +86,9 @@ export default {
       } catch (error) {
         console.error('Error fetching price:', error)
       }
+    },
+    isOutOfStock(item, category) {
+      return this.outOfStockItems[category]?.includes(this.getSideName(item) || this.getEntreeName(item));
     },
     toggleSide(side) {
       this.selectedSide = this.selectedSide === side ? null : side
@@ -167,11 +161,11 @@ export default {
             Promise.all([
               axios.get(
                 import.meta.env.VITE_API_ENDPOINT +
-                  `foodid/${encodeURIComponent(sideName)}`,
+                `foodid/${encodeURIComponent(sideName)}`,
               ),
               axios.get(
                 import.meta.env.VITE_API_ENDPOINT +
-                  `foodid/${encodeURIComponent(entreeName)}`,
+                `foodid/${encodeURIComponent(entreeName)}`,
               ),
             ])
               .then(([sideResponse, entreeResponse]) => {
@@ -402,5 +396,17 @@ button:hover {
 
 .premium-label-container:hover .premium-label {
   visibility: visible;
+}
+
+.out-of-stock {
+  background-color: #ccc;
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+.out-of-stock-label {
+  color: red;
+  font-size: 0.9em;
+  font-weight: bold;
 }
 </style>

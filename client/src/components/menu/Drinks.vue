@@ -2,20 +2,12 @@
   <div class="drink">
     <h2>Pick 1 or more Drinks</h2>
     <div class="grid">
-      <button
-        v-for="drink in drinks"
-        :key="drink"
-        @click="toggleDrinks(drink)"
-        :class="{ selected: isSelected(drink) }"
-      >
-        <img
-          v-if="getDrinkImage(drink)"
-          :src="getDrinkImage(drink)"
-          :alt="getDrinkName(drink)"
-          class="drink-image"
-          @error="handleImageError"
-        />
+      <button v-for="drink in drinks" :key="drink" @click="toggleDrinks(drink)" :disabled="isOutOfStock(drink)"
+        :class="{ selected: isSelected(drink), 'out-of-stock': isOutOfStock(drink) }">
+        <img v-if="getDrinkImage(drink)" :src="getDrinkImage(drink)" :alt="getDrinkName(drink)" class="drink-image"
+          @error="handleImageError" />
         <span>{{ getDrinkName(drink) }}</span>
+        <span v-if="isOutOfStock(drink)" class="out-of-stock-label">Out of Stock</span>
         <span v-if="isSelected(drink)" class="checkmark">✓</span>
         <span v-if="getSelectedSize(drink)" class="size-tag">
           {{ getSelectedSize(drink) }}
@@ -28,14 +20,10 @@
         Select Size for {{ getDrinkName(currentItem) }}
       </h3>
       <div>
-        <button
-          v-for="size in sizeOptions.drink.filter(
-            size =>
-              size.name !== 'Aquafina' && size.name !== 'Gatorade Lemon Lime',
-          )"
-          :key="size.name"
-          @click="selectSize(size)"
-        >
+        <button v-for="size in sizeOptions.drink.filter(
+          size =>
+            size.name !== 'Aquafina' && size.name !== 'Gatorade Lemon Lime',
+        )" :key="size.name" @click="selectSize(size)">
           {{ size.name }} - ${{
             size.price ? size.price.toFixed(2) : 'Loading...'
           }}
@@ -56,6 +44,12 @@ import axios from 'axios'
 
 export default {
   name: 'Drink',
+  props: {
+    outOfStockItems: {
+      type: Object,
+      default: () => ({}), // Out-of-stock data passed from MainContent.vue
+    },
+  },
   data() {
     return {
       drinks: [],
@@ -100,11 +94,11 @@ export default {
             const itemName = `${size.name} ${type.charAt(0).toUpperCase() + type.slice(1)}`
             const priceResponse = await axios.get(
               import.meta.env.VITE_API_ENDPOINT +
-                `price/${encodeURIComponent(itemName)}`,
+              `price/${encodeURIComponent(itemName)}`,
             )
             const idResponse = await axios.get(
               import.meta.env.VITE_API_ENDPOINT +
-                `itemid/${encodeURIComponent(size.name + ' Drink')}`,
+              `itemid/${encodeURIComponent(size.name + ' Drink')}`,
             )
             size.price = priceResponse.data.price // Assign price directly to the size object
             size.baseItemID = idResponse.data.itemID
@@ -116,11 +110,11 @@ export default {
         for (const drink of bottledDrinks) {
           const priceResponse = await axios.get(
             import.meta.env.VITE_API_ENDPOINT +
-              `price/${encodeURIComponent(drink)}`,
+            `price/${encodeURIComponent(drink)}`,
           )
           const idResponse = await axios.get(
             import.meta.env.VITE_API_ENDPOINT +
-              `itemid/${encodeURIComponent(drink)}`,
+            `itemid/${encodeURIComponent(drink)}`,
           )
           this.sizeOptions.drink.push({
             name: drink,
@@ -167,6 +161,10 @@ export default {
         this.currentItemType = 'drink'
         this.showSizeModal = true
       }
+    },
+    isOutOfStock(drink) {
+      const drinkName = this.getDrinkName(drink);
+      return this.outOfStockItems.Drink?.includes(drinkName) || false;
     },
     isSelected(drink) {
       const drinkName = this.getDrinkName(drink)
@@ -238,7 +236,7 @@ export default {
         const drinkName = this.getDrinkName(drink)
         const response = await axios.get(
           import.meta.env.VITE_API_ENDPOINT +
-            `foodid/${encodeURIComponent(drinkName)}`,
+          `foodid/${encodeURIComponent(drinkName)}`,
         )
 
         if (response.data && response.data.foodID) {
@@ -407,5 +405,17 @@ button:hover {
   color: white;
   font-size: 12px;
   border-radius: 12px;
+}
+
+.out-of-stock {
+  background-color: #ccc;
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+.out-of-stock-label {
+  color: red;
+  font-size: 0.9em;
+  font-weight: bold;
 }
 </style>
