@@ -54,7 +54,7 @@ export default {
               "https://textbelt.com/text",
               {
                 phone: this.phone,
-                message: `Hello ${this.name}, Your order has been successfully placed! Your order number is ${transactionIDResponse.data.transactionID}. Thank you for eating at Panda Express!`,
+                message: `Hello ${this.name}, your order has been successfully placed! Your order number is ${transactionIDResponse.data.transactionID}. Thank you for eating at Panda Express!`,
                 key: "f84938f5684e8a6ec708fbb407bbf59709290d89M8miZnjZlDrtq91BeYxoqU0Pb",
               }
             );
