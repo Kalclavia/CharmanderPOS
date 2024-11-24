@@ -2,8 +2,8 @@
   <div class="buttons">
     <button  @click="this.productBool = false, this.salesBool =true, this.XZBool = false" >Sales Report</button>
     <button @click="this.productBool = true, this.salesBool =false,  this.XZBool = false" >Product Usage Report</button>
-    <button @click="this.productBool = false, this.salesBool =false,  this.XZBool = true" >X-Report</button>
-    <button @click="this.productBool = false, this.salesBool =false,  this.XZBool = true" >Z-Report</button>
+    <button @click="this.productBool = false, this.salesBool =false,  this.setLabelX()" >X-Report</button>
+    <button @click="this.productBool = false, this.salesBool =false,  this.setLabelZ()" >Z-Report</button>
   </div>
   <div v-if="productBool" style="padding-top: 20px">
     <productBarChartbarchart />
@@ -103,10 +103,17 @@ export default {
         })
     },
     setLabelX(){
-      this.XZChart
+      this.XZBool = true;
     },
     setLabelZ(){
-
+      const hour =new Date().getHours();
+      if(hour>=22){
+        this.XZBool = true;
+      }
+      else{
+        alert("The store hasn't closed yet. Please wait until after 10 PM.");
+      }
+      
     }
   },
   mounted() {},

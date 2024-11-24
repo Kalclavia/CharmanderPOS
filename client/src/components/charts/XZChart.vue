@@ -41,7 +41,7 @@
           labels: [],
           datasets: [
             {
-              label: 'X-Report',
+              label: 'Daily Report',
               data: [],
               backgroundColor: '#6b140e',
               borderColor: 'black',
