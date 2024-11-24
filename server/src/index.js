@@ -241,6 +241,21 @@ app.get("/inventory/id", (req, res) => {
     .catch((error) => res.status(500).json({ error: error.message }));
 });
 /**
+ * Update the units of an inventory item endpoint
+ * @method PATCH /inventory/updateUnits
+ * @returns {object} The item to be updated
+ */
+app.patch("/inventory/updateUnits", (req, res) => {
+  const { ingredientid, units } = req.body;
+  pool
+    .query(
+      "UPDATE ingredients SET units = $1 WHERE ingredientid = $2 RETURNING *;",
+      [units, ingredientid]
+    )
+    .then((query_res) => res.json(query_res.rows[0]))
+    .catch((error) => res.status(500).json({ error: error.message }));
+});
+/**
  * Get the id of the last item endpoint
  * @method GET /inventory/itemStock
  * @returns {object} The items stock

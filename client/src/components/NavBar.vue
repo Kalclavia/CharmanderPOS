@@ -11,10 +11,10 @@
     </span>
     <span v-if="collapsed"> </span>
     <span v-else>
-      <h2 v-if="showButtons" class="title">OPTIONS</h2>
+      <h2  class="title">OPTIONS</h2>
       <button
         class="button"
-        v-if="showButtons"
+        
         style="width: 200px"
         @click="$emit('selectItem', 'Home')"
       >
@@ -22,7 +22,7 @@
       </button>
       <button
         class="button"
-        v-if="showButtons"
+        
         style="width: 200px"
         @click="$emit('selectItem', 'Inventory')"
       >
@@ -30,7 +30,7 @@
       </button>
       <button
         class="button"
-        v-if="showButtons"
+        
         style="width: 200px"
         @click="$emit('selectItem', 'Menu Items')"
       >
@@ -38,7 +38,7 @@
       </button>
       <button
         class="button"
-        v-if="showButtons"
+        
         style="width: 200px"
         @click="$emit('selectItem', 'Menu Prices')"
       >
@@ -46,7 +46,7 @@
       </button>
       <button
         class="button"
-        v-if="showButtons"
+        
         style="width: 200px"
         @click="$emit('selectItem', 'Manage Employees')"
       >
@@ -54,14 +54,14 @@
       </button>
       <button
         class="button"
-        v-if="showButtons"
+        
         style="width: 200px"
         @click="$emit('selectItem', 'View Reports')"
       >
         Reports
       </button>
-      <button class="button" v-if="showButtons" style="width: 200px" @click="RouteToCashier">Switch to Cashier View</button>
-      <button class="button" v-if="showButtons" style="width: 200px" @click="RouteToSCO">Switch to Self Checkout View</button>
+      <button class="button"  style="width: 200px" @click="RouteToCashier">Switch to Cashier View</button>
+      <button class="button"  style="width: 200px" @click="RouteToSCO">Switch to Self Checkout View</button>
       <Translate />
     </span>
   </div>

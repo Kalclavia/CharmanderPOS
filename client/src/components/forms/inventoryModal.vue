@@ -21,7 +21,7 @@
         </div>
         <div class="form-group">
           <label for="unit">Unit:</label>
-          <input type="text" v-model="form.units" disabled />
+          <input type="text" v-model="form.units" required />
         </div>
         <div class="modal-actions">
           <button type="submit">{{ isNewItem ? 'Update' : 'Add' }}</button>
