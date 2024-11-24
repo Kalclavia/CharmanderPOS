@@ -7,6 +7,7 @@
     <button @click="$emit('selectItem', 'Bigger Plate')">BIGGER PLATE</button>
     <button @click="$emit('selectItem', 'Drinks')">DRINKS</button>
     <button @click="$emit('selectItem', 'A La Carte')">A LA CARTE</button>
+    <button v-if="showButton" @click="RouteToManager">Switch to Manager View</button>
     <Translate />
     <!-- Weather Display -->
     <div class="weather">
@@ -22,7 +23,22 @@
 <script>
 import axios from 'axios'
 import Translate from '../components/translate/translateModel.vue'
+import { useRouter } from 'vue-router' 
+import VueCookies from 'vue-cookies'
+
 export default {
+  setup() {
+    const router = useRouter() 
+
+    const RouteToManager = () => {
+      router.push('/manager') 
+    }
+
+    return {
+      RouteToManager
+    }
+  },
+
   name: 'MenuBar',
   components: {
     Translate,
@@ -30,9 +46,11 @@ export default {
   data() {
     return {
       weather: null,
+      showButton: $cookies.get('role') == 'manager'
     }
   },
   methods: {
+    
     async fetchWeather() {
       try {
         // Coordinates of College Station
