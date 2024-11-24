@@ -34,8 +34,8 @@
         fromDate: '',
         toDate: '',
         showChart: true,
-        enployee_sales: [],
-        hour_sales: [],
+        employee_sales: {},
+        hour_sales: {},
   
         chartData: {
           labels: [],
@@ -84,22 +84,12 @@
     },
     methods: {
       fetchData() {
-        this.showChart = false
-      },
-      setDate(){
-        const today = new Date();
-        this.fromDate = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+(today.getDate());
-        this.toDate= today.getFullYear()+'-'+(today.getMonth()+1)+'-'+(today.getDate()+1);
-      },
-      fetchData() {
-      this.setDate()  
       this.showChart = true
-      console.log('From', this.fromDate, 'End:', this.toDate)
       const config = {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
+          params: {},
         },
-        params: { startDate: this.fromDate, endDate: this.toDate },
       }
       axios
         .get(
@@ -107,19 +97,59 @@
           config,
         )
         .then(response => {
-          console.log(response.data)
+          if (Array.isArray(response.data) && response.data.length > 0) {
+            // Extract order total by employee_name and order_hour
+            for (let i = 0; i < response.data.length; i++) {
+              const { employee_name, order_hour, order_total } = response.data[i];
+
+              // Aggregate sales by employee
+              if (!this.employee_sales[employee_name]) {
+                this.employee_sales[employee_name] = 0;
+              }
+              this.employee_sales[employee_name] += parseFloat(order_total);
+
+              // Aggregate sales by hour
+              if (!this.hour_sales[order_hour]) {
+                this.hour_sales[order_hour] = 0;
+              }
+              this.hour_sales[order_hour] += parseFloat(order_total);
+            }
+          } else {
+            console.warn('No data available for the selected date range.')
+            this.chartData.labels = []
+            this.chartData.datasets[0].data = []
+            this.chartData = { ...this.chartData }
+          }
         })
         .catch(error => {
-          console.error('Error fetching sales transactions:', error)
+          console.error('Error fetching transactions:', error)
         })
     },
       setEmployee(){
-        //set labels to employeenames and data by sales of each employee today
-        
+        this.chartData = {
+        ...this.chartData,
+        labels: Object.keys(this.employee_sales),
+        datasets: [
+          {
+            ...this.chartData.datasets[0],
+            data: Object.values(this.employee_sales),
+          },
+        ],
+      }
+      this.showChart = true
       },
       setHour(){
-        //set labels to each hour in data set ex. 10am - 12am
-        //set data set to sales in each hour
+        this.chartData = {
+        ...this.chartData,
+        labels: Object.keys(this.hour_sales),
+        datasets: [
+          {
+            ...this.chartData.datasets[0],
+            data: Object.values(this.hour_sales),
+          },
+        ],
+      }
+      this.showChart = true
       },
     },
     mounted() {

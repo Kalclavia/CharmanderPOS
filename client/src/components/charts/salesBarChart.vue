@@ -147,7 +147,7 @@ export default {
             this.chartData = { ...this.chartData }
           }
 
-          console.log(this.food_appetizer)
+          console.log(response.data)
         })
         .catch(error => {
           console.error('Error fetching sales transactions:', error)
@@ -207,7 +207,7 @@ export default {
     },
   },
   mounted() {
-    
+
   },
 }
 </script>
