@@ -8,13 +8,16 @@
       <h1>(1) CHOOSE A MEAL</h1>
     </div>
 
+
     <div class="entry">
       <div class="item-column">
         <h2>BOWL</h2>
         <h3>1 Entree + Side(s)</h3>
       </div>    
       <div class="price-column">
-        PRICE
+        <span v-if="prices['Bowl'] !== undefined" class="price">
+            {{ formatPrice(prices['Bowl']) }}
+        </span>
       </div>
     </div>
 
@@ -24,7 +27,9 @@
         <h3>2 Entree + Side(s)</h3>
       </div>    
       <div class="price-column">
-        PRICE
+        <span v-if="prices['Plate'] !== undefined" class="price">
+            {{ formatPrice(prices['Plate']) }}
+        </span>
       </div>
     </div>
 
@@ -34,7 +39,9 @@
         <h3>3 Entree + Side(s)</h3>
       </div>    
       <div class="price-column">
-        PRICE
+        <span v-if="prices['Bigger Plate'] !== undefined" class="price">
+            {{ formatPrice(prices['Bigger Plate']) }}
+        </span>
       </div>
     </div>
 
@@ -48,7 +55,9 @@
         <h2>BOWL + DRINK</h2>
       </div>    
       <div class="price-column">
-        PRICE
+        <span v-if="prices['Bowl'] !== undefined" class="price">
+            {{ formatPrice(prices['Bowl']+prices['Medium Drink']) }}
+        </span>
       </div>
     </div>
 
@@ -58,7 +67,9 @@
         <h2>PLATE + DRINK</h2>
       </div>    
       <div class="price-column">
-        PRICE
+        <span v-if="prices['Plate'] !== undefined" class="price">
+            {{ formatPrice(prices['Plate']+prices['Medium Drink']) }}
+        </span>
       </div>
     </div>
 
@@ -67,7 +78,9 @@
         <h2>BIGGER PLATE + DRINK</h2>
       </div>    
       <div class="price-column">
-        PRICE
+        <span v-if="prices['Bigger Plate'] !== undefined" class="price">
+            {{ formatPrice(prices['Bigger Plate']+prices['Medium Drink']) }}
+        </span>
       </div>
     </div>
 
@@ -77,6 +90,8 @@
 </template>
 
 <script>
+import axios from 'axios';
+import BiggerPlate from '@/components/menu/BiggerPlate.vue';
 import MenuBoard from '../components/Menu-Board.vue'
 
 export default {
@@ -84,8 +99,28 @@ export default {
   components: {
     MenuBoard,
   },
+
+  methods: {
+    async fetchPrices() {
+            try {
+                const items = ['Bowl', 'Plate', 'Bigger Plate', 'Medium Drink'];
+                for (const item of items) {
+                    const response = await axios.get(import.meta.env.VITE_API_ENDPOINT + `price/${encodeURIComponent(item)}`);
+                    this.prices[item] = response.data.price;
+                }
+            } catch (error) {
+                console.error('Error fetching prices:', error);
+            }
+        },
+    formatPrice(price) {
+        return price !== null ? `$${price.toFixed(2)}` : 'Loading...';
+    },
+  },
+  
   data() {
     return {
+      prices: {
+            },
       isOnLaunchPage: true,
       isCartVisible: false,
       isOrderComplete: false,
@@ -93,6 +128,11 @@ export default {
       selectedItem: null,
     }
   },
+
+  mounted() {
+    this.fetchPrices();
+  }
+
 }
 </script>
 
