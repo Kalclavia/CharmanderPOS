@@ -121,11 +121,6 @@ export default {
     return {
       prices: {
             },
-      isOnLaunchPage: true,
-      isCartVisible: false,
-      isOrderComplete: false,
-      cartItems: [],
-      selectedItem: null,
     }
   },
 

@@ -13,7 +13,9 @@
         <h2>SMALL</h2>
       </div>    
       <div class="price-column">
-        PRICE
+        <span v-if="prices['Appetizer'] !== undefined" class="price">
+            {{ formatPrice(prices['Appetizer']) }}
+        </span>
       </div>
     </div>
 
@@ -27,7 +29,9 @@
           <h2>SMALL</h2>
         </div>    
         <div class="price-column">
-          PRICE
+        <span v-if="prices['Small Drink'] !== undefined" class="price">
+          {{ formatPrice(prices['Small Drink']) }}
+        </span>
         </div>
     </div>
     <div class="entry">
@@ -35,7 +39,9 @@
         <h2>MEDIUM</h2>
       </div>    
       <div class="price-column">
-        PRICE
+        <span v-if="prices['Medium Drink'] !== undefined" class="price">
+          {{ formatPrice(prices['Medium Drink']) }}
+        </span>
       </div>
     </div>
     <div class="entry">
@@ -43,7 +49,9 @@
         <h2>LARGE</h2>
       </div>    
       <div class="price-column">
-        PRICE
+        <span v-if="prices['Large Drink'] !== undefined" class="price">
+          {{ formatPrice(prices['Large Drink']) }}
+        </span>
       </div>
     </div>
 
@@ -54,21 +62,40 @@
 
 <script>
 import MenuBoard from '../components/Menu-Board.vue'
+import axios from 'axios';
 
 export default {
   name: 'Menu1',
   components: {
     MenuBoard,
   },
+  methods: {
+    async fetchPrices() {
+            try {
+                const items = ['Appetizer', 'Small Drink', 'Medium Drink','Large Drink'];
+                for (const item of items) {
+                    const response = await axios.get(import.meta.env.VITE_API_ENDPOINT + `price/${encodeURIComponent(item)}`);
+                    this.prices[item] = response.data.price;
+                }
+            } catch (error) {
+                console.error('Error fetching prices:', error);
+            }
+        },
+    formatPrice(price) {
+        return price !== null ? `$${price.toFixed(2)}` : 'Loading...';
+    },
+  },
+  
   data() {
     return {
-      isOnLaunchPage: true,
-      isCartVisible: false,
-      isOrderComplete: false,
-      cartItems: [],
-      selectedItem: null,
+      prices: {
+            },
     }
   },
+
+  mounted() {
+    this.fetchPrices();
+  }
 }
 </script>
 

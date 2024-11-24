@@ -20,15 +20,6 @@ export default {
   components: {
     MenuBoard,
   },
-  data() {
-    return {
-      isOnLaunchPage: true,
-      isCartVisible: false,
-      isOrderComplete: false,
-      cartItems: [],
-      selectedItem: null,
-    }
-  },
 }
 </script>
 
