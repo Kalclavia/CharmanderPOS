@@ -110,6 +110,7 @@ export default {
       if(hour>=22){
         this.chartLabel = 'Z-Report';
         this.XZBool = true;
+        alert("The Z-Report has been successfully generated.");
       }
       else{
         alert("The store hasn't closed yet. Please wait until after 10 PM.");
