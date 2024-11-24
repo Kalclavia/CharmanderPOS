@@ -141,7 +141,14 @@ export default {
           )
           .then(() => this.fetchItems())
           .catch(error => console.error('Error updating name:', error))
-
+        axios
+          .patch(
+            import.meta.env.VITE_API_ENDPOINT + 'inventory/updateUnits',
+            params,
+            config,
+          )
+          .then(() => this.fetchItems())
+          .catch(error => console.error('Error updating units:', error))
         console.log('updated item:', form.ingredientid)
       }
       this.closeModal()
