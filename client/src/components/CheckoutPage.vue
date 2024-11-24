@@ -16,7 +16,7 @@
                 <span v-if="selectedPayment === 'Card'" class="checkmark">✓</span>
             </div>
             <div class="payment-button" :class="{ selected: selectedPayment === 'DiningDollars' }"
-                @click="togglePayment('Dining Dollars')">
+                @click="togglePayment('DiningDollars')">
                 <img src="@/assets/dining-dollars-icon.png" alt="Dining Dollars" />
                 <span>Dining Dollars</span>
                 <span v-if="selectedPayment === 'DiningDollars'" class="checkmark">✓</span>
