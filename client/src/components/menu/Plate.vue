@@ -2,25 +2,29 @@
   <div class="plate">
     <h2>Pick 1 Side</h2>
     <div class="grid">
-      <button v-for="side in sides" :key="side" @click="selectSide(side)" :class="{ selected: selectedSide === side }">
+      <button v-for="side in sides" :key="side" @click="toggleSide(side)" :disabled="isOutOfStock(side, 'Side')"
+        :class="{ selected: selectedSide === side, 'out-of-stock': isOutOfStock(side, 'Side') }">
         <img v-if="getSideImage(side)" :src="getSideImage(side)" :alt="getSideName(side)" class="side-image"
           @error="handleImageError" />
         <span>{{ getSideName(side) }}</span>
+        <span v-if="isOutOfStock(side, 'Side')" class="out-of-stock-label">Out of Stock</span>
         <span v-if="selectedSide === side" class="checkmark">✓</span>
       </button>
     </div>
 
     <h2>Pick 2 Entrees</h2>
     <div class="grid">
-      <button v-for="entree in entrees" :key="entree" @click="selectEntree(entree)"
-        :class="{ selected: selectedEntrees.includes(entree) }">
+      <button v-for="entree in entrees" :key="entree" @click="toggleEntree(entree)"
+        :disabled="isOutOfStock(entree, 'Entree')"
+        :class="{ selected: selectedEntrees === entree, 'out-of-stock': isOutOfStock(entree, 'Entree') }">
         <img v-if="getEntreeImage(entree)" :src="getEntreeImage(entree)" :alt="getEntreeName(entree)"
           class="entree-image" @error="handleImageError" />
         <span>{{ getEntreeName(entree) }}</span>
-        <span v-if="selectedEntrees.includes(entree)" class="checkmark">✓</span>
+        <span v-if="isOutOfStock(entree, 'Entree')" class="out-of-stock-label">Out of Stock</span>
+        <span v-if="selectedEntrees === entree" class="checkmark">✓</span>
         <span class="premium-label-container">
-            <img v-if="isPremium(entree)" src="/src/assets/star.png" alt="Premium" class="star-icon" />
-            <span class="premium-label">Premium Item + $1.50</span>
+          <img v-if="isPremium(entree)" src="/src/assets/star.png" alt="Premium" class="star-icon" />
+          <span class="premium-label">Premium Item + $1.50</span>
         </span>
       </button>
     </div>
@@ -37,6 +41,12 @@ import axios from 'axios'
 
 export default {
   name: 'Plate',
+  props: {
+    outOfStockItems: {
+      type: Object,
+      default: () => ({}), // Out-of-stock data passed from MainContent.vue
+    },
+  },
   data() {
     return {
       sides: [],
@@ -44,7 +54,7 @@ export default {
       price: null,
       selectedSide: null,
       selectedEntrees: [], // Track selected entrees as an array
-      premiumEntrees: ["Black Pepper Sirloin Steak", "Honey Walnut Shrimp"], // Add premium entrees
+      premiumEntrees: [], // Add premium entrees
     }
   },
   computed: {
@@ -76,6 +86,9 @@ export default {
         console.error('Error fetching price:', error);
       }
     },
+    isOutOfStock(item, category) {
+      return this.outOfStockItems[category]?.includes(this.getSideName(item) || this.getEntreeName(item));
+    },
     selectSide(side) {
       // Select one side and deselect the others
       this.selectedSide = this.selectedSide === side ? null : side
@@ -90,76 +103,102 @@ export default {
         this.selectedEntrees.push(entree)
       }
     },
+    async checkPremiumStatus() {
+      try {
+
+
+        // Remove trailing slash from the endpoint if it exists
+        const apiUrl = import.meta.env.VITE_API_ENDPOINT.replace(/\/$/, '') // Ensures no trailing slash
+        const url = `${apiUrl}/ispremium/`
+
+        console.log(`Requesting URL: ${url}`) // Log the constructed URL
+
+        const response = await axios.get(url)
+        console.log(response.data) // Log the response
+        console.log('hello')
+        const isPremium = response.data.premium
+        for (let i = 0; i < response.data.length; i++) {
+          console.log(response.data[i])
+          this.premiumEntrees.push(response.data[i].name)
+        }
+
+      } catch (error) {
+        console.error(
+          'Error checking premium status:',
+          error.response ? error.response.data : error.message,
+        )
+      }
+    },
     isPremium(entree) {
-  return this.premiumEntrees.includes(this.getEntreeName(entree));
-},
+      return this.premiumEntrees.includes(this.getEntreeName(entree)) // Check if the entree is in the premium list
+    },
 
-addToCart() {
-  if (this.canAddToCart) {
-    // Fetch the base item ID for "Plate" dynamically
-    axios
-      .get(import.meta.env.VITE_API_ENDPOINT + `itemid/Plate`)
-      .then((response) => {
-        const baseItemID = response.data.itemID; // Dynamically fetched base item ID
-        let price = this.price;
-        let premiumCount = 0;
+    addToCart() {
+      if (this.canAddToCart) {
+        // Fetch the base item ID for "Plate" dynamically
+        axios
+          .get(import.meta.env.VITE_API_ENDPOINT + `itemid/Plate`)
+          .then((response) => {
+            const baseItemID = response.data.itemID; // Dynamically fetched base item ID
+            let price = this.price;
+            let premiumCount = 0;
 
-        // Check if any of the selected entrees are premium
-        this.selectedEntrees.forEach((entree) => {
-          if (this.isPremium(entree)) {
-            premiumCount++;
-          }
-        });
+            // Check if any of the selected entrees are premium
+            this.selectedEntrees.forEach((entree) => {
+              if (this.isPremium(entree)) {
+                premiumCount++;
+              }
+            });
 
-        // Add $1.50 for each premium entree
-        price += premiumCount * 1.50;
+            // Add $1.50 for each premium entree
+            price += premiumCount * 1.50;
 
-        // Get the side and entree names
-        const sideName = this.getSideName(this.selectedSide);
-        const entreeNames = this.selectedEntrees.map((entree) => this.getEntreeName(entree));
+            // Get the side and entree names
+            const sideName = this.getSideName(this.selectedSide);
+            const entreeNames = this.selectedEntrees.map((entree) => this.getEntreeName(entree));
 
-        // Fetch foodIDs for the selected side and entrees
-        Promise.all([
-          axios.get(import.meta.env.VITE_API_ENDPOINT + `foodid/${encodeURIComponent(sideName)}`),
-          ...this.selectedEntrees.map((entree) =>
-            axios.get(import.meta.env.VITE_API_ENDPOINT + `foodid/${encodeURIComponent(this.getEntreeName(entree))}`)
-          ),
-        ])
-          .then(([sideResponse, entreeResponse1, entreeResponse2]) => {
-            const sideFoodID = sideResponse.data.foodID;
-            const entreeFoodID1 = entreeResponse1.data.foodID;
-            const entreeFoodID2 = entreeResponse2.data.foodID;
+            // Fetch foodIDs for the selected side and entrees
+            Promise.all([
+              axios.get(import.meta.env.VITE_API_ENDPOINT + `foodid/${encodeURIComponent(sideName)}`),
+              ...this.selectedEntrees.map((entree) =>
+                axios.get(import.meta.env.VITE_API_ENDPOINT + `foodid/${encodeURIComponent(this.getEntreeName(entree))}`)
+              ),
+            ])
+              .then(([sideResponse, entreeResponse1, entreeResponse2]) => {
+                const sideFoodID = sideResponse.data.foodID;
+                const entreeFoodID1 = entreeResponse1.data.foodID;
+                const entreeFoodID2 = entreeResponse2.data.foodID;
 
-            // Construct the transactionEntry array
-            const transactionEntry = [baseItemID, sideFoodID, entreeFoodID1, entreeFoodID2, 0];
+                // Construct the transactionEntry array
+                const transactionEntry = [baseItemID, sideFoodID, entreeFoodID1, entreeFoodID2, 0];
 
-            // Construct the item to emit
-            const item = {
-              name: `Plate (${sideName} + ${entreeNames.join(", ")})`,
-              price: price,
-              transactionEntry: transactionEntry, // Include for further use
-              isPremium: premiumCount > 0,
-            };
+                // Construct the item to emit
+                const item = {
+                  name: `Plate (${sideName} + ${entreeNames.join(", ")})`,
+                  price: price,
+                  transactionEntry: transactionEntry, // Include for further use
+                  isPremium: premiumCount > 0,
+                };
 
-            this.$emit('addToCart', item); // Emit the item to the parent
-            this.$emit('addToTransactionCart', transactionEntry);
-            console.log('Transaction Added:', transactionEntry);
+                this.$emit('addToCart', item); // Emit the item to the parent
+                this.$emit('addToTransactionCart', transactionEntry);
+                console.log('Transaction Added:', transactionEntry);
 
-            // Reset selections
-            this.selectedSide = null;
-            this.selectedEntrees = [];
+                // Reset selections
+                this.selectedSide = null;
+                this.selectedEntrees = [];
+              })
+              .catch((error) => {
+                console.error('Error fetching food IDs:', error);
+                alert('Cannot add to transaction cart.');
+              });
           })
           .catch((error) => {
-            console.error('Error fetching food IDs:', error);
-            alert('Cannot add to transaction cart.');
+            console.error('Error fetching base item ID:', error);
+            alert('Cannot fetch base item ID.');
           });
-      })
-      .catch((error) => {
-        console.error('Error fetching base item ID:', error);
-        alert('Cannot fetch base item ID.');
-      });
-  }
-},
+      }
+    },
     getSideName(side) {
       if (typeof side === 'string') {
         return side
@@ -198,6 +237,8 @@ addToCart() {
   mounted() {
     this.fetchMenuItems() // Fetch menu items when the component mounts
     this.fetchPrice()
+    this.checkPremiumStatus()
+
   },
 }
 </script>
@@ -295,42 +336,63 @@ button:hover {
 }
 
 .star-icon {
-    width: 30px;
-    height: 30px;
-    /* position: absolute; */
-    /* top: 1px;
+  width: 30px;
+  height: 30px;
+  /* position: absolute; */
+  /* top: 1px;
     left: 3px;
     /* Ensure it's above the content */
-    /* z-index: 1; */ 
+  /* z-index: 1; */
 }
+
 .premium-label-container {
-    position: absolute; /* Keep it absolute to retain original positioning */
-    top: 5px; /* Adjust as per your original design */
-    left: 5px; /* Adjust as per your original design */
-    z-index: 1; /* Ensure it's above other content */
-    display: flex; /* Align content inside properly */
-    align-items: center; /* Center the icon and label vertically */
-    justify-content: center; /* Center the icon and label horizontally */
+  position: absolute;
+  /* Keep it absolute to retain original positioning */
+  top: 5px;
+  /* Adjust as per your original design */
+  left: 5px;
+  /* Adjust as per your original design */
+  z-index: 1;
+  /* Ensure it's above other content */
+  display: flex;
+  /* Align content inside properly */
+  align-items: center;
+  /* Center the icon and label vertically */
+  justify-content: center;
+  /* Center the icon and label horizontally */
 }
 
 .premium-label {
-    visibility: hidden;
-    background-color: black;
-    color: white;
-    text-align: center;
-    border-radius: 5px;
-    padding: 5px;
-    position: absolute;
-    bottom: 30px; /* Reduced distance to bring it closer to the star icon */
-    left: 50%;
-    transform: translateX(-50%);
-    white-space: nowrap;
-    z-index: 10;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-    font-size: 12px;
+  visibility: hidden;
+  background-color: black;
+  color: white;
+  text-align: center;
+  border-radius: 5px;
+  padding: 5px;
+  position: absolute;
+  bottom: 30px;
+  /* Reduced distance to bring it closer to the star icon */
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  z-index: 10;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  font-size: 12px;
 }
 
 .premium-label-container:hover .premium-label {
-    visibility: visible;
+  visibility: visible;
+}
+
+.out-of-stock {
+  background-color: #ccc;
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+.out-of-stock-label {
+  color: red;
+  font-size: 0.9em;
+  font-weight: bold;
 }
 </style>

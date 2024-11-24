@@ -1,6 +1,6 @@
 <!-- v-model: holds the variable, v-on: what to do when enter key is pressed -->
 <script setup>
-import { decodeCredential } from 'vue3-google-login'
+// import { decodeCredential } from 'vue3-google-login'
 
   const GoogleOAuth = (response) => {
     const userData = decodeCredential(response.credential)
@@ -23,7 +23,7 @@ import { decodeCredential } from 'vue3-google-login'
 <script>
 import '../assets/login.css'
 import axios from 'axios'
-import { decodeCredential } from 'vue3-google-login'
+// import { decodeCredential } from 'vue3-google-login'
 
 export default {
   name: 'App',
@@ -65,3 +65,4 @@ export default {
 </script>
 
 <style scoped></style>
+

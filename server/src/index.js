@@ -728,9 +728,9 @@ app.post("/transaction", (req, res) => {
   if (!transactionID || !employeeID || !total || !date || !paymentMethod) {
     return res.status(400).json({ error: "All fields are required." });
   }
-
+  console.log(transactionID, employeeID, total, date, paymentMethod);
   const sql = `
-    INSERT INTO transactions (TransactionID, EmployeeID, Total, Date, PaymentMethod) 
+    INSERT INTO transactions (transactionid, employeeid, total, date, paymentmethod) 
     VALUES ($1, $2, $3, $4, $5)
   `;
 
@@ -833,6 +833,31 @@ app.get("/foodid/:name", (req, res) => {
     .then((query_res) => {
       if (query_res.rows.length > 0) {
         res.json({ foodID: query_res.rows[0].foodid });
+      } else {
+        res.status(404).json({ error: "Food item not found." });
+      }
+    })
+    .catch((error) => res.status(500).json({ error: error.message }));
+});
+
+/**
+ * Checks if a food item is premium based on its name.
+ * @method GET /ispremium/:name
+ * @param {string} name The name of the food item.
+ * @returns {boolean} A response indicating whether the item is premium.
+ */
+app.get("/ispremium/", (req, res) => {
+  // const itemName = req.params.name;
+  // if (!itemName) {
+  //   return res.status(400).json({ error: "Item name is required." });
+  // }
+  const sql =
+    "SELECT name FROM foods WHERE name != 'Default' AND premium = true";
+  pool
+    .query(sql)
+    .then((query_res) => {
+      if (query_res.rows.length > 0) {
+        res.json(query_res.rows);
       } else {
         res.status(404).json({ error: "Food item not found." });
       }

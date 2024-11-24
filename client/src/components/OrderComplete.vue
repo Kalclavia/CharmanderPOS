@@ -14,7 +14,7 @@
 export default {
     props: {
         transactionId: {
-            type: String,
+            type: Number,
             required: true
         },
         readyTime: {

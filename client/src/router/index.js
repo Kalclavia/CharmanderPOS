@@ -5,7 +5,7 @@ import Menu2 from '../views/menu2.vue'
 import Menu3 from '../views/menu3.vue'
 import LoginPage from '../views/Login.vue'
 import manager from '../views/manager.vue'
-import cashier from '../views/manager.vue'
+import cashier from '../views/cashier.vue'
 
 const routes = [
   { path: '/', name: 'SCO', component: SelfCheckout },

@@ -2,11 +2,12 @@
   <div class="drink">
     <h2>Pick 1 or more Drinks</h2>
     <div class="grid">
-      <button v-for="drink in drinks" :key="drink" @click="toggleDrinks(drink)"
-        :class="{ selected: isSelected(drink) }">
+      <button v-for="drink in drinks" :key="drink" @click="toggleDrinks(drink)" :disabled="isOutOfStock(drink)"
+        :class="{ selected: isSelected(drink), 'out-of-stock': isOutOfStock(drink) }">
         <img v-if="getDrinkImage(drink)" :src="getDrinkImage(drink)" :alt="getDrinkName(drink)" class="drink-image"
           @error="handleImageError" />
         <span>{{ getDrinkName(drink) }}</span>
+        <span v-if="isOutOfStock(drink)" class="out-of-stock-label">Out of Stock</span>
         <span v-if="isSelected(drink)" class="checkmark">✓</span>
         <span v-if="getSelectedSize(drink)" class="size-tag">
           {{ getSelectedSize(drink) }}
@@ -19,10 +20,13 @@
         Select Size for {{ getDrinkName(currentItem) }}
       </h3>
       <div>
-        <button
-          v-for="size in sizeOptions.drink.filter(size => size.name !== 'Aquafina' && size.name !== 'Gatorade Lemon Lime')"
-          :key="size.name" @click="selectSize(size)">
-          {{ size.name }} - ${{ size.price ? size.price.toFixed(2) : 'Loading...' }}
+        <button v-for="size in sizeOptions.drink.filter(
+          size =>
+            size.name !== 'Aquafina' && size.name !== 'Gatorade Lemon Lime',
+        )" :key="size.name" @click="selectSize(size)">
+          {{ size.name }} - ${{
+            size.price ? size.price.toFixed(2) : 'Loading...'
+          }}
         </button>
       </div>
       <!-- Red X Button -->
@@ -36,10 +40,16 @@
 </template>
 
 <script>
-import axios from 'axios' // Make sure to install axios if you haven't already
+import axios from 'axios'
 
 export default {
   name: 'Drink',
+  props: {
+    outOfStockItems: {
+      type: Object,
+      default: () => ({}), // Out-of-stock data passed from MainContent.vue
+    },
+  },
   data() {
     return {
       drinks: [],
@@ -49,11 +59,12 @@ export default {
       currentItemType: null,
       sizeOptions: {
         drink: [
-          { name: 'Small', price: null },
-          { name: 'Medium', price: null },
-          { name: 'Large', price: null },
+          { name: 'Small', price: null, baseItemID: null },
+          { name: 'Medium', price: null, baseItemID: null },
+          { name: 'Large', price: null, baseItemID: null },
         ],
       },
+      transactionEntries: [], // Track the transaction entries to be pushed to the database
     }
   },
   computed: {
@@ -68,59 +79,92 @@ export default {
           import.meta.env.VITE_API_ENDPOINT + 'menu/Drink',
         )
         this.drinks = drinkResponse.data
-        console.log(this.drinks)
       } catch (error) {
         console.error('Error fetching menu items:', error)
       }
     },
     async fetchItemPrices() {
       try {
-        // Fetch prices for regular drinks with sizes
-        const sizeType = ["drink"];
+        // Fetch prices and itemIDs for regular drinks with sizes
+        const sizeType = ['drink']
         for (const type of sizeType) {
-          const sizes = this.sizeOptions[type];
+          const sizes = this.sizeOptions[type]
 
           for (const size of sizes) {
-            const itemName = `${size.name} ${type.charAt(0).toUpperCase() + type.slice(1)}`;
-            const response = await axios.get(import.meta.env.VITE_API_ENDPOINT + `price/${encodeURIComponent(itemName)}`);
-            size.price = response.data.price; // Assign price directly to the size object
+            const itemName = `${size.name} ${type.charAt(0).toUpperCase() + type.slice(1)}`
+            const priceResponse = await axios.get(
+              import.meta.env.VITE_API_ENDPOINT +
+              `price/${encodeURIComponent(itemName)}`,
+            )
+            const idResponse = await axios.get(
+              import.meta.env.VITE_API_ENDPOINT +
+              `itemid/${encodeURIComponent(size.name + ' Drink')}`,
+            )
+            size.price = priceResponse.data.price // Assign price directly to the size object
+            size.baseItemID = idResponse.data.itemID
           }
         }
 
-        // Fetch prices for bottled drinks
-        const bottledDrinks = ["Aquafina", "Gatorade Lemon Lime"];
+        // Fetch prices and itemIDs for bottled drinks
+        const bottledDrinks = ['Aquafina', 'Gatorade Lemon Lime']
         for (const drink of bottledDrinks) {
-          const response = await axios.get(
-            import.meta.env.VITE_API_ENDPOINT + `price/${encodeURIComponent(drink)}`
-          );
-          this.sizeOptions.drink.push({ name: drink, price: response.data.price });
+          const priceResponse = await axios.get(
+            import.meta.env.VITE_API_ENDPOINT +
+            `price/${encodeURIComponent(drink)}`,
+          )
+          const idResponse = await axios.get(
+            import.meta.env.VITE_API_ENDPOINT +
+            `itemid/${encodeURIComponent(drink)}`,
+          )
+          this.sizeOptions.drink.push({
+            name: drink,
+            price: priceResponse.data.price,
+            baseItemID: idResponse.data.itemID,
+          })
         }
-
       } catch (error) {
-        console.error("Error fetching item prices:", error);
+        console.error('Error fetching item prices:', error)
       }
     },
-    toggleDrinks(drink) {
-      const drinkName = this.getDrinkName(drink);
+    async toggleDrinks(drink) {
+      const drinkName = this.getDrinkName(drink)
 
-      if (["aquafina", "gatorade lemon lime"].includes(drinkName.toLowerCase())) {
+      if (
+        ['aquafina', 'gatorade lemon lime'].includes(drinkName.toLowerCase())
+      ) {
         // Add bottled drinks directly with their specific prices
-        const bottledDrink = this.sizeOptions.drink.find(option => option.name.toLowerCase() === drinkName.toLowerCase());
+        const bottledDrink = this.sizeOptions.drink.find(
+          option => option.name.toLowerCase() === drinkName.toLowerCase(),
+        )
         if (bottledDrink) {
           const itemToAdd = {
             name: `Drink: ${drinkName}`,
             price: bottledDrink.price,
-          };
-          this.selectedDrinks.push(itemToAdd);
+          }
+
+          const drinkID = await this.getDrinkID(drink) // Fetch the drinkID for bottled drinks
+          this.transactionEntries.push([
+            bottledDrink.baseItemID,
+            drinkID,
+            0,
+            0,
+            0,
+          ]) // Add transaction entry
+
+          this.selectedDrinks.push(itemToAdd)
         } else {
-          console.error("Bottled drink not found in sizeOptions:", drinkName);
+          console.error('Bottled drink not found in sizeOptions:', drinkName)
         }
       } else {
         // Show size modal for regular drinks
-        this.currentItem = drink;
-        this.currentItemType = "drink";
-        this.showSizeModal = true;
+        this.currentItem = drink
+        this.currentItemType = 'drink'
+        this.showSizeModal = true
       }
+    },
+    isOutOfStock(drink) {
+      const drinkName = this.getDrinkName(drink);
+      return this.outOfStockItems.Drink?.includes(drinkName) || false;
     },
     isSelected(drink) {
       const drinkName = this.getDrinkName(drink)
@@ -132,21 +176,32 @@ export default {
     },
     getSelectedSize(drink) {
       const selectedDrink = this.selectedDrinks.find(item =>
-        item.name.startsWith(`Drink: ${this.getDrinkName(drink)}`)
-      );
-      return selectedDrink ? selectedDrink.size : null;
+        item.name.startsWith(`Drink: ${this.getDrinkName(drink)}`),
+      )
+      return selectedDrink ? selectedDrink.size : null
     },
-    selectSize(size) {
+    async selectSize(size) {
+      const selectedDrink = this.getDrinkName(this.currentItem) // Get the drink name (for logging/display)
+      const baseItemID = size.baseItemID // Get the baseItemID for the size
+      const drinkID = await this.getDrinkID(this.currentItem) // Fetch the correct drinkID using getDrinkID
+
       const itemToAdd = {
-        name: `Drink: ${this.getDrinkName(this.currentItem)} (${size.name})`,
+        name: `Drink: ${selectedDrink} (${size.name})`,
         price: size.price,
-        size: size.name
+        size: size.name,
+        baseItemID: baseItemID,
       }
-      // Remove any existing selection for this appetizer
-      this.selectedDrinks = this.selectedDrinks.filter(item =>
-        !item.name.startsWith(`Drink: ${this.getDrinkName(this.currentItem)}`)
-      );
+
+      // Remove any existing selection for this drink
+      this.selectedDrinks = this.selectedDrinks.filter(
+        item => !item.name.startsWith(`Drink: ${selectedDrink}`),
+      )
       this.selectedDrinks.push(itemToAdd)
+
+      // Add to transaction entries with the correct drinkID
+      this.transactionEntries.push([baseItemID, drinkID, 0, 0, 0])
+
+      // Close size selection modal
       this.showSizeModal = false
       this.currentItem = null
     },
@@ -158,9 +213,12 @@ export default {
       if (this.canAddToCart) {
         // Emit the selected drinks array to the cart
         this.$emit('addToCart', this.selectedDrinks)
+        this.$emit('addToTransactionCart', this.transactionEntries[0])
+        console.log('Transaction Added: ', this.transactionEntries[0])
 
         // Clear selections after adding to cart
         this.selectedDrinks = []
+        this.transactionEntries = [] // Clear transaction entries
       }
     },
     getDrinkName(drink) {
@@ -172,18 +230,35 @@ export default {
 
       return 'Unknown Drink'
     },
+    async getDrinkID(drink) {
+      try {
+        // Fetch drinkID for a given drink name from the database
+        const drinkName = this.getDrinkName(drink)
+        const response = await axios.get(
+          import.meta.env.VITE_API_ENDPOINT +
+          `foodid/${encodeURIComponent(drinkName)}`,
+        )
+
+        if (response.data && response.data.foodID) {
+          return response.data.foodID // Return the resolved foodID
+        } else {
+          throw new Error(`No foodID found for drink: ${drinkName}`)
+        }
+      } catch (error) {
+        console.error(`Error fetching foodID for drink "${drinkName}":`, error)
+        throw error // Re-throw to allow handling in calling code
+      }
+    },
     getDrinkImage(drink) {
       let name = this.getDrinkName(drink)
       if (!name) return null
       const fileName = `${name.toLowerCase().replace(/\s+/g, '')}.png`
-      const imagePath = `/src/assets/${fileName}`
-      console.log('Image path:', imagePath)
-      return new URL(`/src/assets/${fileName}`, import.meta.url).href;
+      return new URL(`/src/assets/${fileName}`, import.meta.url).href
     },
   },
   mounted() {
-    this.fetchMenuItems(); // Fetch menu items when the component mounts
-    this.fetchItemPrices();
+    this.fetchMenuItems() // Fetch menu items when the component mounts
+    this.fetchItemPrices()
   },
 }
 </script>
@@ -326,9 +401,21 @@ button:hover {
 .size-tag {
   margin-left: 5px;
   padding: 2px 6px;
-  background-color: #4CAF50;
+  background-color: #4caf50;
   color: white;
   font-size: 12px;
   border-radius: 12px;
+}
+
+.out-of-stock {
+  background-color: #ccc;
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+.out-of-stock-label {
+  color: red;
+  font-size: 0.9em;
+  font-weight: bold;
 }
 </style>
