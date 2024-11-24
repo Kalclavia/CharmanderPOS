@@ -534,10 +534,17 @@ app.get("/report/ingredientsByDateRange", (req, res) => {
 app.get("/report/transactionBreakDown", (req, res) => {
   // let startDate = "2023-01-01";
   // let endDate = "2023-01-02";
-  let startDate = new Date().toISOString();
+  let startDate = new Date();
+  startDate.setHours(0, 0, 0, 0); // Set to the beginning of the day
+  startDate = startDate.toISOString();
+
   let endDate = new Date();
   endDate.setDate(endDate.getDate() + 1);
+  endDate.setHours(0, 0, 0, 0); // Set to the beginning of the next day
   endDate = endDate.toISOString();
+
+  console.log(startDate);
+  console.log(endDate);
   pool
     .query(
       "SELECT COUNT(t.transactionid) AS num_orders, EXTRACT(HOUR FROM t.date) AS order_hour, SUM(t.total) AS order_total, t.employeeid, e.name AS employee_name FROM transactions t JOIN employees e ON t.employeeid = e.employeeid WHERE t.date >= CAST($1 AS TIMESTAMP) AND t.date < CAST($2 AS TIMESTAMP) GROUP BY order_hour, t.employeeid, e.name ORDER BY order_hour ASC;",
