@@ -101,8 +101,9 @@ export default {
         },
         async fetchAllAllergens() {
             try {
-                const apiUrl = import.meta.env.VITE_API_ENDPOINT.replace(/\/$/, '');
-                const response = await axios.get(`${apiUrl}/allergens`);
+                // const apiUrl = import.meta.env.VITE_API_ENDPOINT.replace(/\/$/, '');
+                // const response = await axios.get(`${apiUrl}/allergens`);
+                const response = await axios.get(import.meta.env.VITE_API_ENDPOINT + `allergens`);
                 
                 // Expecting an array of objects [{ name: 'Food Item', allergens: 'Allergen Info' }]
                 this.allergenList = response.data.reduce((acc, item) => {
@@ -278,14 +279,29 @@ th, td {
 th {
     background-color: #f2f2f2;
 }
+.allergen-modal-content {
+    position: relative; /* Ensures the close button is positioned relative to this container */
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    width: 80%;
+    max-width: 600px;
+    max-height: 80%;
+    overflow-y: auto;
+    color: black;
+}
+
 .close-button {
-    margin-top: 10px;
-    padding: 5px 10px;
+    position: absolute; /* Position relative to .allergen-modal-content */
+    top: 22px; /* Distance from the top edge of the modal */
+    right: 20px; /* Distance from the right edge of the modal */
     background-color: #f44336;
     color: white;
     border: none;
     border-radius: 5px;
+    padding: 5px 10px;
     cursor: pointer;
+    font-size: 14px;
 }
 
 .loading-spinner {
