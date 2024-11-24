@@ -161,6 +161,7 @@ export default {
         : this.cartItems.push(item)
     },
     addToTransactionCart(entry) {
+      console.log(entry)
       this.transactionCart.push(entry) // Add to transaction cart data
       console.log('Updated transactionCart:', this.transactionCart)
     },
@@ -258,53 +259,58 @@ export default {
               transactionCartItems.push(newItem)
             })
             console.log('transactionItems: ', transactionCartItems)
-            const paramsTransactions = new URLSearchParams()
-            paramsTransactions.append(
-              'transactionID',
-              parseInt(this.transactionId),
-            )
-            paramsTransactions.append(
-              'itemid',
-              parseInt(transactionCartItems[0][1]),
-            )
-            paramsTransactions.append(
-              'food1',
-              parseInt(transactionCartItems[0][2]),
-            )
-            paramsTransactions.append(
-              'food2',
-              parseInt(transactionCartItems[0][3]),
-            )
-            paramsTransactions.append(
-              'food3',
-              parseInt(transactionCartItems[0][4]),
-            )
-            paramsTransactions.append(
-              'food4',
-              parseInt(transactionCartItems[0][5]),
-            )
-            console.log(paramsTransactions)
-            const configTransaction = {
-              headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-              },
-            }
-            axios
-              .post(
-                import.meta.env.VITE_API_ENDPOINT + 'transactionitems',
-                paramsTransactions,
-                configTransaction,
+            for (let i = 0; i < transactionCartItems.length; i++) {
+              const paramsTransactions = new URLSearchParams()
+              paramsTransactions.append(
+                'transactionID',
+                parseInt(this.transactionId),
               )
-              .then(res => {
-                this.readyTime = this.calculateReadyTime()
+              paramsTransactions.append(
+                'itemid',
+                parseInt(transactionCartItems[i][1]),
+              )
+              paramsTransactions.append(
+                'food1',
+                parseInt(transactionCartItems[i][2]),
+              )
+              paramsTransactions.append(
+                'food2',
+                parseInt(transactionCartItems[i][3]),
+              )
+              paramsTransactions.append(
+                'food3',
+                parseInt(transactionCartItems[i][4]),
+              )
+              paramsTransactions.append(
+                'food4',
+                parseInt(transactionCartItems[i][5]),
+              )
+              console.log(paramsTransactions)
+              const configTransaction = {
+                headers: {
+                  'Content-Type': 'application/x-www-form-urlencoded',
+                },
+              }
+              axios
+                .post(
+                  import.meta.env.VITE_API_ENDPOINT + 'transactionitems',
+                  paramsTransactions,
+                  configTransaction,
+                )
+                .then(res => {
+                  this.readyTime = this.calculateReadyTime()
 
-                // Update the order state
-                this.isOrderComplete = true
-                this.showUserInfo = false
-              })
-              .catch(error =>
-                console.error('Error adding to transactionitems table', error),
-              )
+                  // Update the order state
+                  this.isOrderComplete = true
+                  this.showUserInfo = false
+                })
+                .catch(error =>
+                  console.error(
+                    'Error adding to transactionitems table',
+                    error,
+                  ),
+                )
+            }
           })
           .catch(error =>
             console.error('Error adding to transaction table', error),
