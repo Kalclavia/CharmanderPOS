@@ -226,6 +226,20 @@ export default {
     overflow-y: auto;
 }
 
+::v-deep(.main-content) {
+  position: fixed;
+    top: 0;
+    left: 450px;
+    right: 450px;
+    bottom: 0;
+    background-color: #9b150b;
+    color: #e7e4d7;
+    padding: 40px;
+    overflow-y: auto;
+    z-index: 1;
+    transition: left 0.3s ease;
+}
+
 .cart-button {
   position: fixed;
   top: 30px;

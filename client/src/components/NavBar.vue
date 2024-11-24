@@ -60,6 +60,8 @@
       >
         Reports
       </button>
+      <button class="button" v-if="showButtons" style="width: 200px" @click="RouteToCashier">Switch to Cashier View</button>
+      <button class="button" v-if="showButtons" style="width: 200px" @click="RouteToSCO">Switch to Self Checkout View</button>
       <Translate />
     </span>
   </div>
@@ -68,11 +70,24 @@
 <script>
 import { collapsed, toggleSideBar, sideBarWidth, showButtons } from './state.js'
 import Translate from './translate/translateModel.vue'
+import { useRouter } from 'vue-router' 
 
 export default {
   name: 'MenuBar',
   setup() {
-    return { collapsed, toggleSideBar, sideBarWidth, showButtons }
+    const router = useRouter() 
+
+    const RouteToCashier = () => {
+      router.push('/cashier') 
+    }
+
+    const RouteToSCO = () => {
+      router.push('/') 
+    }
+
+    return {
+      RouteToCashier,
+      RouteToSCO, collapsed, toggleSideBar, sideBarWidth, showButtons }
   },
   components: {
     Translate,
