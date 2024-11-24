@@ -1,7 +1,12 @@
 <template>
   <div class="menu-board">
     <component
-      v-if="item === 'A La Carte'"
+      v-if="item === 'Sides'"
+      :is="'ALaCarte'"
+      @selectItem="selectItem"
+    />
+    <component
+      v-if="item === 'Entrees'"
       :is="'ALaCarte'"
       @selectItem="selectItem"
     />

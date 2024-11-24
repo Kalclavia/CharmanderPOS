@@ -8,10 +8,44 @@
         <h1>(4) APPETIZERS</h1>
       </div>
 
+      <div class="entry">
+      <div class="item-column">
+        <h2>SMALL</h2>
+      </div>    
+      <div class="price-column">
+        PRICE
+      </div>
+    </div>
+
       <MenuBoard :item="'Appetizers'" />
+
       <div class="banner">
         <h1>(5) DRINKS</h1>
       </div>
+      <div class="entry">
+        <div class="item-column">
+          <h2>SMALL</h2>
+        </div>    
+        <div class="price-column">
+          PRICE
+        </div>
+    </div>
+    <div class="entry">
+      <div class="item-column">
+        <h2>MEDIUM</h2>
+      </div>    
+      <div class="price-column">
+        PRICE
+      </div>
+    </div>
+    <div class="entry">
+      <div class="item-column">
+        <h2>LARGE</h2>
+      </div>    
+      <div class="price-column">
+        PRICE
+      </div>
+    </div>
 
       <MenuBoard :item="'Drinks'" />
     </div>   
@@ -39,6 +73,7 @@ export default {
 </script>
 
 <style scoped>
+
 .main-content {
   position: fixed;
   top: 0;
@@ -55,6 +90,22 @@ export default {
 .column {
   flex: 1;
 }
+
+.item-column {
+  padding-left: 20px;
+  flex: 1;
+}
+
+.price-column {
+  margin: auto;
+  width: 50%;
+  padding: 10px;
+}
+
+.entry {
+  display: flex;
+}
+
 
 .fill {
     display: flex;

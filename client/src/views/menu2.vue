@@ -1,9 +1,14 @@
 <template>
   <div class="main-content">
     <div class="banner">
-      <h1>(2) Choose Entrees & Sides</h1>
+      <h1>(2) Choose Your Side(s)</h1>
     </div>
-    <MenuBoard :item="'A La Carte'" />
+    <MenuBoard :item="'Sides'" />
+
+    <div class="banner">
+      <h1>(3) Choose Your Entree(s)</h1>
+    </div>
+    <MenuBoard :item="'Entrees'" />
   </div>
 </template>
 

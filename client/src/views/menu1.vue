@@ -8,36 +8,67 @@
       <h1>(1) CHOOSE A MEAL</h1>
     </div>
 
-    <div class="item">    
-      <h2>BOWL</h2>
-      <h3>1 Entree + Side(s)</h3>
+    <div class="entry">
+      <div class="item-column">
+        <h2>BOWL</h2>
+        <h3>1 Entree + Side(s)</h3>
+      </div>    
+      <div class="price-column">
+        PRICE
+      </div>
     </div>
 
-    <div class="item">
-      <h2>PLATE</h2>
-      <h3>2 Entree + Side(s)</h3>
+    <div class="entry">
+      <div class="item-column">
+        <h2>PLATE</h2>
+        <h3>2 Entree + Side(s)</h3>
+      </div>    
+      <div class="price-column">
+        PRICE
+      </div>
     </div>
-    
-    <div class="item">
-      <h2>BIGGER PLATE</h2>
-      <h3>3 Entree + Side(s)</h3>
+
+    <div class="entry">
+      <div class="item-column">
+        <h2>BIGGER PLATE</h2>
+        <h3>3 Entree + Side(s)</h3>
+      </div>    
+      <div class="price-column">
+        PRICE
+      </div>
     </div>
-    
+
     <div>
       <div class="banner">
         <h1>PANDA BUNDLES <i>&nbsp;&nbsp;&nbsp;&nbsp;Add a medium drink</i></h1>
       </div>
 
-    <div class="item">
-      <h2>BOWL + DRINK</h2>
+      <div class="entry">
+      <div class="item-column">
+        <h2>BOWL + DRINK</h2>
+      </div>    
+      <div class="price-column">
+        PRICE
+      </div>
     </div>
 
-    <div class="item">
-      <h2>PLATE + DRINK</h2>
+
+    <div class="entry">
+      <div class="item-column">
+        <h2>PLATE + DRINK</h2>
+      </div>    
+      <div class="price-column">
+        PRICE
+      </div>
     </div>
 
-    <div class="item">
-      <h2>BIGGER PLATE + DRINK</h2>
+    <div class="entry">
+      <div class="item-column">
+        <h2>BIGGER PLATE + DRINK</h2>
+      </div>    
+      <div class="price-column">
+        PRICE
+      </div>
     </div>
 
     </div>   
@@ -82,6 +113,22 @@ export default {
 .column {
   flex: 1;
 }
+
+.item-column {
+  padding-left: 20px;
+  flex: 1;
+}
+
+.price-column {
+  margin: auto;
+  width: 50%;
+  padding: 10px;
+}
+
+.entry {
+  display: flex;
+}
+
 
 .fill {
     display: flex;
