@@ -11,7 +11,12 @@
     </span>
     <span v-if="collapsed"> </span>
     <span v-else>
-      <h2 v-if="$cookies.get('role') == 'manager' || $cookies.get('role') == 'cashier'" class="title">Signed in as: EmployeeID #{{$cookies.get('ID')}} </h2>
+      <!-- Logout Button -->
+      <button v-if="$cookies.get('role') == 'manager' || $cookies.get('role') == 'cashier'" @click="logout" class="logout-button">
+        <span class="logout-icon">✖</span> LOGOUT
+      </button>
+      <h2 v-if="$cookies.get('role') == 'manager' || $cookies.get('role') == 'cashier'" class="toolbar">Signed in as: {{ capitalizedRole }} #{{$cookies.get('ID')}} </h2>
+
       <h2  class="title">OPTIONS</h2>
       <button
         class="button"
@@ -75,6 +80,12 @@ import { useRouter } from 'vue-router'
 
 export default {
   name: 'MenuBar',
+  computed: {
+    capitalizedRole() {
+      const role = this.$cookies.get('role');
+      return role ? role.charAt(0).toUpperCase() + role.slice(1) : '';
+    },
+  },
   setup() {
     const router = useRouter() 
 
@@ -86,9 +97,17 @@ export default {
       router.push('/') 
     }
 
+    const logout = () => {
+      // Clear user session cookies
+      $cookies.remove('ID');
+      $cookies.remove('role');
+      // Redirect to login page
+      router.push('/login');
+    };
+
     return {
       RouteToCashier,
-      RouteToSCO, collapsed, toggleSideBar, sideBarWidth, showButtons }
+      RouteToSCO, collapsed, toggleSideBar, sideBarWidth, showButtons, logout }
   },
   components: {
     Translate,
@@ -150,4 +169,51 @@ export default {
   transform: rotate(180deg);
   transition: 0.2s linear;
 }
+
+.toolbar {
+  margin-bottom: 35px;
+  font-size: 18px;
+  text-align: center;
+  color: #080808;
+  border-bottom: 2px solid #080808;
+}
+
+.logout-button {
+  border: 2px solid #080808;
+  border-radius: 30px;
+  background-color: #d2ceb8;
+  color: #080808;
+  font: Arial;
+  padding: 15px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition:
+    background-color 0.3s,
+    box-shadow 0.3s;
+  box-shadow: 0 4px 3px #080808;
+  margin-top: 20px;
+  width: 200px;
+  text-align: center;
+}
+
+.logout-button:hover {
+  background-color: #938f7a;
+}
+
+.logout-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 8px;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #080808;
+  border-radius: 50%;
+  background-color: #d2ceb8;
+  color: #080808;
+  font-size: 14px;
+  font-weight: bold;
+  text-align: center;
+}
+
 </style>
