@@ -2,28 +2,62 @@
   <div class="biggerplate">
     <h2>Pick 1 Side</h2>
     <div class="grid">
-      <button v-for="side in sides" :key="side" @click="selectSide(side)" :disabled="isOutOfStock(side, 'Side')"
-        :class="{ selected: selectedSide === side, 'out-of-stock': isOutOfStock(side, 'Side') }">
-        <img v-if="getSideImage(side)" :src="getSideImage(side)" :alt="getSideName(side)" class="side-image"
-          @error="handleImageError" />
+      <button
+        v-for="side in sides"
+        :key="side"
+        @click="selectSide(side)"
+        :disabled="isOutOfStock(side, 'Side')"
+        :class="{
+          selected: selectedSide === side,
+          'out-of-stock': isOutOfStock(side, 'Side'),
+        }"
+      >
+        <img
+          v-if="getSideImage(side)"
+          :src="getSideImage(side)"
+          :alt="getSideName(side)"
+          class="side-image"
+          @error="handleImageError"
+        />
         <span>{{ getSideName(side) }}</span>
-        <span v-if="isOutOfStock(side, 'Side')" class="out-of-stock-label">Out of Stock</span>
+        <span v-if="isOutOfStock(side, 'Side')" class="out-of-stock-label"
+          >Out of Stock</span
+        >
         <span v-if="selectedSide === side" class="checkmark">✓</span>
       </button>
     </div>
 
     <h2>Pick 3 Entrees</h2>
     <div class="grid">
-      <button v-for="entree in entrees" :key="entree" @click="selectEntree(entree)"
+      <button
+        v-for="entree in entrees"
+        :key="entree"
+        @click="selectEntree(entree)"
         :disabled="isOutOfStock(entree, 'Entree')"
-        :class="{ selected: selectedEntrees.includes(entree), 'out-of-stock': isOutOfStock(entree, 'Entree') }">
-        <img v-if="getEntreeImage(entree)" :src="getEntreeImage(entree)" :alt="getEntreeName(entree)"
-          class="entree-image" @error="handleImageError" />
+        :class="{
+          selected: selectedEntrees.includes(entree),
+          'out-of-stock': isOutOfStock(entree, 'Entree'),
+        }"
+      >
+        <img
+          v-if="getEntreeImage(entree)"
+          :src="getEntreeImage(entree)"
+          :alt="getEntreeName(entree)"
+          class="entree-image"
+          @error="handleImageError"
+        />
         <span>{{ getEntreeName(entree) }}</span>
-        <span v-if="isOutOfStock(entree, 'Entree')" class="out-of-stock-label">Out of Stock</span>
+        <span v-if="isOutOfStock(entree, 'Entree')" class="out-of-stock-label"
+          >Out of Stock</span
+        >
         <span v-if="selectedEntrees.includes(entree)" class="checkmark">✓</span>
         <span class="premium-label-container">
-          <img v-if="isPremium(entree)" src="/src/assets/star.png" alt="Premium" class="star-icon" />
+          <img
+            v-if="isPremium(entree)"
+            src="/src/assets/star.png"
+            alt="Premium"
+            class="star-icon"
+          />
           <span class="premium-label">Premium Item + $1.50</span>
         </span>
       </button>
@@ -81,14 +115,19 @@ export default {
     },
     async fetchPrice() {
       try {
-        const response = await axios.get(import.meta.env.VITE_API_ENDPOINT + `price/${encodeURIComponent('Bigger Plate')}`);
-        this.price = response.data.price; // Assign the price
+        const response = await axios.get(
+          import.meta.env.VITE_API_ENDPOINT +
+            `price/${encodeURIComponent('Bigger Plate')}`,
+        )
+        this.price = response.data.price // Assign the price
       } catch (error) {
-        console.error('Error fetching price:', error);
+        console.error('Error fetching price:', error)
       }
     },
     isOutOfStock(item, category) {
-      return this.outOfStockItems[category]?.includes(this.getSideName(item) || this.getEntreeName(item));
+      return this.outOfStockItems[category]?.includes(
+        this.getSideName(item) || this.getEntreeName(item),
+      )
     },
     selectSide(side) {
       // Select one side and deselect the others
@@ -146,66 +185,87 @@ export default {
         // Fetch the base item ID for "Bigger Plate" dynamically
         axios
           .get(import.meta.env.VITE_API_ENDPOINT + `itemid/Bigger Plate`)
-          .then((response) => {
-            const baseItemID = response.data.itemID; // Dynamically fetched base item ID
-            let price = this.price;
-            let premiumCount = 0;
+          .then(response => {
+            const baseItemID = response.data.itemID // Dynamically fetched base item ID
+            let price = this.price
+            let premiumCount = 0
 
             // Check if any of the selected entrees are premium
-            this.selectedEntrees.forEach((entree) => {
+            this.selectedEntrees.forEach(entree => {
               if (this.isPremium(entree)) {
-                premiumCount++;
+                premiumCount++
               }
-            });
+            })
 
             // Add $1.50 for each premium entree
-            price += premiumCount * 1.50;
+            price += premiumCount * 1.5
 
             // Get the side and entree names
-            const sideName = this.getSideName(this.selectedSide);
-            const entreeNames = this.selectedEntrees.map((entree) => this.getEntreeName(entree));
+            const sideName = this.getSideName(this.selectedSide)
+            const entreeNames = this.selectedEntrees.map(entree =>
+              this.getEntreeName(entree),
+            )
 
             // Fetch foodIDs for the selected side and entrees
             Promise.all([
-              axios.get(import.meta.env.VITE_API_ENDPOINT + `foodid/${encodeURIComponent(sideName)}`),
-              ...this.selectedEntrees.map((entree) =>
-                axios.get(import.meta.env.VITE_API_ENDPOINT + `foodid/${encodeURIComponent(this.getEntreeName(entree))}`)
+              axios.get(
+                import.meta.env.VITE_API_ENDPOINT +
+                  `foodid/${encodeURIComponent(sideName)}`,
+              ),
+              ...this.selectedEntrees.map(entree =>
+                axios.get(
+                  import.meta.env.VITE_API_ENDPOINT +
+                    `foodid/${encodeURIComponent(this.getEntreeName(entree))}`,
+                ),
               ),
             ])
-              .then(([sideResponse, entreeResponse1, entreeResponse2, entreeResponse3]) => {
-                const sideFoodID = sideResponse.data.foodID;
-                const entreeFoodID1 = entreeResponse1.data.foodID;
-                const entreeFoodID2 = entreeResponse2.data.foodID;
-                const entreeFoodID3 = entreeResponse3.data.foodID;
+              .then(
+                ([
+                  sideResponse,
+                  entreeResponse1,
+                  entreeResponse2,
+                  entreeResponse3,
+                ]) => {
+                  const sideFoodID = sideResponse.data.foodID
+                  const entreeFoodID1 = entreeResponse1.data.foodID
+                  const entreeFoodID2 = entreeResponse2.data.foodID
+                  const entreeFoodID3 = entreeResponse3.data.foodID
 
-                // Construct the transactionEntry array
-                const transactionEntry = [baseItemID, sideFoodID, entreeFoodID1, entreeFoodID2, entreeFoodID3];
+                  // Construct the transactionEntry array
+                  const transactionEntry = [
+                    baseItemID,
+                    sideFoodID,
+                    entreeFoodID1,
+                    entreeFoodID2,
+                    entreeFoodID3,
+                  ]
 
-                // Construct the item to emit
-                const item = {
-                  name: `Bigger Plate (${sideName} + ${entreeNames.join(", ")})`,
-                  price: price,
-                  transactionEntry: transactionEntry, // Include for further use
-                  isPremium: premiumCount > 0,
-                };
+                  // Construct the item to emit
+                  const item = {
+                    name: `Bigger Plate (${sideName} + ${entreeNames.join(', ')})`,
+                    price: price,
+                    transactionEntry: transactionEntry, // Include for further use
+                    isPremium: premiumCount > 0,
+                  }
 
-                this.$emit('addToCart', item); // Emit the item to the parent
-                this.$emit('addToTransactionCart', transactionEntry); // Emit transaction entry
-                console.log('Transaction Added:', transactionEntry);
+                  this.$emit('addToCart', item) // Emit the item to the parent
+                  this.$emit('addToTransactionCart', transactionEntry) // Emit transaction entry
+                  console.log('Transaction Added:', transactionEntry)
 
-                // Reset selections
-                this.selectedSide = null;
-                this.selectedEntrees = [];
+                  // Reset selections
+                  this.selectedSide = null
+                  this.selectedEntrees = []
+                },
+              )
+              .catch(error => {
+                console.error('Error fetching food IDs:', error)
+                alert('Cannot add to transaction cart.')
               })
-              .catch((error) => {
-                console.error('Error fetching food IDs:', error);
-                alert('Cannot add to transaction cart.');
-              });
           })
-          .catch((error) => {
-            console.error('Error fetching base item ID:', error);
-            alert('Cannot fetch base item ID.');
-          });
+          .catch(error => {
+            console.error('Error fetching base item ID:', error)
+            alert('Cannot fetch base item ID.')
+          })
       }
     },
 
@@ -228,7 +288,7 @@ export default {
       const fileName = `${name.toLowerCase().replace(/\s+/g, '')}.png`
       const imagePath = `/src/assets/${fileName}`
       // console.log('Image path:', imagePath)
-      return new URL(`/src/assets/${fileName}`, import.meta.url).href;
+      return new URL(`/src/assets/${fileName}`, import.meta.url).href
     },
     getEntreeName(entree) {
       if (typeof entree === 'string') {
@@ -245,7 +305,7 @@ export default {
       const fileName = `${name.toLowerCase().replace(/\s+/g, '')}.png`
       const imagePath = `/src/assets/${fileName}`
       // console.log('Image path:', imagePath)
-      return new URL(`/src/assets/${fileName}`, import.meta.url).href;
+      return new URL(`/src/assets/${fileName}`, import.meta.url).href
     },
     handleImageError(event) {
       console.error('Image failed to load:', event.target.src)
@@ -256,7 +316,6 @@ export default {
     this.fetchMenuItems() // Fetch menu items when the component mounts
     this.fetchPrice()
     this.checkPremiumStatus()
-
   },
 }
 </script>
@@ -326,8 +385,8 @@ button:hover {
 }
 
 .add-to-cart {
-  padding: 15px 15px;
-  font-size: 15px;
+  padding: 0.9375em 0.9375em;
+  font-size: 0.9375em;
   background-color: #4caf50;
   color: rgb(0, 0, 0);
   border: none;
@@ -397,6 +456,13 @@ button:hover {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   font-size: 12px;
 }
+
+.grid button {
+  margin: 5px;
+  padding: 10px;
+  font-size: 1em
+}
+
 
 .premium-label-container:hover .premium-label {
   visibility: visible;

@@ -56,10 +56,10 @@ export default {
 
 .tap-to-order {
   margin-top: 20px;
-  padding: 15px;
+  padding: 0.9375em;
   width: 320px;
   height: 60px;
-  font-size: 18px;
+  font-size: 1.125em;
   background-color: #e7e4d7;
   color: #080808;
   border: 2px solid #080808;

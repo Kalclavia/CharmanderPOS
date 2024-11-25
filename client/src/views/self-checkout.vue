@@ -434,7 +434,7 @@ export default {
   right: -10px;
   background-color: red;
   color: white;
-  font-size: 14px;
+  font-size: 0.875em;
   font-weight: bold;
   padding: 3px 7px;
   border-radius: 50%;

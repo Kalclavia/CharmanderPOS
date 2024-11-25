@@ -80,7 +80,7 @@ export default {
 }
 
 h2 {
-    font-size: 24px;
+    font-size: 1.5em;
     margin-bottom: 20px;
 }
 
@@ -115,7 +115,7 @@ h2 {
 }
 
 .payment-button span {
-    font-size: 16px;
+    font-size: 1em;
     font-weight: bold;
     color: #333;
 }
@@ -135,7 +135,7 @@ h2 {
     top: 10px;
     right: 10px;
     color: green;
-    font-size: 24px;
+    font-size: 1.5em;
     font-weight: bold;
 }
 
@@ -150,7 +150,7 @@ h2 {
 .cancel-button,
 .place-order-button {
     padding: 10px 20px;
-    font-size: 16px;
+    font-size: 1em;
     font-weight: bold;
     color: #ffffff;
     border: none;

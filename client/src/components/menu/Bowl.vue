@@ -2,24 +2,53 @@
   <div class="bowl">
     <h2>Pick 1 Side</h2>
     <div class="grid">
-      <button v-for="side in sides" :key="side" @click="toggleSide(side)" :disabled="isOutOfStock(side, 'Side')"
-        :class="{ selected: selectedSide === side, 'out-of-stock': isOutOfStock(side, 'Side') }">
-        <img v-if="getSideImage(side)" :src="getSideImage(side)" :alt="getSideName(side)" class="side-image"
-          @error="handleImageError" />
+      <button
+        v-for="side in sides"
+        :key="side"
+        @click="toggleSide(side)"
+        :disabled="isOutOfStock(side, 'Side')"
+        :class="{
+          selected: selectedSide === side,
+          'out-of-stock': isOutOfStock(side, 'Side'),
+        }"
+      >
+        <img
+          v-if="getSideImage(side)"
+          :src="getSideImage(side)"
+          :alt="getSideName(side)"
+          class="side-image"
+          @error="handleImageError"
+        />
         <span>{{ getSideName(side) }}</span>
-        <span v-if="isOutOfStock(side, 'Side')" class="out-of-stock-label">Out of Stock</span>
+        <span v-if="isOutOfStock(side, 'Side')" class="out-of-stock-label"
+          >Out of Stock</span
+        >
         <span v-if="selectedSide === side" class="checkmark">✓</span>
       </button>
     </div>
     <h2>Pick 1 Entree</h2>
     <div class="grid">
-      <button v-for="entree in entrees" :key="entree" @click="toggleEntree(entree)"
+      <button
+        v-for="entree in entrees"
+        :key="entree"
+        @click="toggleEntree(entree)"
         :disabled="isOutOfStock(entree, 'Entree')"
-        :class="{ selected: selectedEntree === entree, 'out-of-stock': isOutOfStock(entree, 'Entree') }">
-        <img v-if="getEntreeImage(entree)" :src="getEntreeImage(entree)" :alt="getEntreeName(entree)"
-          class="entree-image" @error="handleImageError" />
+        :class="{
+          selected: selectedEntree === entree,
+          'out-of-stock': isOutOfStock(entree, 'Entree'),
+        }"
+      >
+        <img
+          v-if="getEntreeImage(entree)"
+          :src="getEntreeImage(entree)"
+          :alt="getEntreeName(entree)"
+          class="entree-image"
+          @error="handleImageError"
+        />
         <span>{{ getEntreeName(entree) }}</span>
-        <span v-if="isOutOfStock(entree, 'Entree')" class="out-of-stock-label">Out of Stock</span>
+        <span v-if="isOutOfStock(entree, 'Entree')" class="out-of-stock-label"
+          >Out of Stock</span
+        >
         <span v-if="selectedEntree === entree" class="checkmark">✓</span>
 
         <span v-if="isPremium(entree)" class="premium-label-container">
@@ -88,7 +117,9 @@ export default {
       }
     },
     isOutOfStock(item, category) {
-      return this.outOfStockItems[category]?.includes(this.getSideName(item) || this.getEntreeName(item));
+      return this.outOfStockItems[category]?.includes(
+        this.getSideName(item) || this.getEntreeName(item),
+      )
     },
     toggleSide(side) {
       this.selectedSide = this.selectedSide === side ? null : side
@@ -161,11 +192,11 @@ export default {
             Promise.all([
               axios.get(
                 import.meta.env.VITE_API_ENDPOINT +
-                `foodid/${encodeURIComponent(sideName)}`,
+                  `foodid/${encodeURIComponent(sideName)}`,
               ),
               axios.get(
                 import.meta.env.VITE_API_ENDPOINT +
-                `foodid/${encodeURIComponent(entreeName)}`,
+                  `foodid/${encodeURIComponent(entreeName)}`,
               ),
             ])
               .then(([sideResponse, entreeResponse]) => {
@@ -322,8 +353,8 @@ button:hover {
 }
 
 .add-to-cart {
-  padding: 15px 15px;
-  font-size: 15px;
+  padding: 0.9375em 0.9375em;
+  font-size: 0.9375em;
   background-color: #4caf50;
   color: rgb(0, 0, 0);
   border: none;
@@ -393,6 +424,13 @@ button:hover {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   font-size: 12px;
 }
+
+.grid button {
+  margin: 5px;
+  padding: 10px;
+  font-size: 1em
+}
+
 
 .premium-label-container:hover .premium-label {
   visibility: visible;

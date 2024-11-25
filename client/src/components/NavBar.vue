@@ -11,11 +11,17 @@
     </span>
     <span v-if="collapsed"> </span>
     <span v-else>
-      <h2 v-if="$cookies.get('role') == 'manager' || $cookies.get('role') == 'cashier'" class="title">Signed in as: EmployeeID #{{$cookies.get('ID')}} </h2>
-      <h2  class="title">OPTIONS</h2>
+      <h2
+        v-if="
+          $cookies.get('role') == 'manager' || $cookies.get('role') == 'cashier'
+        "
+        class="title"
+      >
+        Signed in as: EmployeeID #{{ $cookies.get('ID') }}
+      </h2>
+      <h2 class="title">OPTIONS</h2>
       <button
         class="button"
-        
         style="width: 200px"
         @click="$emit('selectItem', 'Home')"
       >
@@ -23,7 +29,6 @@
       </button>
       <button
         class="button"
-        
         style="width: 200px"
         @click="$emit('selectItem', 'Inventory')"
       >
@@ -31,7 +36,6 @@
       </button>
       <button
         class="button"
-        
         style="width: 200px"
         @click="$emit('selectItem', 'Menu Items')"
       >
@@ -39,7 +43,6 @@
       </button>
       <button
         class="button"
-        
         style="width: 200px"
         @click="$emit('selectItem', 'Menu Prices')"
       >
@@ -47,7 +50,6 @@
       </button>
       <button
         class="button"
-        
         style="width: 200px"
         @click="$emit('selectItem', 'Manage Employees')"
       >
@@ -55,14 +57,17 @@
       </button>
       <button
         class="button"
-        
         style="width: 200px"
         @click="$emit('selectItem', 'View Reports')"
       >
         Reports
       </button>
-      <button class="button"  style="width: 200px" @click="RouteToCashier">Switch to Cashier View</button>
-      <button class="button"  style="width: 200px" @click="RouteToSCO">Switch to Self Checkout View</button>
+      <button class="button" style="width: 200px" @click="RouteToCashier">
+        Switch to Cashier View
+      </button>
+      <button class="button" style="width: 200px" @click="RouteToSCO">
+        Switch to Self Checkout View
+      </button>
       <Translate />
     </span>
   </div>
@@ -71,24 +76,29 @@
 <script>
 import { collapsed, toggleSideBar, sideBarWidth, showButtons } from './state.js'
 import Translate from './translate/translateModel.vue'
-import { useRouter } from 'vue-router' 
+import { useRouter } from 'vue-router'
 
 export default {
   name: 'MenuBar',
   setup() {
-    const router = useRouter() 
+    const router = useRouter()
 
     const RouteToCashier = () => {
-      router.push('/cashier') 
+      router.push('/cashier')
     }
 
     const RouteToSCO = () => {
-      router.push('/') 
+      router.push('/')
     }
 
     return {
       RouteToCashier,
-      RouteToSCO, collapsed, toggleSideBar, sideBarWidth, showButtons }
+      RouteToSCO,
+      collapsed,
+      toggleSideBar,
+      sideBarWidth,
+      showButtons,
+    }
   },
   components: {
     Translate,
@@ -113,8 +123,8 @@ export default {
 }
 
 .title {
-  margin-bottom: 15px;
-  font-size: 24px;
+  margin-bottom: 0.9375em;
+  font-size: 1.5em;
   text-align: center;
   color: #080808;
 }
@@ -125,7 +135,7 @@ export default {
   background-color: #e7e4d7;
   color: #080808;
   font: Arial;
-  padding: 15px;
+  padding: 0.9375em;
   margin-bottom: 10px;
   cursor: pointer;
   transition:

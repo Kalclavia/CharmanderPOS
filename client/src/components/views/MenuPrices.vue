@@ -95,7 +95,7 @@ export default {
   border-radius: 10px;
   background-color: #e7e4d7;
   color: black;
-  padding: 15px;
+  padding: 0.9375em;
   text-align: center;
   width: 200px;
   height: 75px;

@@ -186,7 +186,7 @@ export default {
 .buttons2 {
   display: flex;
   justify-content: space-around;
-  padding-top: 15px;
+  padding-top: 0.9375em;
 }
 
 .table {
@@ -245,7 +245,7 @@ button {
   background-color: #e7e4d7;
   color: #080808;
   font: Arial;
-  padding: 15px;
+  padding: 0.9375em;
   margin-bottom: 5px;
   cursor: pointer;
   transition:

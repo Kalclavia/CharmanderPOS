@@ -56,16 +56,13 @@ export default {
       )
 
       // Send odcer confirmation text message
-      const textResponse = await axios.post(
-        "https://textbelt.com/text",
-        {
-          phone: this.phone,
-          message: `Hello ${this.name}, your order has been successfully placed! Your order number is ${transactionIDResponse.data.transactionID}. Thank you for eating at Panda Express!`,
-          key: "f84938f5684e8a6ec708fbb407bbf59709290d89M8miZnjZlDrtq91BeYxoqU0Pb",
-        }
-      );
-        console.log('Text reponse:')
-        console.log(textResponse)
+      const textResponse = await axios.post('https://textbelt.com/text', {
+        phone: this.phone,
+        message: `Hello ${this.name}, your order has been successfully placed! Your order number is ${transactionIDResponse.data.transactionID}. Thank you for eating at Panda Express!`,
+        key: 'f84938f5684e8a6ec708fbb407bbf59709290d89M8miZnjZlDrtq91BeYxoqU0Pb',
+      })
+      console.log('Text reponse:')
+      console.log(textResponse)
       // Emit order details to parent, including transactionId from props
       this.$emit('completeOrder')
     },
@@ -89,7 +86,7 @@ export default {
 }
 
 h2 {
-  font-size: 24px;
+  font-size: 1.5em;
   margin-bottom: 20px;
 }
 
@@ -100,10 +97,14 @@ label {
 
 input {
   padding: 8px;
-  font-size: 16px;
+  font-size: 1.5em;
   margin-bottom: 20px;
   border: 1px solid #ccc;
   border-radius: 5px;
+}
+
+.user-info-page label {
+  font-size: 1.5em;
 }
 
 .bottom-buttons {
@@ -114,7 +115,7 @@ input {
 .cancel-button,
 .confirm-button {
   padding: 10px 20px;
-  font-size: 16px;
+  font-size: 1.5em;
   font-weight: bold;
   color: #ffffff;
   border: none;
