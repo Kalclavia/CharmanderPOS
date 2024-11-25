@@ -260,8 +260,8 @@ export default {
   padding: 0.9375em 0.9375em;
   font-size: 0.9375em;
   font-weight: 700;
-  background-color: #f31b1b;
-  color: rgb(255, 255, 255);
+  background-color: #18e4f3;
+  color: rgb(0, 0, 0);
   border: none;
   border-radius: 10px;
   position: fixed;
