@@ -3,24 +3,36 @@
         <h2>Choose a payment method</h2>
         <div class="payment-options">
             <!-- Payment option buttons -->
-            <div class="payment-button" :class="{ selected: selectedPayment === 'Cash' }"
-                @click="togglePayment('Cash')">
-                <img src="@/assets/cash-icon.png" alt="Cash" />
-                <span>Cash</span>
-                <span v-if="selectedPayment === 'Cash'" class="checkmark">✓</span>
-            </div>
-            <div class="payment-button" :class="{ selected: selectedPayment === 'Card' }"
-                @click="togglePayment('Card')">
-                <img src="@/assets/card-icon.png" alt="Card" />
-                <span>Card</span>
-                <span v-if="selectedPayment === 'Card'" class="checkmark">✓</span>
-            </div>
-            <div class="payment-button" :class="{ selected: selectedPayment === 'DiningDollars' }"
-                @click="togglePayment('DiningDollars')">
-                <img src="@/assets/dining-dollars-icon.png" alt="Dining Dollars" />
-                <span>Dining Dollars</span>
-                <span v-if="selectedPayment === 'DiningDollars'" class="checkmark">✓</span>
-            </div>
+            <div class="payment-button" 
+    :class="{ selected: selectedPayment === 'Cash' }" 
+    @click="togglePayment('Cash')" 
+    @keydown.enter="togglePayment('Cash')" 
+    @keydown.space="togglePayment('Cash')" 
+    tabindex="0">
+    <img src="@/assets/cash-icon.png" alt="Cash" />
+    <span>Cash</span>
+    <span v-if="selectedPayment === 'Cash'" class="checkmark">✓</span>
+</div>
+<div class="payment-button" 
+    :class="{ selected: selectedPayment === 'Card' }" 
+    @click="togglePayment('Card')" 
+    @keydown.enter="togglePayment('Card')" 
+    @keydown.space="togglePayment('Card')" 
+    tabindex="0">
+    <img src="@/assets/card-icon.png" alt="Card" />
+    <span>Card</span>
+    <span v-if="selectedPayment === 'Card'" class="checkmark">✓</span>
+</div>
+<div class="payment-button" 
+    :class="{ selected: selectedPayment === 'DiningDollars' }" 
+    @click="togglePayment('DiningDollars')" 
+    @keydown.enter="togglePayment('DiningDollars')" 
+    @keydown.space="togglePayment('DiningDollars')" 
+    tabindex="0">
+    <img src="@/assets/dining-dollars-icon.png" alt="Dining Dollars" />
+    <span>Dining Dollars</span>
+    <span v-if="selectedPayment === 'DiningDollars'" class="checkmark">✓</span>
+</div>
         </div>
 
         <!-- Bottom buttons for cancel and place order -->
