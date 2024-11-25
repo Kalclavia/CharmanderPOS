@@ -12,7 +12,7 @@
         <img
           v-if="getSideImage(side)"
           :src="getSideImage(side)"
-          :alt="getSideName(side)"
+          :alt="'Digital image of ' + getSideName(side) + ' as presented on the Panda Express menu'"
           class="side-image"
           @error="handleImageError"
         />

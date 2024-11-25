@@ -13,7 +13,7 @@
         <img
           v-if="getSideImage(side)"
           :src="getSideImage(side)"
-          :alt="getSideName(side)"
+          :alt="'Digital image of ' + getSideName(side) + ' as presented on the Panda Express menu'"
           class="side-image"
           @error="handleImageError"
         />
@@ -41,7 +41,7 @@
         <img
           v-if="getEntreeImage(entree)"
           :src="getEntreeImage(entree)"
-          :alt="getEntreeName(entree)"
+          :alt="'Digital image of the' + getEntreeName(side) + ' entree as presented on the Panda Express menu'"
           class="entree-image"
           @error="handleImageError"
         />

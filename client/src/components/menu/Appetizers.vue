@@ -15,7 +15,7 @@
         <img
           v-if="getAppetizerImage(appetizer)"
           :src="getAppetizerImage(appetizer)"
-          :alt="getAppetizerName(appetizer)"
+          :alt="'Digital image of the' + getAppetizerName(appetizer) + ' appetizer as presented on the Panda Express menu'"
           class="appetizer-image"
           @error="handleImageError"
         />

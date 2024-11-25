@@ -16,7 +16,7 @@
         <img
           v-if="getDrinkImage(drink)"
           :src="getDrinkImage(drink)"
-          :alt="getDrinkName(drink)"
+          :alt="'Digital image of the' + getDrinkName(drink) + ' drink as presented on the Panda Express menu'"
           class="drink-image"
           @error="handleImageError"
         />

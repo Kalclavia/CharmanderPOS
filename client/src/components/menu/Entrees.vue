@@ -12,7 +12,7 @@
         <img
           v-if="getEntreeImage(entree)"
           :src="getEntreeImage(entree)"
-          :alt="getEntreeName(entree)"
+          :alt="'Digital image of the' + getEntreeName(side) + ' entree as presented on the Panda Express menu'"
           class="entree-image"
           @error="handleImageError"
         />

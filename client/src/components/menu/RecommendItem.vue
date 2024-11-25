@@ -8,7 +8,7 @@
       <img
         v-if="getEntreeImage(itemName)"
         :src="getEntreeImage(itemName)"
-        :alt="getEntreeName(itemName)"
+        :alt="'Digital image of the' + getEntreeName(itemName) + ',the recommended item for today considering the weather!'"
         class="entree-image"
         @error="handleImageError"
       />
