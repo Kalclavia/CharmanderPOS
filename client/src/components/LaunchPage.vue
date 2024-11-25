@@ -30,6 +30,8 @@ export default {
   bottom: 0;
   width: 100%;
   text-align: center;
+  background-color: #18e4f3;
+  color: rgb(0, 0, 0);
 }
 
 .launch-page {

@@ -207,15 +207,15 @@ export default {
 }
 
 .weather-message {
-  margin-top: 20px;
+  margin-top: 10px;
   font-size: 1.5em;
   text-align: center;
   color: #080808;
 }
 
 .weather-message h2 {
-  margin-bottom: 10px;
-  font-size: 1em;
+  margin-bottom: 0px;
+  font-size: .8em;
   text-align: center;
   color: #080808;
 }

@@ -305,12 +305,12 @@ export default {
 <style scoped>
 .RecommendedItem {
   padding: 10px;
-  font-size: 20px;
-  padding-left: 75px;
+  font-size: 0.75em;
+  padding-left: 60px;
 }
 
 .item-name {
-  font-size: 20px;
+  font-size: 1.25em;
 }
 
 .grid {
