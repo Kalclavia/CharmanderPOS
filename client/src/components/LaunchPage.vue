@@ -24,7 +24,7 @@ export default {
 </script>
 
 <style scoped>
-.translate {
+.skiptranslate {
   text-align: center;
   position: fixed;
   bottom: 0;
@@ -34,7 +34,7 @@ export default {
   color: rgb(0, 0, 0);
 }
 
-.translate span a {
+.skiptranslate span a {
   text-align: center;
   position: fixed;
   bottom: 0;
