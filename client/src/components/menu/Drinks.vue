@@ -5,6 +5,7 @@
       <button
         v-for="drink in drinks"
         :key="drink"
+        ref="drinkButtons"
         @click="toggleDrinks(drink)"
         :disabled="isOutOfStock(drink)"
         :class="{
@@ -41,7 +42,11 @@
               size.name !== 'Aquafina' && size.name !== 'Gatorade Lemon Lime',
           )"
           :key="size.name"
+          ref="sizeButtons"
           @click="selectSize(size)"
+          @keydown.enter="selectSize(size)"
+          @keydown.space="selectSize(size)"
+          tabindex="0"
         >
           {{ size.name }} - ${{
             size.price ? size.price.toFixed(2) : 'Loading...'
@@ -49,7 +54,15 @@
         </button>
       </div>
       <!-- Red X Button -->
-      <button @click="cancelSizeSelection" class="close-button">✖</button>
+      <button
+        @click="cancelSizeSelection"
+        @keydown.enter="cancelSizeSelection"
+        @keydown.space="cancelSizeSelection"
+        tabindex="0"
+        class="close-button"
+      >
+        ✖
+      </button>
     </div>
     <!-- Add to Cart Button -->
     <button
@@ -189,6 +202,14 @@ export default {
         this.currentItemType = 'drink'
         this.showSizeModal = true
       }
+
+      this.$nextTick(() => {
+        // Focus on the first size option
+        const firstSizeButton = this.$refs.sizeButtons?.[0]
+        if (firstSizeButton) {
+          firstSizeButton.focus()
+        }
+      })
     },
     isOutOfStock(drink) {
       const drinkName = this.getDrinkName(drink)
@@ -232,6 +253,13 @@ export default {
       // Close size selection modal
       this.showSizeModal = false
       this.currentItem = null
+
+      this.$nextTick(() => {
+        const drinkButton = this.$refs.drinkButtons?.[this.currentItem]
+        if (drinkButton) {
+          drinkButton.focus()
+        }
+      })
     },
     cancelSizeSelection() {
       this.showSizeModal = false
@@ -325,13 +353,13 @@ button {
 .size-modal button {
   margin: 5px;
   padding: 10px;
-  font-size: 1em
+  font-size: 1em;
 }
 
 .grid button {
   margin: 5px;
   padding: 10px;
-  font-size: 1em
+  font-size: 1em;
 }
 
 button:hover {
@@ -339,6 +367,10 @@ button:hover {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
+.size-modal button:focus {
+  outline: 2px solid #007bff; /* Blue outline */
+  outline-offset: 1px;
+}
 .selected {
   background-color: #d2ceb8;
   box-shadow: 0 0 0 2px #080808;

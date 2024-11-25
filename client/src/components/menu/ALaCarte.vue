@@ -5,6 +5,7 @@
       <button
         v-for="side in sides"
         :key="side.name"
+        ref="sideButtons"
         @click="toggleSides(side)"
         :disabled="isOutOfStock(side, 'Side')"
         :class="{ 'out-of-stock': isOutOfStock(side, 'Side') }"
@@ -32,6 +33,7 @@
       <button
         v-for="entree in entrees"
         :key="entree.name"
+        ref="entreeButtons"
         @click="toggleEntrees(entree)"
         :disabled="isOutOfStock(entree, 'Entree')"
         :class="{ 'out-of-stock': isOutOfStock(entree, 'Entree') }"
@@ -73,7 +75,11 @@
         <button
           v-for="size in sizeOptions.side"
           :key="size.name"
+          ref="side_sizeButtons"
           @click="selectSize(size, 'side')"
+          @keydown.enter="selectSize(size, 'side')"
+          @keydown.space="selectSize(size, 'side')"
+          tabindex="0"
         >
           {{ size.name }} - ${{
             size.price ? size.price.toFixed(2) : 'Loading...'
@@ -84,7 +90,11 @@
         <button
           v-for="size in sizeOptions.entree"
           :key="size.name"
+          ref="entree_sizeButtons"
           @click="selectSize(size, 'entree')"
+          @keydown.enter="selectSize(size, 'entree')"
+          @keydown.space="selectSize(size, 'entree')"
+          tabindex="0"
         >
           {{ size.name }} - ${{
             size.price ? size.price.toFixed(2) : 'Loading...'
@@ -92,7 +102,15 @@
         </button>
       </div>
 
-      <button @click="cancelSizeSelection" class="close-button">✖</button>
+      <button
+        @click="cancelSizeSelection"
+        @keydown.enter="cancelSizeSelection"
+        @keydown.space="cancelSizeSelection"
+        tabindex="0"
+        class="close-button"
+      >
+        ✖
+      </button>
     </div>
 
     <!-- Add to Cart Button -->
@@ -218,11 +236,27 @@ export default {
       this.currentItem = side
       this.currentItemType = 'side'
       this.showSizeModal = true
+
+      this.$nextTick(() => {
+        // Focus on the first size option
+        const firstSizeButton = this.$refs.side_sizeButtons?.[0]
+        if (firstSizeButton) {
+          firstSizeButton.focus()
+        }
+      })
     },
     toggleEntrees(entree) {
       this.currentItem = entree
       this.currentItemType = 'entree'
       this.showSizeModal = true
+
+      this.$nextTick(() => {
+        // Focus on the first size option
+        const firstSizeButton = this.$refs.entree_sizeButtons?.[0]
+        if (firstSizeButton) {
+          firstSizeButton.focus()
+        }
+      })
     },
     async checkPremiumStatus() {
       try {
@@ -334,6 +368,17 @@ export default {
 
         this.showSizeModal = false
         this.currentItem = null
+
+        this.$nextTick(() => {
+          const buttonToFocus =
+            type === 'side'
+              ? this.$refs.sideButtons?.[this.currentItem]
+              : this.$refs.entreeButtons?.[this.currentItem]
+          if (buttonToFocus) {
+            buttonToFocus.focus()
+          }
+        })
+
         this.currentItemType = null
       } catch (error) {
         console.error('Error selecting size:', error)
@@ -342,6 +387,16 @@ export default {
     cancelSizeSelection() {
       this.showSizeModal = false
       this.currentItem = null
+
+      this.$nextTick(() => {
+        const buttonToFocus =
+          this.currentItemType === 'side'
+            ? this.$refs.sideButtons?.[this.currentItem]
+            : this.$refs.entreeButtons?.[this.currentItem]
+        if (buttonToFocus) {
+          buttonToFocus.focus()
+        }
+      })
     },
     isPremium(entree) {
       return this.premiumEntrees.includes(this.getEntreeName(entree))
@@ -421,14 +476,13 @@ export default {
   padding: 20px;
 }
 
-.alacarte span{
+.alacarte span {
   font-size: em;
 }
 
-.grid span{
+.grid span {
   font-size: 1em;
 }
-
 
 .grid {
   display: grid;
@@ -533,13 +587,11 @@ button:hover {
 .size-modal button {
   margin: 5px;
   padding: 10px;
-  font-size: 1em
 }
 
-.grid button {
-  margin: 5px;
-  padding: 10px;
-  font-size: 1em
+.size-modal button:focus {
+  outline: 2px solid #007bff; /* Blue outline */
+  outline-offset: 1px;
 }
 
 .close-button {
