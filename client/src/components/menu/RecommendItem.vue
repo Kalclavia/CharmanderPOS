@@ -266,6 +266,7 @@ export default {
 .RecommendedItem {
     padding: 20px;
     font-size: 20px;
+    padding-left: 75px;
 }
 
 .item-name {
@@ -318,10 +319,9 @@ button:hover {
 
 .side-image,
 .entree-image {
-    width: 350px;
-    height: 350px;
+    width: 250px;
+    height: 250px;
     object-fit: contain;
-    margin-bottom: 5px;
 }
 
 .add-to-cart-container {
