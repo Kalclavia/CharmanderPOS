@@ -1,7 +1,12 @@
 <template>
   <div class="menu-bar">
-    <h2 v-if="$cookies.get('role') == 'manager' || $cookies.get('role') == 'cashier'" class="menu-title">Signed in as: EmployeeID #{{$cookies.get('ID')}} </h2>
-    <h2 v-if="$cookies.get('role') == 'manager' || $cookies.get('role') == 'cashier'" class="menu-title">{{$cookies.get('role')}} Mode</h2>
+    <!-- Logout Button -->
+    <button v-if="$cookies.get('role') == 'manager' || $cookies.get('role') == 'cashier'" @click="logout" class="logout-button">
+      <span class="logout-icon">✖</span> LOGOUT
+    </button>
+
+    <h2 v-if="$cookies.get('role') == 'manager' || $cookies.get('role') == 'cashier'" class="toolbar">Signed in as: {{ capitalizedRole }} #{{$cookies.get('ID')}} </h2>
+
     <h2 class="menu-title">MENU</h2>
     <button @click="$emit('selectItem', 'Appetizers')">APPETIZERS</button>
     <button @click="$emit('selectItem', 'Bowl')">BOWL</button>
@@ -54,6 +59,12 @@ import VueCookies from 'vue-cookies'
 import RecomendedItem from './menu/RecommendItem.vue'
 
 export default {
+  computed: {
+    capitalizedRole() {
+      const role = this.$cookies.get('role');
+      return role ? role.charAt(0).toUpperCase() + role.slice(1) : '';
+    },
+  },
   setup() {
     const router = useRouter() 
 
@@ -61,8 +72,16 @@ export default {
       router.push('/manager') 
     }
 
+    const logout = () => {
+      // Clear user session cookies
+      $cookies.remove('ID');
+      $cookies.remove('role');
+      // Redirect to login page
+      router.push('/login');
+    };
+
     return {
-      RouteToManager
+      RouteToManager, logout
     }
   },
 
@@ -199,4 +218,49 @@ button:hover {
   background-color: #e7e4d7;
   border-top: 2px solid #080808;
 }
+
+.toolbar {
+  margin-bottom: 35px;
+  font-size: 20px;
+  text-align: center;
+  color: #080808;
+  border-bottom: 2px solid #080808;
+}
+
+.logout-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #080808;
+  border-radius: 30px;
+  background-color: #d2ceb8;
+  color: #080808;
+  font: Arial;
+  padding: 10px 15px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s, box-shadow 0.3s;
+  box-shadow: 0 4px 3px #080808;
+}
+
+.logout-button:hover {
+  background-color: #938f7a;
+}
+
+.logout-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 10px;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #080808;
+  border-radius: 50%;
+  background-color: #d2ceb8;
+  color: #080808;
+  font-size: 14px;
+  font-weight: bold;
+  text-align: center;
+}
+
 </style>
