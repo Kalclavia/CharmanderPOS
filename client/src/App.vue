@@ -4,6 +4,11 @@
   </div>
 </template>
 
-<script></script>
+<script>
+import { Accessibility } from 'accessibility';
+window.addEventListener('load', function() { new Accessibility(); }, false);
+
+
+</script>
 
 <style scoped></style>
