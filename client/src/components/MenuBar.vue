@@ -8,35 +8,59 @@
     <h2 v-if="$cookies.get('role') == 'manager' || $cookies.get('role') == 'cashier'" class="toolbar">Signed in as: {{ capitalizedRole }} #{{$cookies.get('ID')}} </h2>
 
     <h2 class="menu-title">MENU</h2>
-    <button @click="$emit('selectItem', 'Appetizers')">APPETIZERS</button>
-    <button @click="$emit('selectItem', 'Bowl')">BOWL</button>
-    <button @click="$emit('selectItem', 'Plate')">PLATE</button>
-    <button @click="$emit('selectItem', 'Bigger Plate')">BIGGER PLATE</button>
-    <button @click="$emit('selectItem', 'Drinks')">DRINKS</button>
-    <button @click="$emit('selectItem', 'A La Carte')">A LA CARTE</button>
-    <button v-if="showButton" @click="RouteToManager">Switch to Manager View</button>
+    <button class="menu-title-button" @click="$emit('selectItem', 'Appetizers')">APPETIZERS</button>
+    <button class="menu-title-button" @click="$emit('selectItem', 'Bowl')">BOWL</button>
+    <button class="menu-title-button" @click="$emit('selectItem', 'Plate')">PLATE</button>
+    <button class="menu-title-button" @click="$emit('selectItem', 'Bigger Plate')">BIGGER PLATE</button>
+    <button class="menu-title-button" @click="$emit('selectItem', 'Drinks')">DRINKS</button>
+    <button class="menu-title-button" @click="$emit('selectItem', 'A La Carte')">A LA CARTE</button>
+    <button class="menu-title-button" @click="showAlert">Request ASL Interpreter</button>
+    <button v-if="showButton" @click="RouteToManager">
+      Switch to Manager View
+    </button>
 
     <!-- Conditional Div for Weather -->
-    <div class="weather-message" v-if="weather && weather.temperature >= 75 && !($cookies.get('role') == 'manager' || $cookies.get('role') == 'cashier')">
-      <h2> It's hot out! Beat the heat with an ice-cold beverage: </h2>
+    <div
+      class="weather-message"
+      v-if="
+        weather &&
+        weather.temperature >= 75 &&
+        !(
+          $cookies.get('role') == 'manager' || $cookies.get('role') == 'cashier'
+        )
+      "
+    >
+      <h2>It's hot out! Beat the heat with an ice-cold beverage:</h2>
       <component
-      :is="'RecomendedItem'"
-      :itemName="'Lipton Brisk Raspberry Iced Tea'"
+        :is="'RecomendedItem'"
+        :itemName="'Lipton Brisk Raspberry Iced Tea'"
       />
     </div>
-    <div class="weather-message" v-else-if="weather && weather.temperature < 60 && !($cookies.get('role') == 'manager' || $cookies.get('role') == 'cashier')">
-      <h2> Feeling the fall chill? Warm up with this tasty entree:</h2>
-      <component
-      :is="'RecomendedItem'"
-      :itemName="'Bourbon Chicken'"
-      />
+    <div
+      class="weather-message"
+      v-else-if="
+        weather &&
+        weather.temperature < 60 &&
+        !(
+          $cookies.get('role') == 'manager' || $cookies.get('role') == 'cashier'
+        )
+      "
+    >
+      <h2>Feeling the fall chill? Warm up with this tasty entree:</h2>
+      <component :is="'RecomendedItem'" :itemName="'Bourbon Chicken'" />
     </div>
-    <div class="weather-message" v-else-if="weather && weather.shortForecast != 'Sunny' && !($cookies.get('role') == 'manager' || $cookies.get('role') == 'cashier')">
-      <h2> Gloomy outside? Cheer up with a fall classic: </h2>
-      <component
-      :is="'RecomendedItem'"
-      :itemName="'Apple Pie Roll'"
-      />
+    <div
+      class="weather-message"
+      v-else-if="
+        weather &&
+        weather.shortForecast != 'Sunny' &&
+        !(
+          $cookies.get('role') == 'manager' || $cookies.get('role') == 'cashier'
+        )
+      "
+    >
+      <h2>Gloomy outside? Cheer up with a fall classic:</h2>
+      <component :is="'RecomendedItem'" :itemName="'Apple Pie Roll'" />
     </div>
 
     <Translate />
@@ -54,7 +78,7 @@
 <script>
 import axios from 'axios'
 import Translate from '../components/translate/translateModel.vue'
-import { useRouter } from 'vue-router' 
+import { useRouter } from 'vue-router'
 import VueCookies from 'vue-cookies'
 import RecomendedItem from './menu/RecommendItem.vue'
 
@@ -66,10 +90,10 @@ export default {
     },
   },
   setup() {
-    const router = useRouter() 
+    const router = useRouter()
 
     const RouteToManager = () => {
-      router.push('/manager') 
+      router.push('/manager')
     }
 
     const logout = () => {
@@ -88,17 +112,16 @@ export default {
   name: 'MenuBar',
   components: {
     Translate,
-    RecomendedItem
+    RecomendedItem,
   },
   data() {
     return {
       weather: null,
       showButton: $cookies.get('role') == 'manager',
-      hotItem: "Bourbon Chicken"
+      hotItem: 'Bourbon Chicken',
     }
   },
   methods: {
-    
     async fetchWeather() {
       try {
         // Coordinates of College Station
@@ -143,6 +166,9 @@ export default {
         console.error('Error fetching weather data:', error)
       }
     },
+    showAlert() {
+      alert('An ASL interpreter has been requested to come assist you!');
+    }
   },
   mounted() {
     this.fetchWeather()
@@ -170,22 +196,26 @@ export default {
 }
 
 .menu-title {
-  margin-bottom: 15px;
-  font-size: 24px;
+  margin-bottom: 0.9375em;
+  font-size: 1.5em;
   text-align: center;
   color: #080808;
 }
 
+.menu-title-button{
+  font-size: 1em;
+}
+
 .weather-message {
   margin-top: 20px;
-  font-size: 24px;
+  font-size: 1.5em;
   text-align: center;
   color: #080808;
 }
 
 .weather-message h2 {
   margin-bottom: 10px;
-  font-size: 24px;
+  font-size: 1em;
   text-align: center;
   color: #080808;
 }
@@ -196,7 +226,7 @@ button {
   background-color: #e7e4d7;
   color: #080808;
   font: Arial;
-  padding: 15px;
+  padding: 0.9375em;
   margin-bottom: 10px;
   cursor: pointer;
   transition:
@@ -212,7 +242,7 @@ button:hover {
 .weather {
   margin-top: auto;
   padding: 10px;
-  font-size: 14px;
+  font-size: 0.875em;
   color: #333;
   text-align: center;
   background-color: #e7e4d7;

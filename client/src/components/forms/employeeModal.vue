@@ -82,7 +82,7 @@ export default {
   border: 1px solid #ccc;
   border-radius: 4px;
   background-color: #f0f0f0;
-  font-size: 14px;
+  font-size: 0.875em;
   color: #333;
   width: 50%;
 }
@@ -126,7 +126,7 @@ export default {
   border: 1px solid #ccc;
   border-radius: 4px;
   background-color: #f0f0f0;
-  font-size: 14px;
+  font-size: 0.875em;
   color: #333;
   width: 50%;
   -moz-box-sizing: border-box;
@@ -142,7 +142,7 @@ export default {
   border: 1px solid #ccc;
   border-radius: 4px;
   background-color: #f0f0f0;
-  font-size: 14px;
+  font-size: 0.875em;
   color: #333;
   width: 100%;
   -moz-box-sizing: border-box;
@@ -151,7 +151,7 @@ export default {
 }
 
 .field {
-  margin-bottom: 15px;
+  margin-bottom: 0.9375em;
 }
 
 .field label {

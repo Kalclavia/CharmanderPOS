@@ -121,7 +121,7 @@ h2 {
 }
 
 .form-group {
-  margin-bottom: 15px;
+  margin-bottom: 0.9375em;
 }
 
 .form-group label {
@@ -142,7 +142,7 @@ h2 {
 }
 
 button {
-  padding: 10px 15px;
+  padding: 10px 0.9375em;
   border: none;
   border-radius: 4px;
   cursor: pointer;

@@ -1,6 +1,5 @@
 <template>
   <div id="app">
-
     <!-- Main App Interface -->
     <div>
       <!-- Menu Bar -->
@@ -32,11 +31,7 @@
 
       <!-- Cart Panel -->
       <div
-        v-show="
-          !isCheckoutVisible &&
-          !showUserInfo &&
-          !isOrderComplete
-        "
+        v-show="!isCheckoutVisible && !showUserInfo && !isOrderComplete"
         class="panel"
       >
         <Cart
@@ -122,7 +117,7 @@ export default {
       isCartVisible: false,
       showUserInfo: false,
       selectedPayment: null,
-      employeeID: $cookies.get('ID')
+      employeeID: $cookies.get('ID'),
     }
   },
   methods: {
@@ -399,66 +394,68 @@ export default {
 }
 
 ::v-deep(.add-to-cart) {
-    padding: 15px 15px;
-    font-size: 15px;
-    background-color: #4CAF50;
-    color: rgb(0, 0, 0);
-    border: none;
-    border-radius: 10px;
-    position: fixed;
-    top: 45px;
-    right: 545px;
-    z-index: 1000;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background-color 0.3s, box-shadow 0.3s;
-    height: 30px;
-    box-shadow: 0 4px 3px #080808;
+  padding: 0.9375em 0.9375em;
+  font-size: 0.9375em;
+  background-color: #4caf50;
+  color: rgb(0, 0, 0);
+  border: none;
+  border-radius: 10px;
+  position: fixed;
+  top: 45px;
+  right: 545px;
+  z-index: 1000;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    background-color 0.3s,
+    box-shadow 0.3s;
+  height: 30px;
+  box-shadow: 0 4px 3px #080808;
 }
 
 ::v-deep(.checkout-page) {
   display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 40px;
-    position: fixed;
-    top: 0;
-    left: 0px;
-    right: 450px;
-    bottom: 0;
-    color: #e7e4d7;
-    overflow-y: auto;
-    background-color: #9b150b;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px;
+  position: fixed;
+  top: 0;
+  left: 0px;
+  right: 450px;
+  bottom: 0;
+  color: #e7e4d7;
+  overflow-y: auto;
+  background-color: #9b150b;
 }
 
 ::v-deep(.user-info-page) {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 40px;
-    position: fixed;
-    top: 240px;
-    left: 0px;
-    right: 450px;
-    bottom: 0;
-    color: #e7e4d7;
-    overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px;
+  position: fixed;
+  top: 240px;
+  left: 0px;
+  right: 450px;
+  bottom: 0;
+  color: #e7e4d7;
+  overflow-y: auto;
 }
 
 ::v-deep(.main-content) {
   position: fixed;
-    top: 0;
-    left: 450px;
-    right: 450px;
-    bottom: 0;
-    background-color: #9b150b;
-    color: #e7e4d7;
-    padding: 40px;
-    overflow-y: auto;
-    z-index: 1;
-    transition: left 0.3s ease;
+  top: 0;
+  left: 450px;
+  right: 450px;
+  bottom: 0;
+  background-color: #9b150b;
+  color: #e7e4d7;
+  padding: 40px;
+  overflow-y: auto;
+  z-index: 1;
+  transition: left 0.3s ease;
 }
 
 .cart-button {
@@ -468,7 +465,9 @@ export default {
   background-color: #e7e4d7;
   border: none;
   cursor: pointer;
-  transition: background-color 0.3s, box-shadow 0.3s;
+  transition:
+    background-color 0.3s,
+    box-shadow 0.3s;
   box-shadow: 0 4px 3px #080808;
   border-radius: 75px;
   z-index: 1001;
@@ -497,7 +496,7 @@ export default {
   right: -10px;
   background-color: red;
   color: white;
-  font-size: 14px;
+  font-size: 0.875em;
   font-weight: bold;
   padding: 3px 7px;
   border-radius: 50%;

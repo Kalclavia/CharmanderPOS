@@ -7,7 +7,10 @@
         :key="appetizer"
         :disabled="isOutOfStock(appetizer)"
         @click="!isOutOfStock(appetizer) && toggleAppetizer(appetizer)"
-        :class="{ selected: isSelected(appetizer), 'out-of-stock': isOutOfStock(appetizer) }"
+        :class="{
+          selected: isSelected(appetizer),
+          'out-of-stock': isOutOfStock(appetizer),
+        }"
       >
         <img
           v-if="getAppetizerImage(appetizer)"
@@ -17,12 +20,21 @@
           @error="handleImageError"
         />
         <span>{{ getAppetizerName(appetizer) }}</span>
-        <span v-if="isOutOfStock(appetizer)" class="out-of-stock-label">Out of Stock</span>
-        <span v-if="isSelected(appetizer) && showHeader" class="checkmark">✓</span>
+        <span v-if="isOutOfStock(appetizer)" class="out-of-stock-label"
+          >Out of Stock</span
+        >
+        <span v-if="isSelected(appetizer) && showHeader" class="checkmark"
+          >✓</span
+        >
       </button>
     </div>
     <!-- Add to Cart Button -->
-    <button v-if="showHeader" class="add-to-cart" @click="addToCart" :disabled="!canAddToCart">
+    <button
+      v-if="showHeader"
+      class="add-to-cart"
+      @click="addToCart"
+      :disabled="!canAddToCart"
+    >
       Add to Cart
     </button>
   </div>
@@ -36,7 +48,7 @@ export default {
   props: {
     showHeader: {
       type: Boolean,
-      default: true
+      default: true,
     },
     outOfStockItems: {
       type: Object,
@@ -77,8 +89,8 @@ export default {
       }
     },
     isOutOfStock(appetizer) {
-      const appetizerName = this.getAppetizerName(appetizer);
-      return this.outOfStockItems.Appetizer?.includes(appetizerName) || false;
+      const appetizerName = this.getAppetizerName(appetizer)
+      return this.outOfStockItems.Appetizer?.includes(appetizerName) || false
     },
     toggleAppetizer(appetizer) {
       const index = this.selectedAppetizers.indexOf(appetizer)
@@ -231,8 +243,8 @@ button:hover {
 }
 
 .add-to-cart {
-  padding: 15px 15px;
-  font-size: 15px;
+  padding: 0.9375em 0.9375em;
+  font-size: 0.9375em;
   background-color: #4caf50;
   color: rgb(0, 0, 0);
   border: none;
@@ -274,6 +286,13 @@ button:hover {
 .size-modal button {
   margin: 5px;
   padding: 10px;
+  font-size: 1em
+}
+
+.grid button {
+  margin: 5px;
+  padding: 10px;
+  font-size: 1em
 }
 
 .close-button {
@@ -283,7 +302,7 @@ button:hover {
   background-color: transparent;
   border: none;
   color: red;
-  font-size: 24px;
+  font-size: 1.5em;
   cursor: pointer;
 }
 

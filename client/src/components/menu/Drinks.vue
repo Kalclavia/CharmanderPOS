@@ -2,12 +2,28 @@
   <div class="drink">
     <h2 v-if="showHeader">Pick 1 or more Drinks</h2>
     <div class="grid">
-      <button v-for="drink in drinks" :key="drink" @click="toggleDrinks(drink)" :disabled="isOutOfStock(drink)"
-        :class="{ selected: isSelected(drink), 'out-of-stock': isOutOfStock(drink) }">
-        <img v-if="getDrinkImage(drink)" :src="getDrinkImage(drink)" :alt="getDrinkName(drink)" class="drink-image"
-          @error="handleImageError" />
+      <button
+        v-for="drink in drinks"
+        :key="drink"
+        ref="drinkButtons"
+        @click="toggleDrinks(drink)"
+        :disabled="isOutOfStock(drink)"
+        :class="{
+          selected: isSelected(drink),
+          'out-of-stock': isOutOfStock(drink),
+        }"
+      >
+        <img
+          v-if="getDrinkImage(drink)"
+          :src="getDrinkImage(drink)"
+          :alt="getDrinkName(drink)"
+          class="drink-image"
+          @error="handleImageError"
+        />
         <span>{{ getDrinkName(drink) }}</span>
-        <span v-if="isOutOfStock(drink)" class="out-of-stock-label">Out of Stock</span>
+        <span v-if="isOutOfStock(drink)" class="out-of-stock-label"
+          >Out of Stock</span
+        >
         <span v-if="isSelected(drink)" class="checkmark">✓</span>
         <span v-if="getSelectedSize(drink)" class="size-tag">
           {{ getSelectedSize(drink) }}
@@ -20,20 +36,41 @@
         Select Size for {{ getDrinkName(currentItem) }}
       </h3>
       <div>
-        <button v-for="size in sizeOptions.drink.filter(
-          size =>
-            size.name !== 'Aquafina' && size.name !== 'Gatorade Lemon Lime',
-        )" :key="size.name" @click="selectSize(size)">
+        <button
+          v-for="size in sizeOptions.drink.filter(
+            size =>
+              size.name !== 'Aquafina' && size.name !== 'Gatorade Lemon Lime',
+          )"
+          :key="size.name"
+          ref="sizeButtons"
+          @click="selectSize(size)"
+          @keydown.enter="selectSize(size)"
+          @keydown.space="selectSize(size)"
+          tabindex="0"
+        >
           {{ size.name }} - ${{
             size.price ? size.price.toFixed(2) : 'Loading...'
           }}
         </button>
       </div>
       <!-- Red X Button -->
-      <button @click="cancelSizeSelection" class="close-button">✖</button>
+      <button
+        @click="cancelSizeSelection"
+        @keydown.enter="cancelSizeSelection"
+        @keydown.space="cancelSizeSelection"
+        tabindex="0"
+        class="close-button"
+      >
+        ✖
+      </button>
     </div>
     <!-- Add to Cart Button -->
-    <button v-if="showHeader" class="add-to-cart" @click="addToCart" :disabled="!canAddToCart">
+    <button
+      v-if="showHeader"
+      class="add-to-cart"
+      @click="addToCart"
+      :disabled="!canAddToCart"
+    >
       Add to Cart
     </button>
   </div>
@@ -47,7 +84,7 @@ export default {
   props: {
     showHeader: {
       type: Boolean,
-      default: true
+      default: true,
     },
     outOfStockItems: {
       type: Object,
@@ -98,11 +135,11 @@ export default {
             const itemName = `${size.name} ${type.charAt(0).toUpperCase() + type.slice(1)}`
             const priceResponse = await axios.get(
               import.meta.env.VITE_API_ENDPOINT +
-              `price/${encodeURIComponent(itemName)}`,
+                `price/${encodeURIComponent(itemName)}`,
             )
             const idResponse = await axios.get(
               import.meta.env.VITE_API_ENDPOINT +
-              `itemid/${encodeURIComponent(size.name + ' Drink')}`,
+                `itemid/${encodeURIComponent(size.name + ' Drink')}`,
             )
             size.price = priceResponse.data.price // Assign price directly to the size object
             size.baseItemID = idResponse.data.itemID
@@ -114,11 +151,11 @@ export default {
         for (const drink of bottledDrinks) {
           const priceResponse = await axios.get(
             import.meta.env.VITE_API_ENDPOINT +
-            `price/${encodeURIComponent(drink)}`,
+              `price/${encodeURIComponent(drink)}`,
           )
           const idResponse = await axios.get(
             import.meta.env.VITE_API_ENDPOINT +
-            `itemid/${encodeURIComponent(drink)}`,
+              `itemid/${encodeURIComponent(drink)}`,
           )
           this.sizeOptions.drink.push({
             name: drink,
@@ -165,10 +202,18 @@ export default {
         this.currentItemType = 'drink'
         this.showSizeModal = true
       }
+
+      this.$nextTick(() => {
+        // Focus on the first size option
+        const firstSizeButton = this.$refs.sizeButtons?.[0]
+        if (firstSizeButton) {
+          firstSizeButton.focus()
+        }
+      })
     },
     isOutOfStock(drink) {
-      const drinkName = this.getDrinkName(drink);
-      return this.outOfStockItems.Drink?.includes(drinkName) || false;
+      const drinkName = this.getDrinkName(drink)
+      return this.outOfStockItems.Drink?.includes(drinkName) || false
     },
     isSelected(drink) {
       const drinkName = this.getDrinkName(drink)
@@ -208,6 +253,13 @@ export default {
       // Close size selection modal
       this.showSizeModal = false
       this.currentItem = null
+
+      this.$nextTick(() => {
+        const drinkButton = this.$refs.drinkButtons?.[this.currentItem]
+        if (drinkButton) {
+          drinkButton.focus()
+        }
+      })
     },
     cancelSizeSelection() {
       this.showSizeModal = false
@@ -240,7 +292,7 @@ export default {
         const drinkName = this.getDrinkName(drink)
         const response = await axios.get(
           import.meta.env.VITE_API_ENDPOINT +
-          `foodid/${encodeURIComponent(drinkName)}`,
+            `foodid/${encodeURIComponent(drinkName)}`,
         )
 
         if (response.data && response.data.foodID) {
@@ -298,11 +350,27 @@ button {
   position: relative;
 }
 
+.size-modal button {
+  margin: 5px;
+  padding: 10px;
+  font-size: 1em;
+}
+
+.grid button {
+  margin: 5px;
+  padding: 10px;
+  font-size: 1em;
+}
+
 button:hover {
   background-color: #d2ceb8;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
+.size-modal button:focus {
+  outline: 2px solid #007bff; /* Blue outline */
+  outline-offset: 1px;
+}
 .selected {
   background-color: #d2ceb8;
   box-shadow: 0 0 0 2px #080808;
@@ -331,8 +399,8 @@ button:hover {
 }
 
 .add-to-cart {
-  padding: 15px 15px;
-  font-size: 15px;
+  padding: 0.9375em 0.9375em;
+  font-size: 0.9375em;
   background-color: #4caf50;
   color: rgb(0, 0, 0);
   border: none;
@@ -389,7 +457,7 @@ button:hover {
   /* No border */
   color: red;
   /* Red color for the X */
-  font-size: 24px;
+  font-size: 1.5em;
   /* Adjust font size as needed */
   cursor: pointer;
   /* Change cursor to pointer */

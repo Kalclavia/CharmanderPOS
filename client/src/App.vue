@@ -6,14 +6,10 @@
 </template>
 
 <script>
-import AccessibilityToolbar from '../src/AccessibilityToolbar.vue'
+import { Accessibility } from 'accessibility';
+window.addEventListener('load', function() { new Accessibility(); }, false);
 
-export default {
-  name: 'app',
-  components: {
-    AccessibilityToolbar
-  }
-}
+
 </script>
 
 <style scoped></style>
