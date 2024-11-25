@@ -6,7 +6,7 @@
             :class="{ 'out-of-stock': isOutOfStock(itemName, 'Entree') }">
             <img v-if="getEntreeImage(itemName)" :src="getEntreeImage(itemName)" :alt="getEntreeName(itemName)"
                 class="entree-image" @error="handleImageError" />
-            <span>{{ getEntreeName(itemName) }}</span>
+            <span class="item-name">{{ getEntreeName(itemName) }}</span>
             <span v-if="isSelected(itemName, 'entree')" class="checkmark">✓</span>
             <span v-if="getSelectedSize(itemName, 'entree')" class="size-tag">
                 {{ getSelectedSize(itemName, 'entree') }}
@@ -21,12 +21,14 @@
 import axios from 'axios';
 
 export default {
-    name: 'ALaCarte',
+    name: 'RecommendedItem',
     props: {
         outOfStockItems: {
             type: Object,
             default: () => ({}), // Out-of-stock data passed from MainContent.vue
         },
+        itemName: String
+        
     },
     data() {
         return {
@@ -238,6 +240,7 @@ export default {
             return new URL(`/src/assets/${fileName}`, import.meta.url).href;
         },
         getEntreeName(entree) {
+            console.log(entree)
             return typeof entree === 'string' ? entree : (entree && entree.name ? entree.name : 'Unknown Entree');
         },
         getEntreeImage(entree) {
@@ -260,9 +263,15 @@ export default {
 </script>
 
 <style scoped>
-.alacarte {
+.RecommendedItem {
     padding: 20px;
+    font-size: 20px;
 }
+
+.item-name {
+    font-size: 20px;
+}
+
 
 .grid {
     display: grid;
@@ -309,8 +318,8 @@ button:hover {
 
 .side-image,
 .entree-image {
-    width: 150px;
-    height: 150px;
+    width: 350px;
+    height: 350px;
     object-fit: contain;
     margin-bottom: 5px;
 }

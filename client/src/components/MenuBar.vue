@@ -12,8 +12,12 @@
     <!-- Conditional Div for Weather -->
     <div class="weather-message" v-if="weather && weather.temperature >= 75">
       <h2> It's hot out! Beat the heat with an ice-cold beverage: </h2>
+      <component
+      :is="'RecomendedItem'"
+      :itemName="'Lipton Brisk Raspberry Iced Tea'"
+      />
     </div>
-    <div class="weather-message" v-else-if="weather && weather.temperature < 65">
+    <div class="weather-message" v-else-if="weather && weather.temperature < 60">
       <h2> Feeling the fall chill? Warm up with this tasty entree:</h2>
       <component
       :is="'RecomendedItem'"
@@ -24,7 +28,7 @@
       <h2> Gloomy outside? Cheer up with a fall classic: </h2>
       <component
       :is="'RecomendedItem'"
-      :showHeader="false"
+      :itemName="'Apple Pie Roll'"
       />
     </div>
 
@@ -68,7 +72,8 @@ export default {
   data() {
     return {
       weather: null,
-      showButton: $cookies.get('role') == 'manager'
+      showButton: $cookies.get('role') == 'manager',
+      hotItem: "Bourbon Chicken"
     }
   },
   methods: {
