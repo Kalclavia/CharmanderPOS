@@ -5,6 +5,7 @@ import App from './App.vue'
 import router from './router'
 import VueCookies from 'vue-cookies'
 import vue3GoogleLogin from 'vue3-google-login'
+import { Accessibility } from 'accessibility';
 
 const app = createApp(App)
 
