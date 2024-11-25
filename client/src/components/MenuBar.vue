@@ -8,6 +8,26 @@
     <button @click="$emit('selectItem', 'Drinks')">DRINKS</button>
     <button @click="$emit('selectItem', 'A La Carte')">A LA CARTE</button>
     <button v-if="showButton" @click="RouteToManager">Switch to Manager View</button>
+
+    <!-- Conditional Div for Weather -->
+    <div class="weather-message" v-if="weather && weather.temperature >= 75">
+      <h2> It's hot out! Beat the heat with an ice-cold beverage: </h2>
+    </div>
+    <div class="weather-message" v-else-if="weather && weather.temperature < 65">
+      <h2> Feeling the fall chill? Warm up with this tasty entree:</h2>
+      <component
+      :is="'RecomendedItem'"
+      :itemName="'Bourbon Chicken'"
+      />
+    </div>
+    <div class="weather-message" v-else-if="weather && weather.shortForecast != 'Sunny'">
+      <h2> Gloomy outside? Cheer up with a fall classic: </h2>
+      <component
+      :is="'RecomendedItem'"
+      :showHeader="false"
+      />
+    </div>
+
     <Translate />
     <!-- Weather Display -->
     <div class="weather">
@@ -25,6 +45,7 @@ import axios from 'axios'
 import Translate from '../components/translate/translateModel.vue'
 import { useRouter } from 'vue-router' 
 import VueCookies from 'vue-cookies'
+import RecomendedItem from './menu/RecommendItem.vue'
 
 export default {
   setup() {
@@ -42,6 +63,7 @@ export default {
   name: 'MenuBar',
   components: {
     Translate,
+    RecomendedItem
   },
   data() {
     return {
@@ -122,6 +144,20 @@ export default {
 }
 
 .menu-title {
+  margin-bottom: 15px;
+  font-size: 24px;
+  text-align: center;
+  color: #080808;
+}
+
+.weather-message {
+  margin-top: 50px;
+  font-size: 24px;
+  text-align: center;
+  color: #080808;
+}
+
+.weather-message h2 {
   margin-bottom: 15px;
   font-size: 24px;
   text-align: center;
