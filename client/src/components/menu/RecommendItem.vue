@@ -264,7 +264,7 @@ export default {
 
 <style scoped>
 .RecommendedItem {
-    padding: 20px;
+    padding: 10px;
     font-size: 20px;
     padding-left: 75px;
 }
@@ -320,7 +320,7 @@ button:hover {
 .side-image,
 .entree-image {
     width: 250px;
-    height: 250px;
+    height: 150px;
     object-fit: contain;
 }
 

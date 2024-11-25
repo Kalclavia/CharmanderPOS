@@ -158,14 +158,14 @@ export default {
 }
 
 .weather-message {
-  margin-top: 50px;
+  margin-top: 20px;
   font-size: 24px;
   text-align: center;
   color: #080808;
 }
 
 .weather-message h2 {
-  margin-bottom: 15px;
+  margin-bottom: 10px;
   font-size: 24px;
   text-align: center;
   color: #080808;
