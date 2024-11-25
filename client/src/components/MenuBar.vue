@@ -242,7 +242,7 @@ button:hover {
 .weather {
   margin-top: auto;
   padding: 10px;
-  font-size: 0.875em;
+  font-size: 1.125em;
   color: #333;
   text-align: center;
   background-color: #e7e4d7;
