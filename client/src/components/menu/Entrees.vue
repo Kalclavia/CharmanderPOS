@@ -413,8 +413,14 @@ button:hover {
 .size-modal button {
   margin: 5px;
   padding: 10px;
+  font-size: 1em
 }
 
+.grid button {
+  margin: 5px;
+  padding: 10px;
+  font-size: 1em
+}
 .close-button {
   position: absolute;
   /* Positioning relative to the modal */
