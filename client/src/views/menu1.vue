@@ -148,21 +148,23 @@ export default {
 .column {
   flex: 1;
 }
+.entry {
+  display: flex;
+  padding:15px
+}
 
 .item-column {
   padding-left: 20px;
   flex: 1;
+  font-size: 1em;
 }
 
 .price-column {
   margin: auto;
   width: 50%;
-  padding: 10px;
+  font-size: 1.5em;
 }
 
-.entry {
-  display: flex;
-}
 
 
 .fill {

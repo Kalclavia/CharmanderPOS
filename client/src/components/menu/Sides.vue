@@ -419,7 +419,7 @@ button:hover {
 .grid button {
   margin: 5px;
   padding: 10px;
-  font-size: 1em
+  font-size: 1.5em
 }
 .close-button {
   position: absolute;

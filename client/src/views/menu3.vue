@@ -118,19 +118,21 @@ export default {
   flex: 1;
 }
 
+.entry {
+  display: flex;
+  padding-top:15px
+}
+
 .item-column {
   padding-left: 20px;
   flex: 1;
+  font-size: 1em;
 }
 
 .price-column {
   margin: auto;
   width: 50%;
-  padding: 10px;
-}
-
-.entry {
-  display: flex;
+  font-size: 1.5em;
 }
 
 
