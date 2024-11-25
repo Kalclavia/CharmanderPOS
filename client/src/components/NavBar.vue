@@ -11,6 +11,7 @@
     </span>
     <span v-if="collapsed"> </span>
     <span v-else>
+      <h2 v-if="$cookies.get('role') == 'manager' || $cookies.get('role') == 'cashier'" class="title">Signed in as: EmployeeID #{{$cookies.get('ID')}} </h2>
       <h2  class="title">OPTIONS</h2>
       <button
         class="button"

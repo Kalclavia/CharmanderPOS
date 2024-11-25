@@ -1,5 +1,7 @@
 <template>
   <div class="menu-bar">
+    <h2 v-if="$cookies.get('role') == 'manager' || $cookies.get('role') == 'cashier'" class="menu-title">Signed in as: EmployeeID #{{$cookies.get('ID')}} </h2>
+    <h2 v-if="$cookies.get('role') == 'manager' || $cookies.get('role') == 'cashier'" class="menu-title">{{$cookies.get('role')}} Mode</h2>
     <h2 class="menu-title">MENU</h2>
     <button @click="$emit('selectItem', 'Appetizers')">APPETIZERS</button>
     <button @click="$emit('selectItem', 'Bowl')">BOWL</button>
@@ -10,21 +12,21 @@
     <button v-if="showButton" @click="RouteToManager">Switch to Manager View</button>
 
     <!-- Conditional Div for Weather -->
-    <div class="weather-message" v-if="weather && weather.temperature >= 75">
+    <div class="weather-message" v-if="weather && weather.temperature >= 75 && !($cookies.get('role') == 'manager' || $cookies.get('role') == 'cashier')">
       <h2> It's hot out! Beat the heat with an ice-cold beverage: </h2>
       <component
       :is="'RecomendedItem'"
       :itemName="'Lipton Brisk Raspberry Iced Tea'"
       />
     </div>
-    <div class="weather-message" v-else-if="weather && weather.temperature < 60">
+    <div class="weather-message" v-else-if="weather && weather.temperature < 60 && !($cookies.get('role') == 'manager' || $cookies.get('role') == 'cashier')">
       <h2> Feeling the fall chill? Warm up with this tasty entree:</h2>
       <component
       :is="'RecomendedItem'"
       :itemName="'Bourbon Chicken'"
       />
     </div>
-    <div class="weather-message" v-else-if="weather && weather.shortForecast != 'Sunny'">
+    <div class="weather-message" v-else-if="weather && weather.shortForecast != 'Sunny' && !($cookies.get('role') == 'manager' || $cookies.get('role') == 'cashier')">
       <h2> Gloomy outside? Cheer up with a fall classic: </h2>
       <component
       :is="'RecomendedItem'"
