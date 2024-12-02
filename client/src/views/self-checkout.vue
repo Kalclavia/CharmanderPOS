@@ -14,7 +14,7 @@
       <!-- Main Content -->
       <MainContent
         v-if="!isCheckoutVisible && !showUserInfo && !isOrderComplete"
-        :item="selectedMenu"
+        :item="'Bowl'"
         @addToCart="addToCart"
         @addToTransactionCart="addToTransactionCart"
       />
