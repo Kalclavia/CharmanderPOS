@@ -1,10 +1,10 @@
 <template>
   <div id="app">
     <!-- Launch Page -->
-    <LaunchPage v-if="isOnLaunchPage" @startOrder="startOrder" />
+    <!-- <LaunchPage v-if="isOnLaunchPage" @startOrder="startOrder" /> -->
 
     <!-- Main App Interface -->
-    <div v-else>
+    <div>
       <!-- Menu Bar -->
       <MenuBar
         v-if="!isCheckoutVisible && !showUserInfo && !isOrderComplete"

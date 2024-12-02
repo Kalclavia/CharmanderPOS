@@ -94,7 +94,7 @@ export default {
   },
   methods: {
     selectItem(item) {
-      this.item = item
+      this.item = "Bowl"
     },
     async fetchPrices() {
       try {
