@@ -1,3 +1,8 @@
+<!-- salesBarChart.vue
+ This Vue component renders a bar chart displaying sales data for different food categories (Entree, Side, Appetizer, Drinks) within a specified date range. 
+  It uses the vue-chartjs library to create the chart and axios to fetch data from an API endpoint.
+ -->
+
 <template>
   <div v-if="showChart">
     <Bar id="my-chart-id" :options="chartOptions" :data="chartData" />

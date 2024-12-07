@@ -1,3 +1,10 @@
+<!--
+  menuPriceModal
+  This Vue component represents a modal dialog for editing the price of a menu item. 
+  It includes a form with fields for the item's name and price, and buttons to submit 
+  the form or cancel the operation.
+-->
+
 <template>
   <div class="modal-overlay" @click="closeModal">
     <div class="modal" @click.stop>

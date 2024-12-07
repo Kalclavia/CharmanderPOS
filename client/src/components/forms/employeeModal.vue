@@ -1,3 +1,8 @@
+<!--
+  EmployeeForm Component
+
+  This component renders a form for adding or editing an employee. It includes fields for the employee's name, ID, role, and fired status. The form is pre-filled with the employee's data if an employee object is passed as a prop.
+-->
 <template>
   <div class="employee-form">
     <h2>{{ employee ? 'Edit Employee' : 'Add Employee' }}</h2>

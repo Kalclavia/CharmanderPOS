@@ -1,3 +1,8 @@
+<!-- 
+menuItemDeleteModel
+A Vue component for deleting a food item from the menu. It displays a modal with
+a form to select and delete a food item. -->
+
 <template>
   <div class="modal-overlay" @click="closeModal">
     <div class="modal" @click.stop>

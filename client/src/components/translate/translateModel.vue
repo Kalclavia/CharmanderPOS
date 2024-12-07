@@ -1,3 +1,8 @@
+<!--
+  translateModel.vue
+  This Vue component renders a google translate button that can be used to translate text on the website
+-->
+
 <template>
   <div class="translate">
     <div id="google_translate_element" @click="handleClick"></div>
