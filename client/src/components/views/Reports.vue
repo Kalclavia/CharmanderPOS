@@ -1,9 +1,42 @@
+<!--
+  Reports.vue
+  This Vue component displays several different reports that the manager can use. The reports are the X,Z, Sales and Product Usage Chart
+-->
+
 <template>
   <div class="buttons">
-    <button  @click="this.productBool = false, this.salesBool =true, this.XZBool = false" >Sales Report</button>
-    <button @click="this.productBool = true, this.salesBool =false,  this.XZBool = false" >Product Usage Report</button>
-    <button @click="this.productBool = false, this.salesBool =false,  this.setLabelX()" >X-Report</button>
-    <button @click="this.productBool = false, this.salesBool =false,  this.setLabelZ()" >Z-Report</button>
+    <button
+      @click="
+        (this.productBool = false),
+          (this.salesBool = true),
+          (this.XZBool = false)
+      "
+    >
+      Sales Report
+    </button>
+    <button
+      @click="
+        (this.productBool = true),
+          (this.salesBool = false),
+          (this.XZBool = false)
+      "
+    >
+      Product Usage Report
+    </button>
+    <button
+      @click="
+        (this.productBool = false), (this.salesBool = false), this.setLabelX()
+      "
+    >
+      X-Report
+    </button>
+    <button
+      @click="
+        (this.productBool = false), (this.salesBool = false), this.setLabelZ()
+      "
+    >
+      Z-Report
+    </button>
   </div>
   <div v-if="productBool" style="padding-top: 20px">
     <productBarChartbarchart />
@@ -12,7 +45,7 @@
     <salesBarChart />
   </div>
   <div v-if="XZBool" style="padding-top: 20px">
-    <XZChart  :datasetLabel="chartLabel" :key="chartLabel"/>
+    <XZChart :datasetLabel="chartLabel" :key="chartLabel" />
   </div>
   <!-- <div class="buttons"><button>Toggle Chart Style</button></div> -->
 </template>
@@ -20,21 +53,21 @@
 <script>
 import axios from 'axios'
 import productBarChartbarchart from '../charts/productBarChart.vue'
-import salesBarChart from '../charts/salesBarChart.vue';
-import XZChart from '../charts/XZChart.vue';
+import salesBarChart from '../charts/salesBarChart.vue'
+import XZChart from '../charts/XZChart.vue'
 export default {
   name: 'Reports',
   components: {
     productBarChartbarchart,
     salesBarChart,
-    XZChart
+    XZChart,
   },
   data() {
     return {
-      productBool : false,
-      salesBool : false,
-      XZBool : false,
-      employeeTransaction: [], 
+      productBool: false,
+      salesBool: false,
+      XZBool: false,
+      employeeTransaction: [],
       ingredientsByDateRange: [],
       salesByDateRange: [],
       chartLabel: 'X-Report',
@@ -101,22 +134,20 @@ export default {
           console.error('Error fetching sales:', error)
         })
     },
-    setLabelX(){
-      this.chartLabel = 'X-Report';
-      this.XZBool = true;
+    setLabelX() {
+      this.chartLabel = 'X-Report'
+      this.XZBool = true
     },
-    setLabelZ(){
-      const hour =new Date().getHours();
-      if(hour>=22){
-        this.chartLabel = 'Z-Report';
-        this.XZBool = true;
-        alert("The Z-Report has been successfully generated.");
+    setLabelZ() {
+      const hour = new Date().getHours()
+      if (hour >= 22) {
+        this.chartLabel = 'Z-Report'
+        this.XZBool = true
+        alert('The Z-Report has been successfully generated.')
+      } else {
+        alert("The store hasn't closed yet. Please wait until after 10 PM.")
       }
-      else{
-        alert("The store hasn't closed yet. Please wait until after 10 PM.");
-      }
-      
-    }
+    },
   },
   mounted() {},
 }

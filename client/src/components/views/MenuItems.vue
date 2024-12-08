@@ -1,3 +1,8 @@
+<!--
+  MenuItems.vue
+  This Vue component displays a list of menu items, and allows for updating and deleting each menu item
+-->
+
 <template>
   <div class="inventory">
     <div class="grid">

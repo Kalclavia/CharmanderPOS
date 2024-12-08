@@ -1,3 +1,8 @@
+<!--
+  MenuPrices.vue
+  This Vue component displays a list of all the menu item prices, and allows for updaing the prices of the menu item
+-->
+
 <template>
   <div class="inventory">
     <div class="grid">

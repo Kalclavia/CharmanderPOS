@@ -1,3 +1,11 @@
+<!-- 
+ MenuItemModal Component
+ 
+ This component represents a modal dialog for adding or editing a food item in the menu.
+ It includes a form with fields for food name, type, allergens, premium status, and ingredients.
+ The form can be used to add a new food item or update an existing one.
+-->
+
 <template>
   <div class="modal-overlay" @click="closeModal">
     <div class="modal" @click.stop>

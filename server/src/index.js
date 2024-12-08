@@ -124,7 +124,11 @@ app.patch("/employees/updateFired", (req, res) => {
     .then((query_res) => res.json(query_res.rows))
     .catch((error) => res.status(500).json({ error: error.message }));
 });
-
+/**
+ * Get all the employees that have been fired
+ * @method GET /employees/getFired
+ * @returns {object} The fired employees
+ */
 app.get("/employees/getFired", (req, res) => {
   pool
     .query(
@@ -147,7 +151,11 @@ app.get("/inventory", (req, res) => {
     .then((query_res) => res.json(query_res.rows))
     .catch((error) => res.status(500).json({ error: error.message }));
 });
-
+/**
+ * Get the inventory item that was subtraced
+ * @method GET /inventory/subtract
+ * @returns {object} The inventory item that was subtracted
+ */
 app.get("/inventory/subtract", (req, res) => {
   const { foodid } = req.query;
   console.log(foodid);
@@ -176,7 +184,11 @@ app.get("/inventory/subtract", (req, res) => {
     .then(() => res.json("Updated the stock"))
     .catch((error) => res.status(500).json({ error: error.message }));
 });
-
+/**
+ * Get the inventory item that had its associated items subtracted
+ * @method GET /inventory/subtract/itemtypes
+ * @returns {object} The inventory item that was subtracted
+ */
 app.get("/inventory/subtract/itemtypes", (req, res) => {
   const { itemid } = req.query;
   if (itemid == 1) {
@@ -681,7 +693,7 @@ app.get("/prices", (req, res) => {
 
 /**
  *set menu price.
- * @method SET /prices/setprice
+ * @method PATCH /prices/setprice
  * @param {string} type The type of menu items to change.
  * @returns {objects} Updated Object.
  */
@@ -698,6 +710,13 @@ app.patch("/prices/setprice", (req, res) => {
 
 // reports
 //http://localhost:3000/report/itemsByDateRange?startDate=2023-01-01&endDate=2023-01-31
+/**
+ * Get the menu items by a certain date range
+ * @method GET report/itemsByDateRange
+ * @param {string} startDate The start date
+ * @param {string} endDate The end date
+ * @returns {objects} Updated Object.
+ */
 app.get("/report/itemsByDateRange", (req, res) => {
   const startDate = req.query.startDate;
   const endDate = req.query.endDate;
@@ -710,7 +729,13 @@ app.get("/report/itemsByDateRange", (req, res) => {
     .then((query_res) => res.json(query_res.rows))
     .catch((error) => res.status(500).json({ error: error.message }));
 });
-
+/**
+ * Get the ingredient items by a certain date range
+ * @method GET report/ingredientsByDateRange
+ * @param {string} startDate The start date
+ * @param {string} endDate The end date
+ * @returns {objects} Updated Object.
+ */
 app.get("/report/ingredientsByDateRange", (req, res) => {
   const startDate = req.query.startDate;
   const endDate = req.query.endDate;
@@ -722,7 +747,13 @@ app.get("/report/ingredientsByDateRange", (req, res) => {
     .then((query_res) => res.json(query_res.rows))
     .catch((error) => res.status(500).json({ error: error.message }));
 });
-
+/**
+ * Get the transaction items by a certain date range
+ * @method GET report/ingredientsByDateRange
+ * @param {string} startDate The start date
+ * @param {string} endDate The end date
+ * @returns {objects} Updated Object.
+ */
 app.get("/report/transactionBreakDown", (req, res) => {
   // let startDate = "2023-01-01";
   // let endDate = "2023-01-02";

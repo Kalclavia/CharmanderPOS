@@ -1,3 +1,9 @@
+<!--
+  This template renders a bar chart and a set of controls for selecting a date range.
+  The chart is displayed conditionally based on the value of `showChart`.
+  The date range inputs allow the user to specify a start and end date.
+  The "Load Data" button triggers the `fetchIngredientsByDateRange` method to load data for the specified date range.
+  -->
 <template>
   <div v-if="showChart">
     <Bar id="my-chart-id" :options="chartOptions" :data="chartData" />

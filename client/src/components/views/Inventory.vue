@@ -1,3 +1,8 @@
+<!--
+  Inventory.vue
+  This Vue component displays a list of all the inventory items, and allows for updating and deleting an inventory item.
+-->
+
 <template>
   <div class="inventory">
     <div v-if="loading" class="loading">Loading...</div>

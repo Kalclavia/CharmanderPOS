@@ -1,3 +1,7 @@
+<!-- This Vue component renders a bar chart using the vue-chartjs library and
+Chart.js. It displays sales data either by employee or by hour, based on the
+user's selection. -->
+
 <template>
   <div v-if="showChart">
     <Bar id="my-chart-id" :options="chartOptions" :data="chartData" />

@@ -1,3 +1,9 @@
+<!-- 
+  InventoryModal Component
+  This component represents a modal dialog for adding or editing inventory items.
+  It includes a form with fields for item ID, name, stock, max stock, and unit.
+ -->
+
 <template>
   <div class="modal-overlay" @click="closeModal">
     <div class="modal" @click.stop>

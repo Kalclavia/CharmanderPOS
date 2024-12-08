@@ -1,3 +1,8 @@
+<!--
+  Employees.vue
+  This Vue component displays a list of employees and allows for adding, updating, and viewing details of employees. It also separates and displays a list of fired employees.
+-->
+
 <template>
   <div class="employees">
     <div v-if="loading" class="loading">Loading...</div>
