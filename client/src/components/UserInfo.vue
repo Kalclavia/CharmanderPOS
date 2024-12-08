@@ -56,13 +56,13 @@ export default {
       )
 
       // Send odcer confirmation text message
-      const textResponse = await axios.post('https://textbelt.com/text', {
-        phone: this.phone,
-        message: `Hello ${this.name}, your order has been successfully placed! Your order number is ${transactionIDResponse.data.transactionID}. Thank you for eating at Panda Express!`,
-        key: 'f84938f5684e8a6ec708fbb407bbf59709290d89M8miZnjZlDrtq91BeYxoqU0Pb',
-      })
-      console.log('Text reponse:')
-      console.log(textResponse)
+      // const textResponse = await axios.post('https://textbelt.com/text', {
+      //   phone: this.phone,
+      //   message: `Hello ${this.name}, your order has been successfully placed! Your order number is ${transactionIDResponse.data.transactionID}. Thank you for eating at Panda Express!`,
+      //   key: 'f84938f5684e8a6ec708fbb407bbf59709290d89M8miZnjZlDrtq91BeYxoqU0Pb',
+      // })
+      // console.log('Text reponse:')
+      // console.log(textResponse)
       // Emit order details to parent, including transactionId from props
       this.$emit('completeOrder')
     },
