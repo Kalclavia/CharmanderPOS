@@ -1,4 +1,4 @@
-# project-3-team-9C
+# CharmanderPOS: A Webapp POS for Panda Express
 
 [Latest Deployment of the App (self-checkout)](https://charmander-pos.vercel.app/)
 
