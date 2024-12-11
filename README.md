@@ -1,6 +1,8 @@
 # CharmanderPOS: A Webapp POS for Panda Express
 
-[Latest Deployment of the App (self-checkout)](https://charmander-pos.vercel.app/)
+## Production Deployment
+
+[Latest Deployment of the App (Launch Page)](https://charmander-pos.vercel.app/)
 
 [Internal Employee Page](https://charmander-pos.vercel.app/login)
 
