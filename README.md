@@ -2,9 +2,9 @@
 
 ## Production Deployment
 
-[Latest Deployment of the App (Launch Page)](https://charmander-pos.vercel.app/)
+[Self-Checkout Launch Page](https://charmander-pos.vercel.app/)
 
-[Internal Employee Page](https://charmander-pos.vercel.app/login)
+[Employee Login Page](https://charmander-pos.vercel.app/login)
 
 [SCRUM Meeting Minutes (Google Doc)](https://docs.google.com/document/d/15cDktAhzkH_Llypp-1vAjmBZb0Ag4BTYiS8V_JvCs7c/edit?usp=sharing)
 
