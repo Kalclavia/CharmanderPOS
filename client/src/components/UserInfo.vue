@@ -23,16 +23,21 @@
 
 <script>
 import axios from 'axios'
+
 export default {
+  // Component state
   data() {
     return {
-      name: '',
-      phone: '',
+      name: '',         // Stores user's name
+      phone: '',        // Stores formatted phone number
     }
   },
+
   methods: {
+    // Formats phone number as user types
+    // Transforms raw input into (XXX) XXX - XXXX format
     formatPhone() {
-      let cleaned = this.phone.replace(/\D/g, '')
+      let cleaned = this.phone.replace(/\D/g, '')  // Remove non-digits
       if (cleaned.length <= 3) {
         this.phone = `(${cleaned}`
       } else if (cleaned.length <= 6) {
@@ -43,19 +48,26 @@ export default {
         this.phone = `(${cleaned.slice(0, 3)}) ${cleaned.slice(3, 6)} - ${cleaned.slice(6, 10)}`
       }
     },
+
+    // Emits cancel event to parent
     cancel() {
       this.$emit('cancelUserInfo')
     },
+
+    // Validates input and processes order confirmation
     async confirm() {
+      // Input validation
       if (!this.name || !this.phone) {
         alert('Please fill in both fields.')
         return
       }
+
+      // Get latest transaction ID
       const transactionIDResponse = await axios.get(
         import.meta.env.VITE_API_ENDPOINT + 'transactions/latestID',
       )
 
-      // Send odcer confirmation text message
+      // SMS functionality commented out but preserved for future use
       // const textResponse = await axios.post('https://textbelt.com/text', {
       //   phone: this.phone,
       //   message: `Hello ${this.name}, your order has been successfully placed! Your order number is ${transactionIDResponse.data.transactionID}. Thank you for eating at Panda Express!`,
@@ -63,7 +75,8 @@ export default {
       // })
       // console.log('Text reponse:')
       // console.log(textResponse)
-      // Emit order details to parent, including transactionId from props
+
+      // Emit completion event to parent
       this.$emit('completeOrder')
     },
   },
