@@ -1,3 +1,8 @@
+<!--
+  App.vue
+  Central Vue component that acts as a window pane to render all other parts of the app, using the Vue router
+-->
+
 <template>
   <div id="app">
     <router-view />
