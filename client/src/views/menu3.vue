@@ -48,7 +48,7 @@
   should be 'Menu3' for consistency
 
   Author: Abhi Bhattacharyya
-  
+
 -->
 
 
@@ -135,7 +135,7 @@ import MenuBoard from '../components/Menu-Board.vue'
 import axios from 'axios';
 
 export default {
-  name: 'Menu1',
+  name: 'Menu3',
   components: {
     MenuBoard,
   },
