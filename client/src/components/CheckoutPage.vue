@@ -1,3 +1,42 @@
+<!--
+  CheckoutPage.vue
+  This Vue component handles the payment method selection and order confirmation process.
+  It provides an accessible, interactive interface for selecting payment methods with
+  visual feedback and keyboard navigation support.
+
+  Key Features:
+  - Three payment options: Cash, Card, and Dining Dollars
+  - Keyboard-accessible payment selection
+  - Visual feedback for selected payment method
+  - Order confirmation workflow
+  - Responsive design with hover effects
+  - ARIA-compliant interactive elements
+  
+  Props:
+  - None
+  
+  Emits:
+  - updatePayment: When payment method is selected/changed
+  - confirmOrder: When order is confirmed
+  - cancelOrder: When order is cancelled
+  
+  State:
+  - selectedPayment: Currently selected payment method
+  - orderConfirmed: Order confirmation status
+  - orderDetails: Transaction and timing information
+  
+  Assets Required:
+  - @/assets/cash-icon.png
+  - @/assets/card-icon.png
+  - @/assets/dining-dollars-icon.png
+  
+  Accessibility:
+  - Keyboard navigation support
+  - Clear visual indicators
+  - Proper focus management
+  - Semantic HTML structure
+-->
+
 <template>
     <div class="checkout-page" v-if="!orderConfirmed">
         <h2>Choose a payment method</h2>

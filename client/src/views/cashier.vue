@@ -1,3 +1,59 @@
+<!--
+  App.vue
+  This is the root component of the self-service ordering system, managing the overall
+  application state and flow from menu selection through order completion.
+
+  Key Features:
+  - Complete order flow management:
+    * Menu selection and display
+    * Shopping cart functionality
+    * Checkout process
+    * User information collection
+    * Order confirmation and completion
+  - Real-time inventory management
+  - Transaction processing
+  - Employee identification
+  - Dynamic component rendering based on order state
+  
+  Components:
+  - LaunchPage: Initial landing screen
+  - MenuBar: Navigation and menu selection
+  - MainContent: Primary content display
+  - Cart: Shopping cart management
+  - CheckoutPage: Payment processing
+  - OrderSummary: Order details display
+  - UserInfo: Customer information collection
+  - OrderComplete: Order confirmation screen
+  
+  State Management:
+  - Order flow states:
+    * Launch page
+    * Menu selection
+    * Cart management
+    * Checkout
+    * User info collection
+    * Order completion
+  - Cart items and transaction data
+  - Payment processing
+  - User information
+  
+  API Integration:
+  - Transaction processing
+  - Inventory management
+  - Item tracking
+  
+  Dependencies:
+  - axios: API calls
+  - vue-cookies: Employee authentication
+  - Environment variables for API endpoints
+  
+  Styling:
+  - Responsive layout with fixed positioning
+  - Dynamic width adjustments
+  - Z-index management for overlays
+  - Consistent brand colors and styling
+-->
+
 <template>
   <div id="app">
     <!-- Main App Interface -->

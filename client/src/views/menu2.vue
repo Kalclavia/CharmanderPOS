@@ -1,8 +1,46 @@
 <!--
   Menu2.vue
-  Vue component for second menu page, which displays a dynamic list of all currently available entrees and sides from the database.
--->
+  This Vue component implements the second menu board page for a Panda Express restaurant,
+  focused on the dynamic display of sides and entrees available for selection.
 
+  Key Features:
+  - Two-section layout:
+    * Sides selection
+    * Entrees selection
+  - Dynamic menu item loading
+  - Scrollable content area
+  - Section headers with step numbers
+  
+  Component Structure:
+  - Uses MenuBoard component with two configurations:
+    1. Sides display (:item="'Sides'")
+    2. Entrees display (:item="'Entrees'")
+  
+  Layout Flow:
+  1. Side Dishes (Step 2):
+     - Displays all available side options
+     - Dynamically populated from database
+  
+  2. Entree Selection (Step 3):
+     - Shows all available entree options
+     - Dynamically populated from database
+  
+  Dependencies:
+  - Menu-Board.vue: Reusable component for item display
+  
+  Styling:
+  - Fixed full-screen positioning
+  - Semi-transparent background
+  - Scrollable content
+  - Consistent branding elements
+  
+  Notes:
+  - Contains typo in CSS padding ('zpx' should be 'px')
+  - Includes unused panel styling for potential future use
+
+  Author: Abhi Bhattacharyya
+
+-->
 
 <template>
   <div class="main-content">

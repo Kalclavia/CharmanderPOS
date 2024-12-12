@@ -1,6 +1,48 @@
 <!--
   Menu1.vue
-  Vue component for first menu page, which displays a fixed list for menu items (bowl, plate, bigger plate) with prices fetched dynamically.
+  This Vue component implements the first menu board page for a Panda Express restaurant,
+  displaying meal options and bundle combinations with dynamic pricing.
+
+  Key Features:
+  - Two-column layout:
+    * Left: Promotional image display
+    * Right: Menu items and pricing
+  - Dynamic price fetching and formatting
+  - Bundle combinations with drink
+  - Responsive design with flexbox
+  
+  Menu Categories:
+  1. Individual Meals:
+     - Bowl (1 Entree + Sides)
+     - Plate (2 Entrees + Sides)
+     - Bigger Plate (3 Entrees + Sides)
+  
+  2. Panda Bundles:
+     - Bowl + Medium Drink
+     - Plate + Medium Drink
+     - Bigger Plate + Medium Drink
+  
+  API Integration:
+  - Fetches prices dynamically from backend
+  - Handles loading states
+  - Error handling for failed requests
+  
+  Dependencies:
+  - axios: API calls
+  - MenuBoard.vue: Reusable menu component
+  - Environment variables for API endpoint
+  
+  Styling:
+  - Fixed positioning
+  - Two-column flex layout
+  - Consistent branding colors
+  - Responsive image handling
+  
+  Assets:
+  - hotones.png: Promotional banner image
+  
+  Author: Abhi Bhattacharyya
+  
 -->
 
 <!-- Template Section -->

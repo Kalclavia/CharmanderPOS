@@ -1,3 +1,51 @@
+<!--
+  MainMenu.vue
+  This Vue component serves as the primary content container for the menu ordering system.
+  It manages menu item display, pricing, allergen information, and inventory tracking.
+
+  Key Features:
+  - Dynamic component loading based on menu selection
+  - Real-time price fetching and display
+  - Allergen information modal
+  - Inventory validation and out-of-stock tracking
+  - Loading state management
+  - Collapsible menu bar integration
+  
+  Props:
+  - item (String): Current selected menu category
+  
+  Emits:
+  - addToCart: When items are added to customer cart
+  - addToTransactionCart: When items are added to transaction
+  
+  Dependencies:
+  - axios: For API calls
+  - MenuBar.vue: Navigation component
+  - Menu components:
+    * Appetizers.vue
+    * Bowl.vue
+    * Plate.vue
+    * BiggerPlate.vue
+    * Drinks.vue
+    * ALaCarte.vue
+  
+  API Integration:
+  - Prices endpoint
+  - Allergens endpoint
+  - Inventory endpoint
+  - Recipe endpoint
+  - Menu endpoint
+  
+  State Management:
+  - Prices for menu items
+  - Allergen information
+  - Out-of-stock tracking
+  - Loading states
+  - Menu bar collapse state
+
+  Author: Team Charmander
+-->
+
 <template>
   <div class="main-content" :class="{ 'menu-collapsed': isMenuBarCollapsed }">
     <MenuBar

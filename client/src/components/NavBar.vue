@@ -1,3 +1,41 @@
+<!--
+  NavBar.vue
+  This Vue component implements a collapsible sidebar navigation menu for the admin interface
+  of the restaurant management system. It provides access to various management functions
+  and system views based on user role authentication.
+
+  Key Features:
+  - Collapsible sidebar with animated toggle
+  - Role-based navigation display (manager/cashier)
+  - Management options for:
+    * Inventory control
+    * Menu management
+    * Price configuration
+    * Employee management
+    * Report generation
+  - View switching functionality (Manager/Cashier/Self-Checkout)
+  - User session management with logout
+  - Language translation support
+  
+  Dependencies:
+  - state.js: Manages sidebar collapse state
+  - vue-router: For view navigation
+  - vue-cookies: For session management
+  - translateModel.vue: For language translation
+  
+  State Management:
+  - Uses external state.js for sidebar collapse functionality
+  - Manages authentication state via cookies
+  
+  Navigation:
+  - Emits 'selectItem' event for content selection
+  - Provides direct routing to different system views
+  
+  Authentication:
+  - Displays current user role and ID
+  - Handles user logout with session cleanup
+-->
+
 <template>
   <div class="menu-bar" :style="{ width: sideBarWidth }">
     <span class="collapsebar">

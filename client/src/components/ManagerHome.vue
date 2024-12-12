@@ -1,19 +1,35 @@
+<!--
+  ManagerHomePage.vue
+  This Vue component renders the landing page for the manager interface.
+  It provides a simple, branded splash screen with the Panda Express logo.
+
+  Key Features:
+  - Full-screen splash page
+  - Panda Express branding
+  - Manager interface indication
+  - Responsive design
+  
+  Props:
+  - None
+  
+  Styling:
+  - Fixed full-screen positioning
+  - Responsive logo sizing
+  - Brand-consistent color scheme
+  - Flex layout for centered content
+  
+  Dependencies:
+  - @/assets/panda-logo.png
+  - vue-router (for navigation)
+  
+-->
+
 <template>
   <div class="launch-page">
     <img src="@/assets/panda-logo.png" alt="Panda Express Logo" class="logo" />
     <Text>MANAGER HOMEPAGE</Text>
   </div>
 </template>
-
-<script>
-export default {
-  methods: {
-    startOrder() {
-      this.$router.push('/home')
-    },
-  },
-}
-</script>
 
 <style scoped>
 .launch-page {

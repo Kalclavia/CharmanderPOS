@@ -1,3 +1,34 @@
+<!--
+  OrderSummary.vue
+  This Vue component displays a real-time order summary sidebar showing all items
+  in the customer's cart and the total price.
+
+  Key Features:
+  - Fixed sidebar positioning
+  - Scrollable cart items list
+  - Dynamic price calculation
+  - Responsive layout
+  
+  Props:
+  - cartItems: Array (required)
+    An array of objects containing:
+    * name: String - Item name
+    * price: Number - Item price
+  
+  Computed:
+  - total: Calculates the sum of all item prices
+  
+  Styling:
+  - Light background with dark text for readability
+  - Fixed width sidebar
+  - Flex layout for dynamic content
+  - Shadow effect for depth
+  - Scrollable content area for long orders
+  
+  Usage:
+  <OrderSummary :cartItems="[{name: 'Item', price: 0.00}]" />
+-->
+
 <template>
   <div class="order-summary">
     <h2>Order Summary</h2>

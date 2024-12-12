@@ -1,3 +1,40 @@
+<!--
+  UserInfoForm.vue
+  This Vue component handles user information collection for order processing.
+  It provides a form for name and phone number input with real-time phone number formatting
+  and order confirmation functionality.
+
+  Key Features:
+  - Real-time phone number formatting with standardized pattern (XXX) XXX - XXXX
+  - Input validation for required fields
+  - Order confirmation with transaction ID generation
+  - SMS notification capability (currently disabled)
+  - Responsive form layout
+  
+  Props:
+  - None
+  
+  Emits:
+  - cancelUserInfo: When user cancels the form
+  - completeOrder: When order is successfully processed
+  
+  Dependencies:
+  - axios: For API calls to transaction service
+  - VITE_API_ENDPOINT environment variable
+  
+  API Integration:
+  - Fetches transaction IDs from backend
+  - Optional SMS integration (commented out)
+  
+  Styling:
+  - Fixed positioning with specific offsets
+  - Responsive form controls
+  - Color-coded action buttons
+  - Hover state animations
+
+  Authors: Jensyn Huynh, Abhi Bhattacharyya
+-->
+
 <template>
   <div class="user-info-page">
     <h2>Please Enter Your Details</h2>

@@ -1,7 +1,44 @@
 <!--
   Menu-Board.vue
-  This Vue component serves as a dynamic menu board that conditionally renders different menu sections (Sides, Entrees, Appetizers, Drinks) based on the provided prop. 
-  It handles item selection events and provides consistent styling across all menu sections.
+  This Vue component serves as a dynamic menu display controller, 
+  managing different menu section components based on provided props.
+
+  Key Features:
+  - Dynamic component rendering
+  - Unified item selection handling
+  - Consistent styling across sections
+  
+  Components:
+  - Sides: Side dishes display
+  - Entrees: Main dishes display
+  - Appetizers: Appetizer options
+  - Drinks: Beverage selection
+  
+  Props:
+  - item (String): Determines which menu section to display
+    Valid values:
+    * 'Sides'
+    * 'Entrees'
+    * 'Appetizers'
+    * 'Drinks'
+  
+  Events:
+  - selectItem: Emitted when menu item is selected
+    Payload: Selected item details
+  
+  Component Behavior:
+  - Shows/hides headers based on section type
+  - Maintains consistent event handling
+  - Provides debug logging
+  
+  Styling:
+  - Fixed panel positioning
+  - Semi-transparent background
+  - Shadow effects
+  - Scrollable content area
+  
+  Author: Abhi Bhattacharyya
+  
 -->
 
 <template>

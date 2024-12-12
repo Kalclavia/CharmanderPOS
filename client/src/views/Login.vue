@@ -1,3 +1,52 @@
+<!--
+  Login.vue
+  This Vue component handles employee authentication through both employee ID input
+  and Google OAuth. It validates credentials against employee records and routes
+  users to appropriate interfaces based on their role.
+
+  Key Features:
+  - Dual authentication methods:
+    * Employee ID input with enter key submission
+    * Google OAuth integration
+  - Role-based routing (manager/cashier)
+  - Employee data verification
+  - Session management with cookies
+  
+  Authentication Flow:
+  1. Employee Data Loading:
+     - Fetches employee records from backend
+     - Maintains data in reactive state
+  
+  2. ID-based Authentication:
+     - Validates employee ID input
+     - Matches against employee database
+     - Sets appropriate cookies for session
+     - Routes to role-specific interface
+  
+  3. Google OAuth Authentication:
+     - Decodes Google credentials
+     - Matches email against employee records
+     - Sets session cookies
+     - Routes based on employee role
+  
+  Dependencies:
+  - vue3-google-login: For Google OAuth
+  - axios: API calls for employee data
+  - vue-cookies: Session management
+  - vue-router: Navigation control
+  
+  Environment Requirements:
+  - VITE_API_ENDPOINT: API base URL
+  
+  Security Notes:
+  - Uses server-side validation
+  - Implements cookie-based session management
+  - Separates manager/cashier access rights
+
+  Authors: Adeeb Ismail, Abhi Bhattacharyya
+  
+-->
+
 <!-- v-model: holds the variable, v-on: what to do when enter key is pressed -->
 <script setup>
 import { decodeCredential } from 'vue3-google-login'

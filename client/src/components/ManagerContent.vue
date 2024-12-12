@@ -1,3 +1,43 @@
+<!--
+  MainContent.vue
+  This Vue component serves as the primary content container for the manager interface,
+  dynamically rendering different management views based on the selected item prop.
+  It provides a responsive layout that adjusts to sidebar state changes.
+
+  Key Features:
+  - Dynamic component rendering based on selection
+  - Responsive to sidebar width changes
+  - Smooth transitions for layout adjustments
+  - Scrollable content area
+  
+  Props:
+  - item (String): Determines which management component to display
+    Possible values:
+    * 'Manage Employees'
+    * 'Inventory'
+    * 'Home'
+    * 'Menu Items'
+    * 'Menu Prices'
+    * 'View Reports'
+  
+  Components:
+  - LaunchPage (ManagerHome.vue)
+  - Inventory
+  - Employees
+  - MenuItems
+  - MenuPrices
+  - Reports
+  
+  Styling:
+  - Fixed positioning with dynamic left offset
+  - Brand color scheme
+  - Overflow handling for content
+  - Smooth transitions for sidebar interactions
+  
+  Dependencies:
+  - CSS variable --sidebar-width for dynamic positioning
+-->
+
 <template>
   <div class="main-content">
     <h2>{{ item }}</h2>

@@ -1,3 +1,45 @@
+/*
+  router.js
+  This module configures Vue Router with route definitions and navigation guards for a
+  restaurant point-of-sale system. It implements role-based access control for different
+  user types (manager/cashier) using route meta fields and navigation guards.
+
+  Route Structure:
+  Public Routes:
+  - / : Self-checkout interface
+  - /menu1 : Digital menu board 1
+  - /menu2 : Digital menu board 2
+  - /menu3 : Digital menu board 3
+  - /login : Authentication page
+
+  Protected Routes:
+  - /manager : Manager interface (requires manager role)
+  - /cashier : Cashier interface (requires cashier/manager role)
+
+  Features:
+  - Clean URLs with HTML5 History mode
+  - Role-based access control
+  - Automatic login redirection
+  - Hierarchical permissions (managers can access cashier routes)
+
+  Dependencies:
+  - vue-router
+  - vue-cookies: For authentication state
+  - View components:
+    * self-checkout.vue
+    * menu1.vue, menu2.vue, menu3.vue
+    * Login.vue
+    * manager.vue
+    * cashier.vue
+
+  Authentication:
+  - Uses cookies to store user roles
+  - Implements navigation guards for route protection
+  - Redirects unauthorized access to login page
+
+  Authors: Adeeb Ismail, Abhi Bhattacharyya
+*/
+
 // Import Vue Router functionality
 import { createRouter, createWebHistory } from 'vue-router'
 

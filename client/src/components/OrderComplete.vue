@@ -1,3 +1,33 @@
+<!--
+  OrderComplete.vue
+  This Vue component renders an order confirmation page shown after successful order completion.
+  It displays the transaction details, estimated ready time, and provides an option to start a new order.
+
+  Key Features:
+  - Displays transaction ID
+  - Shows estimated order ready time
+  - Animated confirmation check
+  - Panda Express branding
+  - New order functionality
+  
+  Props:
+  - transactionId (Number): Unique identifier for the order
+  - readyTime (String): Estimated time when order will be ready
+  
+  Events:
+  - newOrder: Emitted when user clicks to start a new order
+  
+  Styling:
+  - Centered layout with flex
+  - Consistent branding colors
+  - Responsive design
+  - Fixed positioning for overlay effect
+  
+  Dependencies:
+  - @/assets/panda-logo.png
+  - @/assets/confirmation-check.gif
+-->
+
 <template>
   <div class="order-complete-page" v-if="transactionId && readyTime">
     <img src="@/assets/panda-logo.png" alt="Panda Logo" class="panda-logo" />

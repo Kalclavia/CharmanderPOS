@@ -1,3 +1,43 @@
+<!--
+  Cart.vue
+  This Vue component implements a collapsible shopping cart panel using the Composition API.
+  It provides real-time order management with dynamic total calculation and responsive layout.
+
+  Key Features:
+  - Collapsible cart panel with smooth animation
+  - Real-time cart item management
+  - Total price calculation
+  - Premium item identification
+  - Order clearing functionality
+  - Checkout flow initiation
+  
+  Props:
+  - cartItems (Array): Array of items in cart
+    Each item should have:
+    * name (String): Item name
+    * price (Number): Item price
+    * isPremium (Boolean): Premium item indicator
+
+  Emits:
+  - removeItem: When an item is removed (index)
+  - clearOrder: When cart is cleared
+  - showCheckout: When proceeding to checkout
+  - updateTotal: When cart total changes
+  
+  Composition:
+  - Uses Vue 3 Composition API
+  - Reactive state management
+  - Computed properties for dynamic values
+  - Watch effects for total updates
+  
+  Styling:
+  - Fixed positioning with dynamic width
+  - Smooth transitions
+  - Scroll handling for overflow
+  - Distinct styling for premium items
+  - Responsive button placement
+-->
+
 <template>
   <div class="cart-panel" :style="{ width: cartWidth }">
     <span class="collapsebar" @click="toggleCart"></span>

@@ -1,3 +1,41 @@
+<!--
+  LaunchPage.vue
+  This Vue component implements the initial landing/splash screen for the ordering system.
+  It provides a simple, clickable interface to start the ordering process with language
+  translation support.
+
+  Key Features:
+  - Full-screen splash layout
+  - Click-anywhere-to-start functionality
+  - Dedicated "Tap to Order" button
+  - Language translation integration
+  - Responsive design for all screen sizes
+  
+  Props:
+  - None
+  
+  Emits:
+  - startOrder: When user clicks anywhere on page or the order button
+  
+  Components:
+  - Translate: Language translation widget
+  
+  Dependencies:
+  - @/assets/panda-logo.png: Panda Express logo
+  - translateModel.vue: Translation component
+  - vue-router: For navigation
+  
+  Styling:
+  - Fixed full-screen positioning
+  - Centered flex layout
+  - Responsive logo sizing
+  - Interactive button styling
+  - Custom translation widget positioning
+  
+  Usage:
+  <LaunchPage @startOrder="handleOrderStart" />
+-->
+
 <template>
   <div class="launch-page" @click="$emit('startOrder')">
     <img src="@/assets/panda-logo.png" alt="Panda Express Logo" class="logo" />

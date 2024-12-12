@@ -1,3 +1,29 @@
+<!--
+  MenuBar.vue
+  This Vue component implements a responsive sidebar menu for a restaurant ordering system.
+  It provides navigation controls, weather-based recommendations, and user authentication features.
+
+  Key Features:
+  - Dynamic menu navigation buttons for different food categories
+  - Real-time weather display and weather-based food recommendations
+  - User authentication status display and logout functionality
+  - Accessibility features including ASL interpreter request
+  - Role-based display elements (manager/cashier views)
+  - Google Translate integration for language accessibility
+  
+  Dependencies:
+  - axios: For weather API calls
+  - vue-router: For navigation
+  - vue-cookies: For authentication state management
+  - Google Translate API: For translation services
+
+  API Integrations:
+  - Weather.gov API: Fetches local weather data for College Station, TX
+  
+  Author: Jensyn Huynh
+-->
+
+
 <template>
   <div class="menu-bar">
     <!-- Logout Button -->

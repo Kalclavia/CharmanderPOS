@@ -1,6 +1,54 @@
 <!--
   Menu3.vue
-  Vue component for third menu page, which displays a dynamic list of all currently available appetizers and drinks from the database with prices dynamically updated.
+  This Vue component implements the third menu board page for a Panda Express restaurant,
+  displaying appetizers and drinks with dynamic pricing and promotional content.
+
+  Key Features:
+  - Two-column layout:
+    * Left: Promotional image (Apple Pie ad)
+    * Right: Appetizers and Drinks sections
+  - Dynamic price fetching and display
+  - Size options for drinks
+  - Integration with MenuBoard component
+  
+  Menu Sections:
+  1. Appetizers (Step 4):
+     - Fixed size with dynamic pricing
+     - Full appetizer list from MenuBoard
+  
+  2. Drinks (Step 5):
+     - Three size options:
+       * Small with dynamic pricing
+       * Medium with dynamic pricing
+       * Large with dynamic pricing
+     - Full drink list from MenuBoard
+  
+  API Integration:
+  - Dynamic price fetching via axios
+  - Error handling for failed requests
+  - Loading state management
+  
+  Dependencies:
+  - axios: API calls
+  - Menu-Board.vue: Reusable menu component
+  - applepiead.png: Promotional image asset
+  - VITE_API_ENDPOINT environment variable
+  
+  Styling:
+  - Fixed full-screen layout
+  - Two-column flex design
+  - Responsive image handling
+  - Consistent branding colors
+  - Scrollable content areas
+  
+  States:
+  - prices: Object storing fetched price data
+  
+  Note: Component name 'Menu1' appears to be incorrectly set,
+  should be 'Menu3' for consistency
+
+  Author: Abhi Bhattacharyya
+  
 -->
 
 

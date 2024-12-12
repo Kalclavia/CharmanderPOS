@@ -1,3 +1,72 @@
+<!--
+  SelfCheckout.vue
+  This Vue component implements the main self-service ordering system interface,
+  managing the complete order flow from menu selection to order completion.
+
+  Flow States:
+  1. Launch Page: Initial welcome screen
+  2. Menu Selection & Cart Management:
+     - Dynamic menu display
+     - Cart manipulation
+     - Item selection
+  3. Checkout Process:
+     - Payment method selection
+     - Order review
+  4. User Information:
+     - Customer details collection
+  5. Order Completion:
+     - Transaction processing
+     - Ready time calculation
+     - Order confirmation
+
+  Key Features:
+  - Complete order lifecycle management
+  - Real-time cart updates
+  - Dynamic component rendering
+  - Transaction processing
+  - Inventory management
+  - Ready time estimation
+  
+  API Integration:
+  - Transaction creation and management
+  - Inventory updating
+  - Multiple endpoint interactions:
+    * transactions/latestID
+    * transaction
+    * transactionitems
+    * inventory/subtract
+    * inventory/subtract/itemtypes
+  
+  Components Used:
+  - LaunchPage: Welcome screen
+  - MenuBar: Navigation
+  - MainContent: Menu display
+  - Cart: Shopping cart
+  - CheckoutPage: Payment processing
+  - OrderSummary: Order review
+  - UserInfo: Customer information
+  - OrderComplete: Confirmation screen
+
+  State Management:
+  - Order status tracking
+  - Cart items and transaction data
+  - View state control
+  - Payment processing
+  
+  Security:
+  - Validates payment selection
+  - Handles transaction conflicts
+  - Error management
+  
+  Dependencies:
+  - axios: API calls
+  - Various child components
+  - cart.png asset
+  - Environment variables
+
+  Authors: Jensyn Huynh, Sana Memon 
+-->
+
 <template>
   <div id="app">
     <!-- Launch Page -->

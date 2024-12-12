@@ -1,3 +1,38 @@
+<!--
+  Manager.vue
+  This Vue component serves as the main layout for the manager interface,
+  coordinating navigation and content display for restaurant management functions.
+
+  Key Features:
+  - Sidebar navigation management
+  - Dynamic content rendering
+  - Initial state management for launch page
+  - Collapsible sidebar integration
+  
+  Components:
+  - LaunchPage (ManagerHome.vue): Initial landing screen
+  - MenuBar (NavBar.vue): Navigation sidebar
+  - MainContent (ManagerContent.vue): Primary content area
+  
+  State Management:
+  - Tracks current selected menu item
+  - Manages launch page visibility
+  - Controls sidebar collapse state
+  
+  Navigation:
+  - Handles menu item selection
+  - Updates content based on selection
+  - Manages transition from launch page
+  
+  Dependencies:
+  - state.js: Sidebar collapse state management
+  
+  Layout Structure:
+  - Fixed sidebar navigation
+  - Dynamic main content area
+  - Responsive design support
+-->
+
 <template>
   <div id="app">
     <MenuBar @selectItem="selectItem" />
