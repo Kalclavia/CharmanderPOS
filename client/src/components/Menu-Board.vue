@@ -1,3 +1,9 @@
+<!--
+  Menu-Board.vue
+  This Vue component serves as a dynamic menu board that conditionally renders different menu sections (Sides, Entrees, Appetizers, Drinks) based on the provided prop. 
+  It handles item selection events and provides consistent styling across all menu sections.
+-->
+
 <template>
   <div class="menu-board">
     <component
@@ -33,15 +39,21 @@ import Drinks from './menu/Drinks.vue'
 
 export default {
   name: 'Menu-Board',
+  
+  // Define required props
   props: {
-    item: String,
+    item: String,  // Controls which menu section to display
   },
+
+  // Methods for handling user interactions
   methods: {
     selectItem(item) {
       // Handle the selected item here
       console.log('Menuboard is displaying:', item)
     },
   },
+
+  // Register child components
   components: {
     Sides,
     Entrees,
