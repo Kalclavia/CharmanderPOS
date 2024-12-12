@@ -1,3 +1,9 @@
+<!--
+  Menu3.vue
+  Vue component for third menu page, which displays a dynamic list of all currently available appetizers and drinks from the database with prices dynamically updated.
+-->
+
+
 <template>
   <div class="main-content">
     <!-- Left column for promotional image -->

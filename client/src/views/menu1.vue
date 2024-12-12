@@ -1,3 +1,8 @@
+<!--
+  Menu1.vue
+  Vue component for first menu page, which displays a fixed list for menu items (bowl, plate, bigger plate) with prices fetched dynamically.
+-->
+
 <!-- Template Section -->
 <template>
 <div class="main-content">

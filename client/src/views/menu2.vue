@@ -1,3 +1,9 @@
+<!--
+  Menu2.vue
+  Vue component for second menu page, which displays a dynamic list of all currently available entrees and sides from the database.
+-->
+
+
 <template>
   <div class="main-content">
     <!-- Display Sides -->
